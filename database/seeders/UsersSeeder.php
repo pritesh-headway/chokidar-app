@@ -14,7 +14,10 @@ class UsersSeeder extends Seeder
         // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         // Truncate the users table
-        // User::truncate();
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // DB::table('users')->truncate();
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
 
         // Enable foreign key checks
         // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -26,7 +29,7 @@ class UsersSeeder extends Seeder
             'last_name' => 'User',
             'role' => 'admin', // Set the role to admin
             'mobile' => '0000000000', // You can change this if needed
-            'block' => 'Block A', // Adjust this based on your system
+            'block' => 'B', // Adjust this based on your system
             'profile_photo' => null, // If no photo is set
             'status' => 'active', // Active status
             'email' => 'root@root.com',
@@ -34,7 +37,7 @@ class UsersSeeder extends Seeder
             'otp' => '0096', // OTP as specified
         ]);
 
-        // User::factory()->count(5)->create();
+        User::factory()->count(10)->create();
     }
 }
 // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4xLjE2OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzM3MDA4MDI1LCJleHAiOjE3MzcwMTE2MjUsIm5iZiI6MTczNzAwODAyNSwianRpIjoiWGtBWnhrWlJmZFQ3aEkzdiIsInN1YiI6IjkiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.v2WsD-ypwVsntOK9eyKKTPkmyq0ZGU7iTSpo9JXFCus

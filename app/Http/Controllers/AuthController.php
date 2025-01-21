@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 
 class AuthController extends Controller
@@ -135,9 +136,10 @@ class AuthController extends Controller
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-
+    /*
     public function logout(Request $request)
     {
+
         // Get the authenticated user
         $user = Auth::user();
 
@@ -156,7 +158,34 @@ class AuthController extends Controller
             'message' => 'Logged out successfully'
         ]);
     }
+*/
+    public function logout(Request $request)
+    {
+        try {
+            // Get the token from the request
+            $token = $request->bearerToken();
 
+            if (!$token) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Token not provided'
+                ], 400);
+            }
+
+            // Invalidate the token and blacklist it
+            JWTAuth::setToken($token)->invalidate();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Logged out successfully'
+            ], 200);
+        } catch (JWTException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to log out, please try again later'
+            ], 500);
+        }
+    }
 
 
     // Step 1: Generate and send OTP to the user's mobile number

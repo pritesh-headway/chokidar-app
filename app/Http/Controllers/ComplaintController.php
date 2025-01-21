@@ -31,17 +31,20 @@ class ComplaintController extends Controller
                 return [
                     'no' => $complaint->id,
                     'blockNumber' => $complaint->block_number,
-                    'image' => $complaint->image,
-                    'visitorName' => $complaint->complaint_by,
+                    'image' => asset('storage/' . $complaint->image), // Generate URL for the single image
+                    'complainant' => $complaint->complaint_by,
                     'date' => $complaint->date,
                     'complainDescription' => $complaint->complaint_desc,
                     'complainTitle' => $complaint->complaint_title,
                     'status' => $complaint->complaint_status,
-                    'photos' => json_decode($complaint->photos), // Assuming it's stored as JSON in DB
+                    'photos' => array_map(function ($photo) {
+                        return asset('storage/' . $photo); // Generate URL for each photo in the array
+                    }, json_decode($complaint->photos)),  // Assuming photos are stored as JSON
                 ];
             }),
         ]);
     }
+
 
     // Retrieve a specific complaint by ID
     public function show(Request $request)
@@ -61,13 +64,15 @@ class ComplaintController extends Controller
             'data' => [
                 'no' => $complaint->id,
                 'blockNumber' => $complaint->block_number,
-                'image' => $complaint->image,
-                'visitorName' => $complaint->complaint_by,
+                'image' => asset('storage/' . $complaint->image),  // Generate URL for the image
+                'complainant' => $complaint->complaint_by,
                 'date' => $complaint->date,
                 'complainDescription' => $complaint->complaint_desc,
                 'complainTitle' => $complaint->complaint_title,
                 'status' => $complaint->complaint_status,
-                'photos' => json_decode($complaint->photos),
+                'photos' => array_map(function ($photo) {
+                    return asset('storage/' . $photo); // Generate URL for each photo in the array
+                }, json_decode($complaint->photos)),  // Assuming photos are stored as JSON
             ]
         ]);
     }

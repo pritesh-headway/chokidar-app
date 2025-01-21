@@ -12,14 +12,14 @@ class MaintenanceController extends Controller
     public function index(Request $request)
     {
         // Fetch the last pending maintenance record per user_id
-        $pendingRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status')
+        $pendingRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status', 'photo')
             ->where('maintenance_status', 'Pending')
             ->orderBy('id', 'desc')
             ->get()
             ->keyBy('user_id');
 
         // Fetch the last completed maintenance record per user_id where no pending records exist
-        $completedRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status')
+        $completedRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status', 'photo')
             ->whereNotIn('user_id', $pendingRecords->keys())
             ->orderBy('id', 'desc')
             ->get()
@@ -44,12 +44,13 @@ class MaintenanceController extends Controller
                         'id' => $record->id,
                         'user_id' => $record->user_id,
                         'blockNumber' => $record->block_number,
-                        'image' => 'Images.logo',  // Assuming a default image, replace as needed
+                        'image' => env('APP_URL') . '/public/storage/' . $record->photo,  // Assuming a default image, replace as needed
                         'ownerName' => $record->owner_name,
-                        'amount' => (string)$record->amount,  // Ensure amount is in string format
-                        'date' => $date->format('d/m/Y'),  // Format date
-                        'description' => $record->description,
-                        'status' => ucfirst(strtolower($record->maintenance_status)),  // Ensure proper capitalization
+                        'maintenance_status' => $record->maintenance_status,
+                        // 'amount' => (string)$record->amount,  // Ensure amount is in string format
+                        // 'date' => $date->format('d/m/Y'),  // Format date
+                        // 'description' => $record->description,
+                        // 'status' => ucfirst(strtolower($record->maintenance_status)),  // Ensure proper capitalization
                     ];
                 })->toArray(),
             ];
@@ -119,9 +120,10 @@ class MaintenanceController extends Controller
                     'id' => $record->id,
                     'user_id' => $record->user_id,
                     'blockNumber' => $record->block_number,
-                    'image' => $record->photo,  // You can change this to dynamic image logic
+                    'image' => env('APP_URL') . '/public/storage/' . $record->photo, // You can change this to dynamic image logic
                     'ownerName' => $record->owner_name,
                     'amount' => (string)$record->amount,  // Ensure amount is in string format
+                    'maintenance_status' => $record->maintenance_status,
                     'date' => $date->format('d/m/Y'),  // Format date
                     'description' => $record->description,
                     'status' => ucfirst(strtolower($record->maintenance_status)),  // Capitalize status correctly

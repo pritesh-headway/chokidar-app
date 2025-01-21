@@ -116,3 +116,24 @@ DB::table('visitors')->update(['prof_image' => 'profile_photos/avatar.png']);
 
 php artisan config:clear
 php artisan config:cache
+
+booking amenity particular
+'no' => $index + 1,
+
+
+status:
+message:
+data:
+{
+    {
+        id:
+        no:
+        
+         securityImage: null,
+            guardName: '',
+            personalNumber: '',
+            address: '',
+            gateContactNumber: '',
+            documents: [],
+    }
+}

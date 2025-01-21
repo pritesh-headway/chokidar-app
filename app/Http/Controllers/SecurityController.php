@@ -1,47 +1,58 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Models\Security;
+use App\Models\GateDetail;
 use Illuminate\Http\Request;
 
 class SecurityController extends Controller
 {
     // Display a listing of the securities (by user_id if provided)
-    public function index(Request $request)
-    {
-        $query = Security::query();
+    // public function index(Request $request)
+    // {
+    //     $securities = Security::all();
 
-        if ($request->has('id') && $request->id !== 'all') {
-            $query->where('id', $request->id);
-        }
+    //     // Add full URLs for images and documents
+    //     $securitiesWithUrls = $securities->map(function ($security) {
+    //         return [
+    //             'id' => $security->id,
+    //             'guard_name' => $security->guard_name,
+    //             'mobile' => $security->mobile,
+    //             'address' => $security->address,
+    //             'gate_no' => $security->gate_no,
+    //             'details' => $security->details,
+    //             'guard_image' => env('APP_URL') . '/public/storage/' . $security->guard_image,
+    //             'documents' => env('APP_URL') . '/public/storage/' . $security->documents,
+    //             'status' => $security->status,
+    //         ];
+    //     });
 
-        $securities = $query->get();
-        return response()->json($securities);
-    }
-
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Securities retrieved successfully.',
+    //         'data' => $securitiesWithUrls,
+    //     ]);
+    // }
+    // Store a new security record
     public function store(Request $request)
     {
-        // Validate the request and ensure missing fields are captured
+        // Validate the request
         $validatedData = $request->validate([
             'guard_name' => 'required|string|max:50',
-            'mobile' => 'required|string|max:20',  // Assuming mobile is a string (VARCHAR)
+            'mobile' => 'required|string|max:20',
             'address' => 'required|string|max:255',
             'gate_no' => 'required|integer',
             'details' => 'required|string',
-            'guard_image' => 'required|string|max:256', // Image URL or path
-            'documents' => 'required|array',  // Array of document paths or URLs
-            'status' => 'nullable|in:active,deactive',  // Status is nullable and will default to 'deactive'
+            'guard_image' => 'required|string|max:256',
+            'documents' => 'required|array',
+            'status' => 'nullable|in:active,deactive',
         ]);
 
-        // If validation fails (empty body or missing fields), Laravel will automatically return validation errors
-        // However, we customize the response format to include both message and missing fields
+        // Default to 'deactive' status if not provided
+        $status = $request->get('status', 'deactive');
 
-        // Check if 'status' is not provided and set the default value to 'deactive'
-        $status = $request->get('status', 'deactive'); // Default to 'deactive'
-
-        // Create the new security record if validation passes
+        // Create the security record
         $security = Security::create([
             'guard_name' => $request->guard_name,
             'mobile' => $request->mobile,
@@ -49,28 +60,47 @@ class SecurityController extends Controller
             'gate_no' => $request->gate_no,
             'details' => $request->details,
             'guard_image' => $request->guard_image,
-            'documents' => json_encode($request->documents), // Assuming documents are being passed as an array
+            'documents' => json_encode($request->documents),
             'status' => $status,
         ]);
 
         return response()->json(['message' => 'Security record created successfully.', 'data' => $security], 201);
     }
 
+    // // Show a specific security record
+    // public function show(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'id' => 'required|integer|exists:securities,id',
+    //     ]);
 
+    //     // Retrieve the security record by id
+    //     $security = Security::findOrFail($request->id);
 
-    // Show a specific security record
-    public function show($id)
-    {
-        $security = Security::findOrFail($id);
-        return response()->json($security);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Security retrieved successfully.',
+    //         'data' => [
+    //             'id' => $security->id,
+    //             'guard_name' => $security->guard_name,
+    //             'mobile' => $security->mobile,
+    //             'address' => $security->address,
+    //             'gate_no' => $security->gate_no,
+    //             'details' => $security->details,
+    //             'guard_image' => $security->guard_image,
+    //             'documents' => $security->documents,
+    //             'status' => $security->status,
+    //         ],
+    //     ]);
+    // }
 
     // Update a specific security record
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validatedData = $request->validate([
+            'id' => 'required|integer|exists:securities,id',
             'guard_name' => 'nullable|string|max:50',
-            'mobile' => 'nullable|integer',
+            'mobile' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'gate_no' => 'nullable|integer',
             'details' => 'nullable|string',
@@ -79,18 +109,94 @@ class SecurityController extends Controller
             'status' => 'nullable|in:active,deactive',
         ]);
 
-        $security = Security::findOrFail($id);
+        $security = Security::findOrFail($request->id);
         $security->update($validatedData);
 
         return response()->json(['message' => 'Security updated successfully.', 'data' => $security]);
     }
 
-    // Delete a specific security record
-    public function destroy($id)
+    // Destroy a specific security record
+    public function destroy(Request $request)
     {
-        $security = Security::findOrFail($id);
+        $validatedData = $request->validate([
+            'id' => 'required|integer|exists:securities,id',
+        ]);
+
+        $security = Security::findOrFail($request->id);
         $security->delete();
 
         return response()->json(['message' => 'Security deleted successfully.']);
+    }
+    // Display all securities with associated gate details
+    public function index(Request $request)
+    {
+        $securities = Security::whereHas('gateDetails')->get(); // Filter only securities with gate details
+
+        $securitiesWithDetails = $securities->map(function ($security, $index) {
+            $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
+            return [
+                'id' => $security->id,
+                'no' => $index + 1,
+                'guard_name' => $security->guard_name,
+                'personal_mobile' => $security->mobile,
+                'address' => $security->address,
+                'gate_no' => $gateDetails->gate_no ?? null, // Get gate number from gate details
+                'gate_mobile' => $gateDetails->gate_mobile ?? null, // Get gate mobile from gate details
+                'details' => $security->details,
+                'guard_image' => $this->getFullUrl($security->guard_image),
+                'documents' => $this->getFullUrls($security->documents),
+                'status' => $security->status,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Securities retrieved successfully.',
+            'data' => $securitiesWithDetails,
+        ]);
+    }
+
+    // Show a specific security record by id with gate details
+    public function show(Request $request)
+    {
+        $validatedData = $request->validate([
+            'id' => 'required|integer|exists:securities,id',
+        ]);
+
+        $security = Security::with('gateDetails')->findOrFail($request->id);
+
+        $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Security retrieved successfully.',
+            'data' => [
+                'id' => $security->id,
+                'no' => 1,
+                'guard_name' => $security->guard_name,
+                'personal_mobile' => $security->mobile,
+                'address' => $security->address,
+                'gate_no' => $gateDetails->gate_no ?? null,
+                'gate_mobile' => $gateDetails->gate_mobile ?? null,
+                'details' => $security->details,
+                'guard_image' => $this->getFullUrl($security->guard_image),
+                'documents' => $this->getFullUrls($security->documents),
+                'status' => $security->status,
+            ],
+        ]);
+    }
+
+    // Helper function to get full URL of a single image
+    protected function getFullUrl($imagePath)
+    {
+        return env('APP_URL') . '/public/storage/' . $imagePath; // Generate the full URL for the image
+    }
+
+    // Helper function to get full URLs for multiple documents
+    protected function getFullUrls($documents)
+    {
+        return collect($documents)->map(function ($doc) {
+            return $this->getFullUrl($doc);
+        })->toArray();
     }
 }

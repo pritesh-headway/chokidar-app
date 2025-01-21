@@ -11,5 +11,6 @@ class SecuritySeeder extends Seeder
     {
         // Create 10 fake securities
         Security::factory(10)->create();
+        // Security::truncate();
     }
 }

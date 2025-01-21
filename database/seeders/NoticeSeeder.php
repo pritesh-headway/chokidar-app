@@ -11,5 +11,6 @@ class NoticeSeeder extends Seeder
     {
         // Create 10 fake notices
         \App\Models\Notice::factory(10)->create();
+        // Notice::truncate();
     }
 }

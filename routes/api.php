@@ -13,6 +13,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\SecurityController;
+use App\Http\Controllers\GateDetailController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\FamilyMemberDetailController;
@@ -110,11 +111,18 @@ Route::middleware(['auth:api'])->group(function () {
 
 
 
-    Route::post('/notices', [NoticeController::class, 'store']);
-    Route::get('/notices', [NoticeController::class, 'index']);
-    Route::get('/notices/{id}', [NoticeController::class, 'show']);
-    Route::post('/notices/{id}', [NoticeController::class, 'update']);
-    Route::delete('/notices/{id}', [NoticeController::class, 'destroy']);
+    // Route::post('/notices', [NoticeController::class, 'store']);
+    // Route::get('/notices', [NoticeController::class, 'index']);
+    // Route::get('/notices/{id}', [NoticeController::class, 'show']);
+    // Route::post('/notices/{id}', [NoticeController::class, 'update']);
+    // Route::delete('/notices/{id}', [NoticeController::class, 'destroy']);
+
+    Route::post('/notices-create', [NoticeController::class, 'store']);
+    Route::post('/notices', [NoticeController::class, 'index']);  // Use POST for index as well
+    Route::post('/notices-show', [NoticeController::class, 'show']);  // Accept ID in input body
+    Route::post('/notices-update', [NoticeController::class, 'update']);  // Use POST for update with ID in body
+    Route::post('/notices-delete', [NoticeController::class, 'destroy']);  // Use POST for delete with ID in body
+
 
 
     // Maintenance CRUD
@@ -146,11 +154,19 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/complaint-delete', [ComplaintController::class, 'destroy']);  // Delete complaint
 
 
-    Route::get('/security', [SecurityController::class, 'index']);
-    Route::get('/security/{id}', [SecurityController::class, 'show']);
-    Route::post('/security', [SecurityController::class, 'store']);
-    Route::post('/security/{id}', [SecurityController::class, 'update']);
-    Route::delete('/security/{id}', [SecurityController::class, 'destroy']);
+    Route::post('/security', [SecurityController::class, 'index']);
+    Route::post('/security-show', [SecurityController::class, 'show']);
+    Route::post('/security-create', [SecurityController::class, 'store']);
+    Route::post('/security-update', [SecurityController::class, 'update']);
+    Route::post('/security-delete', [SecurityController::class, 'destroy']);
+
+
+    Route::post('/gate-details-create', [GateDetailController::class, 'store']);
+    Route::post('/gate-details', [GateDetailController::class, 'index']);  // POST for fetching all gate details
+    Route::post('/gate-details-show', [GateDetailController::class, 'show']);  // Accept ID in input body
+    Route::post('/gate-details-update', [GateDetailController::class, 'update']);  // POST for update with ID in body
+    Route::post('/gate-details-delete', [GateDetailController::class, 'destroy']);  // POST for delete with ID in body
+
 
 
     Route::get('/forums', [ForumController::class, 'index']);

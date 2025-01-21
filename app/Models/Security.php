@@ -20,4 +20,9 @@ class Security extends Model
         'documents',
         'status',
     ];
+
+    public function gateDetails()
+    {
+        return $this->hasMany(GateDetail::class, 'security_id');
+    }
 }

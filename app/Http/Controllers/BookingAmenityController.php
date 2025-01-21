@@ -19,20 +19,21 @@ class BookingAmenityController extends Controller
         $bookings = BookingAmenity::select('id', 'block_name', 'first_name', 'last_name', 'day', 'from', 'to', 'amenity_id', 'user_id', 'mobile', 'booking_status', 'status', 'created_at', 'updated_at')
             ->get();
 
-        $bookings = $bookings->map(function ($booking) {
+        $bookings = $bookings->map(function ($booking, $index) {
             $memberName = $booking->first_name . ' ' . $booking->last_name;
 
-            // Calculate time duration in minutes
-            $startTime = Carbon::parse($booking->from);
-            $endTime = Carbon::parse($booking->to);
-            $timeDuration = $startTime->diffInMinutes($endTime) . ' Minutes';  // Time difference in minutes
+            // Format 'from' and 'to' to show only hour and minute
+            $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
+            $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
 
             return [
                 'id' => $booking->id,
+                'no' => $index + 1,  // Sequential number for frontend use
                 'block_name' => $booking->block_name,
                 'member_name' => $memberName,
-                'day' => $booking->day,  // Show the 'day' field
-                'time_duration' => $timeDuration,  // Show the time duration in minutes
+                'day' => $booking->day,
+                'from' => $formattedFrom,  // Include formatted 'from' as H:i
+                'to' => $formattedTo,  // Include formatted 'to' as H:i
                 'amenity_id' => $booking->amenity_id,
                 'user_id' => $booking->user_id,
                 'mobile' => $booking->mobile,
@@ -218,21 +219,22 @@ class BookingAmenityController extends Controller
             // Concatenate first and last name as member_name
             $memberName = $booking->first_name . ' ' . $booking->last_name;
 
-            // Calculate the time duration in minutes using 'from' and 'to'
-            $fromTime = \Carbon\Carbon::parse($booking->from);
-            $toTime = \Carbon\Carbon::parse($booking->to);
-            $timeDuration = $fromTime->diffInMinutes($toTime);  // Time difference in minutes
+            // Format 'from' and 'to' to show only hour and minute
+            $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
+            $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
 
-            // Return the transformed data
+            // Return the transformed data without time_duration
             return response()->json([
                 'status' => true,
                 'message' => 'Booking retrieved successfully.',
                 'data' => [
                     'id' => $booking->id,
+                    'no' => 1,  // Sequential number for frontend use
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
-                    'day' => $booking->day,  // Show the 'day' field
-                    'time_duration' => $timeDuration . ' Minutes',  // Append 'Minutes' to the duration
+                    'day' => $booking->day,
+                    'from' => $formattedFrom,  // Include formatted 'from' as H:i
+                    'to' => $formattedTo,  // Include formatted 'to' as H:i
                     'amenity_id' => $booking->amenity_id,
                     'user_id' => $booking->user_id,
                     'mobile' => $booking->mobile,
@@ -248,19 +250,22 @@ class BookingAmenityController extends Controller
         if ($request->has('user_id')) {
             $bookings = $query->where('user_id', $request->user_id)->get();
 
-            // Transform the booking records
-            $bookings = $bookings->map(function ($booking) {
+            // Transform the booking records without time_duration
+            $bookings = $bookings->map(function ($booking, $index) {
                 $memberName = $booking->first_name . ' ' . $booking->last_name;
-                $fromTime = \Carbon\Carbon::parse($booking->from);
-                $toTime = \Carbon\Carbon::parse($booking->to);
-                $timeDuration = $fromTime->diffInMinutes($toTime);  // Time difference in minutes
+
+                // Format 'from' and 'to' to show only hour and minute
+                $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
+                $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
 
                 return [
                     'id' => $booking->id,
+                    'no' => $index + 1,
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
-                    'day' => $booking->day,  // Show the 'day' field
-                    'time_duration' => $timeDuration . ' Minutes',  // Append 'Minutes' to the duration
+                    'day' => $booking->day,
+                    'from' => $formattedFrom,  // Include formatted 'from' as H:i
+                    'to' => $formattedTo,  // Include formatted 'to' as H:i
                     'amenity_id' => $booking->amenity_id,
                     'user_id' => $booking->user_id,
                     'mobile' => $booking->mobile,
@@ -282,19 +287,22 @@ class BookingAmenityController extends Controller
         if ($request->has('amenity_id')) {
             $bookings = $query->where('amenity_id', $request->amenity_id)->get();
 
-            // Transform the booking records
-            $bookings = $bookings->map(function ($booking) {
+            // Transform the booking records without time_duration
+            $bookings = $bookings->map(function ($booking, $index) {
                 $memberName = $booking->first_name . ' ' . $booking->last_name;
-                $fromTime = \Carbon\Carbon::parse($booking->from);
-                $toTime = \Carbon\Carbon::parse($booking->to);
-                $timeDuration = $fromTime->diffInMinutes($toTime);  // Time difference in minutes
+
+                // Format 'from' and 'to' to show only hour and minute
+                $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
+                $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
 
                 return [
                     'id' => $booking->id,
+                    'no' => $index + 1,
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
-                    'day' => $booking->day,  // Show the 'day' field
-                    'time_duration' => $timeDuration . ' Minutes',  // Append 'Minutes' to the duration
+                    'day' => $booking->day,
+                    'from' => $formattedFrom,  // Include formatted 'from' as H:i
+                    'to' => $formattedTo,  // Include formatted 'to' as H:i
                     'amenity_id' => $booking->amenity_id,
                     'user_id' => $booking->user_id,
                     'mobile' => $booking->mobile,

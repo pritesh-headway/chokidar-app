@@ -14,4 +14,3 @@ class MaintenanceSeeder extends Seeder
         Maintenance::factory(10)->create();
     }
 }
-

@@ -15,16 +15,17 @@ return new class extends Migration {
             $table->string('block_number', 50);
             $table->string('complaint_by', 50);
             $table->string('complaint_title', 255);
+
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('complaint_desc');
             $table->date('date');
             $table->enum('complaint_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('photos');
+            $table->string('image')->nullable();  // Add image column
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.

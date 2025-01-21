@@ -37,7 +37,7 @@ class FamilyMemberDetailSeeder extends Seeder
     public function run()
     {
         // Empty the family_member_details table first (preserving structure)
-        FamilyMemberDetail::truncate();
+        // FamilyMemberDetail::truncate();
 
         // Get all user ids and their block_number from the users table
         $users = User::all(); // This will get all users with their respective block numbers

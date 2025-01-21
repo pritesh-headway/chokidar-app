@@ -21,7 +21,7 @@ class UserFactory extends Factory
             //'mobile' => $this->faker->unique()->numerify('##########'), // Generate a  unique 10-digit mobile number
             'mobile' => $this->faker->unique(true)->numerify('##########'), // Ensures unique mobile number
             'block' =>  explode('-', $block_number)[0],
-            'profile_photo' => null, // You can adjust this to generate random image URLs if needed
+            'profile_photo' => env('APP_URL') . 'profile_photos/avatar.png', // You can adjust this to generate random image URLs if needed
             'status' => $this->faker->randomElement(['active', 'inactive']),
 
         ];

@@ -3,9 +3,10 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\FamilyMemberDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class FamilyMemberDetailFactory extends Factory
 {
@@ -13,10 +14,12 @@ class FamilyMemberDetailFactory extends Factory
 
     public function definition()
     {
+        $user = User::inRandomOrder()->first();
         return [
-            'block_number' => $this->faker->regexify('[A-Z]-[0-9]{3}'),
+            // 'block_number' => $this->faker->regexify('[A-Z]-[0-9]{3}'),
+            'block_number' => $user->block_number,
             'member_name' => $this->faker->name,
-            'user_id' => \App\Models\User::factory(), // This will create a new user if not provided
+            'user_id' => $user->id, // This will create a new user if not provided
             'mobile' => $this->faker->numerify('##########'),
             'status' => $this->faker->randomElement(['active', 'deactive']),
         ];

@@ -9,7 +9,7 @@ class ComplaintSeeder extends Seeder
 {
     public function run()
     {
-        Complaint::truncate();
+        // Complaint::truncate();
         Complaint::factory()->count(10)->create();
     }
 }
