@@ -24,17 +24,19 @@ class ComplaintFactory extends Factory
         $randomImage = $this->faker->randomElement($imageFiles);
         $randomImages = $this->faker->randomElements($imageFiles, $count = rand(2, 3)); // 2 or 3 images
 
+        // Generate a date in the format 'dd-mm-yyyy' and then convert it to 'Y-m-d'
+        $date = $this->faker->date('d-m-Y');
+        $formattedDate = \DateTime::createFromFormat('d-m-Y', $date)->format('Y-m-d');
+
         return [
             'block_number' => $user->block_number,
             'complaint_by' => $user->first_name . ' ' . $user->last_name,
             'complaint_title' => $this->faker->sentence,
             'user_id' => $user->id,
             'complaint_desc' => $this->faker->paragraph,
-            'date' => $this->faker->date,
+            'date' => $formattedDate, // Store the date in 'Y-m-d' format
             'complaint_status' => 'pending',
-            // 'photos' => $this->faker->text,
             'photos' => json_encode($randomImages),  // Store the array of random images as JSON
-            // 'image' => $this->faker->randomElement($imageFiles),  // Randomly select an image
             'image' => $randomImage,  // Store the image path
             'status' => 'active',
         ];

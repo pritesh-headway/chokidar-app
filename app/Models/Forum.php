@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -41,5 +42,10 @@ class Forum extends Model
         static::deleting(function ($forum) {
             $forum->responses()->delete();  // Ensures responses are deleted when the forum is deleted
         });
+    }
+
+    public function getDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }

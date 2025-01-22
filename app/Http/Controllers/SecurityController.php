@@ -186,17 +186,26 @@ class SecurityController extends Controller
         ]);
     }
 
-    // Helper function to get full URL of a single image
-    protected function getFullUrl($imagePath)
-    {
-        return env('APP_URL') . '/public/storage/' . $imagePath; // Generate the full URL for the image
-    }
-
     // Helper function to get full URLs for multiple documents
     protected function getFullUrls($documents)
     {
-        return collect($documents)->map(function ($doc) {
-            return $this->getFullUrl($doc);
-        })->toArray();
+        // Decode the JSON string into an array
+        $documentsArray = json_decode($documents, true);
+
+        // Check if decoding was successful and is an array
+        if (is_array($documentsArray)) {
+            return collect($documentsArray)->map(function ($doc) {
+                return $this->getFullUrl($doc);
+            })->toArray();
+        }
+
+        // Return an empty array if decoding fails or it's not an array
+        return [];
+    }
+
+    // Helper function to get the full URL of a single image or document
+    protected function getFullUrl($path)
+    {
+        return env('APP_URL') . '/public/storage/' . $path;
     }
 }

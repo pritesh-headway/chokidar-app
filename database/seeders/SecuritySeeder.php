@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Security;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SecuritySeeder extends Seeder
 {
@@ -11,6 +12,8 @@ class SecuritySeeder extends Seeder
     {
         // Create 10 fake securities
         Security::factory(10)->create();
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         // Security::truncate();
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

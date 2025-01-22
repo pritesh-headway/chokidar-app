@@ -1,39 +1,85 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Models\Forum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ForumController extends Controller
 {
-    // Display a listing of forums or by user block_number if provided
+    protected function addFullImageUrl($forum)
+    {
+        // For profile photo
+        $forum->profile_photo = env('APP_URL') . '/public/storage/' . $forum->profile_photo;
+
+        // For photos (if any)
+        if (!empty($forum->photos)) {
+            $photos = json_decode($forum->photos, true);
+            $forum->photos = array_map(function ($photo) {
+                return env('APP_URL') . '/public/storage/' . $photo;
+            }, $photos);
+        }
+
+        return $forum;
+    }
+
+
+
     public function index(Request $request)
     {
+        $validated = $request->validate([
+            'id' => 'nullable|integer'
+        ]);
+
         $query = Forum::query();
 
-        if ($request->has('id') && $request->id !== 'all') {
-            $query->where('id', $request->id);
+        if (isset($validated['id']) && $validated['id'] !== 'all') {
+            $query->where('id', $validated['id']);
         }
 
         $forums = $query->get();
-        return response()->json($forums);
+
+        $forumsWithNo = $forums->map(function ($forum, $index) {
+            $forum = $this->addFullImageUrl($forum);
+            $forum->no = $index + 1; // Adding the "no" field
+            return $forum;
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Forums retrieved successfully.',
+            'data' => $forumsWithNo
+        ]);
     }
 
-    // Display a specific forum post
-    public function show($id)
+    public function show(Request $request)
     {
-        $forum = Forum::find($id);
+        $validated = $request->validate([
+            'id' => 'required|integer'
+        ]);
+
+        $forum = Forum::find($validated['id']);
 
         if (!$forum) {
-            return response()->json(['message' => 'Forum not found'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => 'Forum not found.',
+                'data' => null
+            ], 404);
         }
 
-        return response()->json($forum);
-    }
+        $forum = $this->addFullImageUrl($forum);
+        $forum->no = 1; // Since this is a single item, "no" is set to 1
 
-    // Store a new forum post
+        return response()->json([
+            'status' => true,
+            'message' => 'Forum retrieved successfully.',
+            'data' => $forum
+        ]);
+    }
+    // Store, update, and destroy methods remain the same as above,
+    // but you should ensure `addFullImageUrl` is called before returning the response
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -50,18 +96,19 @@ class ForumController extends Controller
 
         $forum = Forum::create($validated);
 
-        return response()->json(['message' => 'Forum created successfully.', 'data' => $forum], 201);
+        $forum = $this->addFullImageUrl($forum);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Forum created successfully.',
+            'data' => $forum
+        ], 201);
     }
 
-    // Update an existing forum post
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $forum = Forum::find($id);
-        if (!$forum) {
-            return response()->json(['message' => 'Forum not found'], 404);
-        }
-
         $validated = $request->validate([
+            'id' => 'required|integer',
             'block_number' => 'nullable|string|max:50',
             'forum_by' => 'nullable|string|max:50',
             'title' => 'nullable|string|max:255',
@@ -73,21 +120,47 @@ class ForumController extends Controller
             'status' => 'nullable|in:active,deactive',
         ]);
 
+        $forum = Forum::find($validated['id']);
+        if (!$forum) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Forum not found.',
+                'data' => null
+            ], 404);
+        }
+
         $forum->update($validated);
 
-        return response()->json(['message' => 'Forum updated successfully.', 'data' => $forum]);
+        $forum = $this->addFullImageUrl($forum);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Forum updated successfully.',
+            'data' => $forum
+        ]);
     }
 
-    // Delete a forum post
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $forum = Forum::find($id);
+        $validated = $request->validate([
+            'id' => 'required|integer'
+        ]);
+
+        $forum = Forum::find($validated['id']);
         if (!$forum) {
-            return response()->json(['message' => 'Forum not found'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => 'Forum not found.',
+                'data' => null
+            ], 404);
         }
 
         $forum->delete();
 
-        return response()->json(['message' => 'Forum deleted successfully.']);
+        return response()->json([
+            'status' => true,
+            'message' => 'Forum deleted successfully.',
+            'data' => null
+        ]);
     }
 }

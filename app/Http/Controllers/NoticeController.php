@@ -58,7 +58,7 @@ class NoticeController extends Controller
                 'id' => $notice->id,
                 'notice_title' => $notice->notice_title,
                 'notice_desc' => $notice->notice_desc,
-                'date' => $notice->date,
+                'date' => \Carbon\Carbon::parse($notice->date)->format('d-m-Y'),
                 'time' => $notice->time,
                 'status' => $notice->status,
                 'documents' => json_decode($notice->documents), // Convert documents URL array back to array
@@ -91,7 +91,7 @@ class NoticeController extends Controller
                 'id' => $notice->id,
                 'notice_title' => $notice->notice_title,
                 'notice_desc' => $notice->notice_desc,
-                'date' => $notice->date,
+                'date' => \Carbon\Carbon::parse($notice->date)->format('d-m-Y'),
                 'time' => $notice->time,
                 'status' => $notice->status,
                 'documents' => json_decode($notice->documents),

@@ -33,7 +33,7 @@ class ComplaintController extends Controller
                     'blockNumber' => $complaint->block_number,
                     'image' => asset('storage/' . $complaint->image), // Generate URL for the single image
                     'complainant' => $complaint->complaint_by,
-                    'date' => $complaint->date,
+                    'date' =>  \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
                     'complainDescription' => $complaint->complaint_desc,
                     'complainTitle' => $complaint->complaint_title,
                     'status' => $complaint->complaint_status,
@@ -66,7 +66,7 @@ class ComplaintController extends Controller
                 'blockNumber' => $complaint->block_number,
                 'image' => asset('storage/' . $complaint->image),  // Generate URL for the image
                 'complainant' => $complaint->complaint_by,
-                'date' => $complaint->date,
+                'date' =>  \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
                 'complainDescription' => $complaint->complaint_desc,
                 'complainTitle' => $complaint->complaint_title,
                 'status' => $complaint->complaint_status,

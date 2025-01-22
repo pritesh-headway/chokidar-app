@@ -128,7 +128,7 @@ data:
     {
         id:
         no:
-        
+
          securityImage: null,
             guardName: '',
             personalNumber: '',
@@ -137,3 +137,57 @@ data:
             documents: [],
     }
 }
+
+
+
+status:
+message:
+data:
+{
+    {
+        role:"Chairman",
+    rows: [
+        {
+            "no": 1,
+            "id": 1,
+            "role": "Chairman",
+            "user_id": 5,
+            "profile_image": "http://192.168.1.17/chokidar-app/public/storage/profile_photos/avatar.png",
+            "mobile": "8831529632",
+            "block_number": "Z-859",
+           "member_name": concatinated first and last name,
+
+        },
+        {
+            "no": 2,
+            "id": 2,
+            "role": "Representative",
+            "user_id": 11,
+            "profile_image": "http://192.168.1.17/chokidar-app/public/storage/profile_photos/avatar.png",
+            "mobile": "4070046876",
+            "block_number": "K-347",
+             "member_name": concatinated first and last name,
+        },
+        {
+    ]
+    }
+}
+
+
+family member details : role diff from users member
+
+
+images sometimes it does not load .
+
+
+'service_name' => $this->faker->randomeElement(['Security', 'Cleaner', 'Gardener', 'Electrician', 'Plumber', 'Maid', 'Iron Press', 'Milk man', 'Baby Caretaker']),
+
+
+
+
+now make service_requests table migrations, model, factory, seeder, controller, routes(all should be posts not get put delete and parameters like id should be in input not query)
+
+id	member_id	service_id	provider_id	request_status	status	created_at	updated_at
+INT	INT(foreign key from users table)	INT(foreign key from services table)	INT(foreign key from providers table)	ENUM ('pending'(default), 'completed', 'cancelled')	ENUM(active (default) , deactive)	TIMESTAMP	TIMESTAMP
+
+this table contains which member is containing which services of which providers with request status

@@ -13,8 +13,8 @@ class ForumSeeder extends Seeder
 {
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        // Forum::truncate();
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // // Forum::truncate();
         // Forum::factory(10)->create(); // Create 10 forum posts using the factory
 
         // Create some forums
@@ -28,6 +28,10 @@ class ForumSeeder extends Seeder
             ]);
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // Forum::truncate();
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

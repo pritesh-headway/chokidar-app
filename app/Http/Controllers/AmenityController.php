@@ -11,6 +11,22 @@ class AmenityController extends Controller
     public function index(Request $request)
     {
         $amenities = Amenity::all();
+
+        // Base URL for the image
+        $baseUrl = url('storage/amenity_images');
+
+        // Update amenity_image for all amenities
+        $amenities->transform(function ($amenity) use ($baseUrl) {
+            // Construct the full URL for amenity_image
+            $amenity->amenity_image = $baseUrl . '/index.jpg'; // Use index.jpg for amenity_image
+            // If amenity_images field is a JSON string, update each image URL
+            $amenity->amenity_images = json_encode(array_map(function ($image) use ($baseUrl) {
+                return $baseUrl . '/' . basename($image); // Construct the full URL for each image
+            }, json_decode($amenity->amenity_images, true) ?: []));
+
+            return $amenity;
+        });
+
         return response()->json([
             'status' => true,
             'message' => 'Amenities fetched successfully.',
@@ -36,6 +52,7 @@ class AmenityController extends Controller
         }
 
         $amenity = Amenity::create($request->all());
+        $amenity->amenity_image = url('storage/amenity_images/index.jpg'); // Set the amenity image URL
 
         return response()->json([
             'status' => true,
@@ -59,6 +76,7 @@ class AmenityController extends Controller
         }
 
         $amenity = Amenity::find($request->id);
+        $amenity->amenity_image = url('storage/amenity_images/index.jpg'); // Set the amenity image URL
 
         return response()->json([
             'status' => true,
@@ -87,6 +105,7 @@ class AmenityController extends Controller
 
         $amenity = Amenity::find($request->id);
         $amenity->update($request->all());
+        $amenity->amenity_image = url('storage/amenity_images/index.jpg'); // Set the amenity image URL
 
         return response()->json([
             'status' => true,

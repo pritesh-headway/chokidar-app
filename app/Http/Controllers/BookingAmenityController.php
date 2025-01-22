@@ -31,7 +31,7 @@ class BookingAmenityController extends Controller
                 'no' => $index + 1,  // Sequential number for frontend use
                 'block_name' => $booking->block_name,
                 'member_name' => $memberName,
-                'day' => $booking->day,
+                'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
                 'from' => $formattedFrom,  // Include formatted 'from' as H:i
                 'to' => $formattedTo,  // Include formatted 'to' as H:i
                 'amenity_id' => $booking->amenity_id,
@@ -232,7 +232,7 @@ class BookingAmenityController extends Controller
                     'no' => 1,  // Sequential number for frontend use
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
-                    'day' => $booking->day,
+                    'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
                     'from' => $formattedFrom,  // Include formatted 'from' as H:i
                     'to' => $formattedTo,  // Include formatted 'to' as H:i
                     'amenity_id' => $booking->amenity_id,
@@ -263,7 +263,7 @@ class BookingAmenityController extends Controller
                     'no' => $index + 1,
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
-                    'day' => $booking->day,
+                    'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
                     'from' => $formattedFrom,  // Include formatted 'from' as H:i
                     'to' => $formattedTo,  // Include formatted 'to' as H:i
                     'amenity_id' => $booking->amenity_id,
@@ -300,7 +300,7 @@ class BookingAmenityController extends Controller
                     'no' => $index + 1,
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
-                    'day' => $booking->day,
+                    'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
                     'from' => $formattedFrom,  // Include formatted 'from' as H:i
                     'to' => $formattedTo,  // Include formatted 'to' as H:i
                     'amenity_id' => $booking->amenity_id,

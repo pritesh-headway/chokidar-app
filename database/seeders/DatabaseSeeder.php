@@ -37,5 +37,8 @@ class DatabaseSeeder extends Seeder
         // Call the UsersSeeder to create additional users
         $this->call(UsersSeeder::class);
         $this->call(NoticeSeeder::class);
+        $this->call([
+            RoleSeeder::class,  // Add this line
+        ]);
     }
 }

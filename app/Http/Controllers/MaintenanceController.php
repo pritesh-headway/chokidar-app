@@ -124,7 +124,7 @@ class MaintenanceController extends Controller
                     'ownerName' => $record->owner_name,
                     'amount' => (string)$record->amount,  // Ensure amount is in string format
                     'maintenance_status' => $record->maintenance_status,
-                    'date' => $date->format('d/m/Y'),  // Format date
+                    'date' => \Carbon\Carbon::parse($date)->format('d-m-Y'),  // Format date
                     'description' => $record->description,
                     'status' => ucfirst(strtolower($record->maintenance_status)),  // Capitalize status correctly
                 ];

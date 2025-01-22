@@ -10,13 +10,18 @@ use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\AmenityController;
 use App\Http\Controllers\BookingAmenityController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\GateDetailController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\RoleMemberController;
 use App\Http\Controllers\FamilyMemberDetailController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ServiceProviderController;
+
 
 
 //
@@ -169,11 +174,17 @@ Route::middleware(['auth:api'])->group(function () {
 
 
 
-    Route::get('/forums', [ForumController::class, 'index']);
-    Route::get('/forums/{id}', [ForumController::class, 'show']);
-    Route::post('/forums', [ForumController::class, 'store']);
-    Route::post('/forums/{id}', [ForumController::class, 'update']);
-    Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
+    // Route::get('/forums', [ForumController::class, 'index']);
+    // Route::get('/forums/{id}', [ForumController::class, 'show']);
+    // Route::post('/forums', [ForumController::class, 'store']);
+    // Route::post('/forums/{id}', [ForumController::class, 'update']);
+    // Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
+    Route::post('/forums', [ForumController::class, 'index']);  // For listing forums
+    Route::post('/forums-show', [ForumController::class, 'show']);  // For showing a specific forum
+    Route::post('/forums-create', [ForumController::class, 'store']);  // For storing a new forum
+    Route::post('/forums-update', [ForumController::class, 'update']);  // For updating a forum
+    Route::post('/forums-delete', [ForumController::class, 'destroy']);  // For deleting a forum
+
 
 
     Route::get('/responses', [ResponseController::class, 'index']);
@@ -181,6 +192,40 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/responses', [ResponseController::class, 'store']);
     Route::post('/responses/{id}', [ResponseController::class, 'update']);
     Route::delete('/responses/{id}', [ResponseController::class, 'destroy']);
+
+    // routes/api.php
+
+
+
+
+    Route::post('role-create', [RoleController::class, 'create']); // Create role
+    Route::post('role', [RoleController::class, 'index']); // Get all roles
+    Route::post('role-show', [RoleController::class, 'show']); // Get role by ID
+    Route::post('role-update', [RoleController::class, 'update']); // Update role by ID
+    Route::post('role-delete', [RoleController::class, 'destroy']); // Delete role by ID
+
+
+
+    Route::post('role_members-create', [RoleMemberController::class, 'store']);
+    Route::post('role_members', [RoleMemberController::class, 'index']);
+    Route::post('role_members-show', [RoleMemberController::class, 'show']);
+    Route::post('role_members-update', [RoleMemberController::class, 'update']);
+    Route::post('role_members-delete', [RoleMemberController::class, 'destroy']);
+
+
+
+    Route::post('services-create', [ServiceController::class, 'store']);
+    Route::post('services', [ServiceController::class, 'index']);
+    Route::post('services-update', [ServiceController::class, 'update']);
+    Route::post('services-show', [ServiceController::class, 'show']);
+    Route::post('services-delete', [ServiceController::class, 'destroy']);
+
+
+    Route::post('service_providers-create', [ServiceProviderController::class, 'store']);
+    Route::post('service_providers', [ServiceProviderController::class, 'index']);
+    Route::post('service_providers-show', [ServiceProviderController::class, 'show']);
+    Route::post('service_providers-update', [ServiceProviderController::class, 'update']);
+    Route::post('service_providers-delete', [ServiceProviderController::class, 'destroy']);
 });
 
 Route::get('/test', function () {
