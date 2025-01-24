@@ -45,7 +45,7 @@ class RoleMemberController extends Controller
             'role_id' => $request->role_id,
             'role_name' => $role->role_name, // Automatically taken from roles table using role_id
             'user_id' => $request->user_id,
-            'profile_image' => $request->profile_image,
+            'profile_image' => $user->profile_image,
             'mobile' => $user->mobile, // Taken from users table using user_id
             'block_number' => $user->block_number, // Taken from users table using user_id
             'first_name' => $user->first_name, // Taken from users table using user_id
@@ -53,13 +53,26 @@ class RoleMemberController extends Controller
             'status' => $status, // Use default status if not provided
         ]);
 
+        // Prepare the response data to match the format of 'index()'
+        $formattedData = [
+            'no' => 1, // Since this is a single entry, no is 1
+            'id' => $roleMember->id, // ID
+            'blockNumber' => $roleMember->block_number, // block_number
+            'image' => $roleMember->profile_image
+                ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image // Full URL to profile image
+                : config('app.url') . '/public/storage/profile_photos/avatar.png', // Null if no image
+            'ownerName' => $roleMember->first_name . ' ' . $roleMember->last_name, // Concatenate first and last name
+            'role' => $roleMember->role_name, // Role name
+            'mobile' => $roleMember->mobile, // Mobile
+            // 'totalMembers' => null, // Assuming totalMembers isn't available in the model, leave as null
+        ];
+
         return response()->json([
             'status' => true,
             'message' => 'Role member created successfully.',
-            'data' => $roleMember,
+            'data' => [$formattedData], // Return wrapped in an array like 'index()'
         ], 200);
     }
-
 
     public function index(Request $request)
     {
@@ -67,16 +80,22 @@ class RoleMemberController extends Controller
 
         // Add 'no', 'member_name', and format profile image for each role member
         $roleMembers = $roleMembers->map(function ($roleMember, $index) {
-            $roleMember->no = $index + 1; // Add indexing
-            $roleMember->member_name = $roleMember->first_name . ' ' . $roleMember->last_name; // Concatenate names
-            unset($roleMember->first_name, $roleMember->last_name); // Remove individual names
-            // Ensure full URL for profile image
-            if ($roleMember->profile_image) {
-                // $roleMember->profile_image = env('APP_URL') . '/public' . Storage::url($roleMember->profile_image);
-                // dd($roleMember->profile_image);
-                $roleMember->profile_image = env('APP_URL') . '/public/storage/' . $roleMember->profile_image;
-            }
-            return $roleMember;
+            // Format the data as per the desired structure
+            $formattedData = [
+                'no' => $index + 1, // Add indexing
+                'id' => $roleMember->id, // ID
+                'blockNumber' => $roleMember->block_number, // block_number
+                'image' => $roleMember->profile_image
+                    ? config('app.url') . '/public/storage/' . $roleMember->profile_image // Full URL for the profile image
+                    : config('app.url') . '/public/storage/profile_photos/avatar.png', // Null if no image
+                'ownerName' => $roleMember->first_name . ' ' . $roleMember->last_name, // Concatenate first and last name
+                'role' => $roleMember->role_name, // Assuming 'role_name' is the correct field for the role
+                'mobile' => $roleMember->mobile, // Mobile
+                // 'totalMembers' => $roleMember->total_members, // Assuming 'total_members' is a field
+            ];
+
+            // Return the formatted data as an object
+            return (object) $formattedData;
         });
 
         return response()->json([
@@ -85,6 +104,7 @@ class RoleMemberController extends Controller
             'data' => $roleMembers,
         ], 200);
     }
+
 
     public function show(Request $request)
     {
@@ -103,14 +123,20 @@ class RoleMemberController extends Controller
             ], 200);
         }
 
-        // Helper function to add member_name and full URL for profile image
-        $formatMember = function ($roleMember) {
-            $roleMember->member_name = $roleMember->first_name . ' ' . $roleMember->last_name;
-            unset($roleMember->first_name, $roleMember->last_name); // Remove individual names
-            if ($roleMember->profile_image) {
-                $roleMember->profile_image = env('APP_URL') . '/public/storage/' . $roleMember->profile_image; // Full URL to image
-            }
-            return $roleMember;
+        // Helper function to format the role member data
+        $formatMember = function ($roleMember, $index) {
+            return [
+                'no' => $index + 1, // Add indexing
+                'id' => $roleMember->id, // ID
+                'blockNumber' => $roleMember->block_number, // block_number
+                'image' => $roleMember->profile_image
+                    ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image // Full URL to profile image
+                    : config('app.url') . '/public/storage/profile_photos/avatar.png', // Null if no image
+                'ownerName' => $roleMember->first_name . ' ' . $roleMember->last_name, // Concatenate first and last name
+                'role' => $roleMember->role_name, // Assuming 'role_name' is the field for role
+                'mobile' => $roleMember->mobile, // Mobile
+                // 'totalMembers' => $roleMember->total_members, // Assuming 'total_members' exists
+            ];
         };
 
         // If id is provided
@@ -120,14 +146,14 @@ class RoleMemberController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Role member not found.',
-                ], 404);
+                ], 200);
             }
-            $roleMember = $formatMember($roleMember);
+            $formattedMember = $formatMember($roleMember, 0); // No need for indexing in single response
 
             return response()->json([
                 'status' => true,
                 'message' => 'Role member retrieved successfully.',
-                'data' => $roleMember,
+                'data' => [$formattedMember], // Wrap in array to match index() format
             ], 200);
         }
 
@@ -138,15 +164,15 @@ class RoleMemberController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'No role members found for this role.',
-                ], 404);
+                ], 200);
             }
 
-            $roleMembers->each($formatMember);
+            $formattedMembers = $roleMembers->map($formatMember); // Apply formatting to each member
 
             return response()->json([
                 'status' => true,
                 'message' => 'Role members retrieved successfully.',
-                'data' => $roleMembers,
+                'data' => $formattedMembers,
             ], 200);
         }
 
@@ -157,23 +183,80 @@ class RoleMemberController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'No role members found for this user.',
-                ], 404);
+                ], 200);
             }
 
-            $roleMembers->each($formatMember);
+            $formattedMembers = $roleMembers->map($formatMember); // Apply formatting to each member
 
             return response()->json([
                 'status' => true,
                 'message' => 'Role members retrieved successfully.',
-                'data' => $roleMembers,
+                'data' => $formattedMembers,
             ], 200);
         }
 
         return response()->json([
             'status' => false,
             'message' => 'No valid parameter provided.',
-        ], 400);
+        ], 200);
     }
+
+
+
+
+
+    // public function update(Request $request)
+    // {
+    //     // Validate that only the 'id' field is required
+    //     $validator = Validator::make($request->all(), [
+    //         'id' => 'required|exists:role_members,id', // Ensure id exists in the role_members table
+    //         'role_id' => 'nullable|exists:roles,id', // role_id is optional, but if provided, it should exist in roles table
+    //         'user_id' => 'nullable|exists:users,id', // user_id is optional, but if provided, it should exist in users table
+    //         'status' => 'nullable|in:active,deactive', // status is optional, but if provided, it should be either active or deactive
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Required parameter(s) are missing or invalid.',
+    //             'data' => $validator->errors(),
+    //         ], 200);
+    //     }
+
+    //     // Find the role member by id
+    //     $roleMember = RoleMember::find($request->id);
+
+    //     // If role_id is provided, update it, else keep the old value
+    //     if ($request->has('role_id')) {
+    //         $roleMember->role_id = $request->role_id;
+    //         $roleMember->role_name = Role::find($request->role_id)->role_name; // Update the role_name
+    //     }
+
+    //     // If user_id is provided, update it, else keep the old value
+    //     if ($request->has('user_id')) {
+    //         $roleMember->user_id = $request->user_id;
+    //         $user = User::find($request->user_id);
+    //         $roleMember->mobile = $user->mobile;
+    //         $roleMember->block_number = $user->block_number;
+    //         $roleMember->first_name = $user->first_name;
+    //         $roleMember->last_name = $user->last_name;
+    //         $roleMember->profile_image = $user->profile_photo; // Update profile_image
+    //     }
+
+    //     // If status is provided, update it, else keep the old value
+    //     if ($request->has('status')) {
+    //         $roleMember->status = $request->status;
+    //     }
+
+    //     // Save the updated role member
+    //     $roleMember->save();
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Role member updated successfully.',
+    //         'data' => $roleMember,
+    //     ], 200);
+    // }
 
 
     public function update(Request $request)
@@ -222,14 +305,26 @@ class RoleMemberController extends Controller
         // Save the updated role member
         $roleMember->save();
 
+        // Prepare the response data to match the format of 'index()'
+        $formattedData = [
+            'no' => 1, // Since this is a single entry, no is 1
+            'id' => $roleMember->id, // ID
+            'blockNumber' => $roleMember->block_number, // block_number
+            'image' => $roleMember->profile_image
+                ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image // Full URL to profile image
+                : config('app.url') . '/public/storage/profile_photos/avatar.png', // Null if no image
+            'ownerName' => $roleMember->first_name . ' ' . $roleMember->last_name, // Concatenate first and last name
+            'role' => $roleMember->role_name, // Role name
+            'mobile' => $roleMember->mobile, // Mobile
+            // 'totalMembers' => null, // Assuming totalMembers isn't available in the model, leave as null
+        ];
+
         return response()->json([
             'status' => true,
             'message' => 'Role member updated successfully.',
-            'data' => $roleMember,
+            'data' => [$formattedData], // Return wrapped in an array like 'index()'
         ], 200);
     }
-
-
     public function destroy(Request $request)
     {
         // Validate that at least one of 'id', 'user_id', or 'role_id' is provided
@@ -247,34 +342,62 @@ class RoleMemberController extends Controller
             ], 200);
         }
 
+        // Prepare the formatted response structure for role member details
+        $formattedData = function ($roleMember) {
+            return [
+                'no' => 1, // Since this is a single deletion, no is 1
+                'id' => $roleMember->id, // ID
+                'blockNumber' => $roleMember->block_number, // block_number
+                'image' => $roleMember->profile_image
+                    ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image // Full URL to profile image
+                    :  config('app.url') . '/public/storage/profile_photos/avatar.png', // Null if no image
+                'ownerName' => $roleMember->first_name . ' ' . $roleMember->last_name, // Concatenate first and last name
+                'role' => $roleMember->role_name, // Role name
+                'mobile' => $roleMember->mobile, // Mobile
+                // 'totalMembers' => null, // Assuming totalMembers isn't available in the model, leave as null
+            ];
+        };
+
         // Delete by 'id'
         if ($request->has('id')) {
             $roleMember = RoleMember::find($request->id);
+            $roleMemberData = $formattedData($roleMember);
             $roleMember->delete();
 
             return response()->json([
                 'status' => true,
                 'message' => 'Role member deleted successfully by id.',
+                'data' => [$roleMemberData], // Return the deleted role member's details
             ], 200);
         }
 
         // Delete by 'user_id'
         if ($request->has('user_id')) {
+            $roleMembers = RoleMember::where('user_id', $request->user_id)->get();
+            $roleMembersData = $roleMembers->map(function ($roleMember) use ($formattedData) {
+                return $formattedData($roleMember);
+            });
             RoleMember::where('user_id', $request->user_id)->delete();
 
             return response()->json([
                 'status' => true,
                 'message' => 'Role members deleted successfully by user_id.',
+                'data' => $roleMembersData, // Return details of the deleted role members
             ], 200);
         }
 
         // Delete by 'role_id'
         if ($request->has('role_id')) {
+            $roleMembers = RoleMember::where('role_id', $request->role_id)->get();
+            $roleMembersData = $roleMembers->map(function ($roleMember) use ($formattedData) {
+                return $formattedData($roleMember);
+            });
             RoleMember::where('role_id', $request->role_id)->delete();
 
             return response()->json([
                 'status' => true,
                 'message' => 'Role members deleted successfully by role_id.',
+                'data' => $roleMembersData, // Return details of the deleted role members
             ], 200);
         }
 
@@ -282,6 +405,6 @@ class RoleMemberController extends Controller
         return response()->json([
             'status' => false,
             'message' => 'No valid parameter provided for deletion.',
-        ], 400);
+        ], 200);
     }
 }

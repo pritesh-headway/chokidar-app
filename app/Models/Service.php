@@ -21,4 +21,10 @@ class Service extends Model
     {
         return $this->hasMany(ServiceProvider::class);
     }
+
+    // Relationship with ServiceProvider
+    public function providers()
+    {
+        return $this->hasMany(ServiceProvider::class, 'service_id');
+    }
 }

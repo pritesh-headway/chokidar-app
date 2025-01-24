@@ -11,13 +11,13 @@ class ForumController extends Controller
     protected function addFullImageUrl($forum)
     {
         // For profile photo
-        $forum->profile_photo = env('APP_URL') . '/public/storage/' . $forum->profile_photo;
+        $forum->profile_photo = config('app.url') . '/public/storage/' . $forum->profile_photo;
 
         // For photos (if any)
         if (!empty($forum->photos)) {
             $photos = json_decode($forum->photos, true);
             $forum->photos = array_map(function ($photo) {
-                return env('APP_URL') . '/public/storage/' . $photo;
+                return config('app.url') . '/public/storage/' . $photo;
             }, $photos);
         }
 

@@ -36,7 +36,11 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
         // Cast status to string (optional)
         'status' => 'string',
     ];
-    // Implement the two required methods from JWTSubject
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
     public function getJWTIdentifier()
     {
         return $this->getKey(); // Return the primary key of the user
@@ -56,9 +60,45 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
         return $this->hasMany(Visitor::class);
     }
 
-
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
     public function getJWTCustomClaims()
     {
         return []; // Return any custom claims if needed (empty for now)
+    }
+
+    // Relationship with ServiceRequest
+    public function serviceRequests()
+    {
+        return $this->hasMany(ServiceRequest::class, 'member_id');
+    }
+
+    // Relationships
+    public function sentConversations()
+    {
+        return $this->hasMany(Conversation::class, 'sender_id');
+    }
+
+    public function receivedConversations()
+    {
+        return $this->hasMany(Conversation::class, 'receiver_id');
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    public function hello()
+    {
+        return "hello";
     }
 }

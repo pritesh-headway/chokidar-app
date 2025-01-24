@@ -1,82 +1,162 @@
 <?php
 
+// app/Http/Controllers/ResponseController.php
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Forum;
 use App\Models\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ResponseController extends Controller
 {
-    // Fetch all responses or filter by forum_id
+    // app/Http/Controllers/ResponseController.php
+
     public function index(Request $request)
     {
-        $forumId = $request->query('forum_id');
-        if ($forumId) {
-            $responses = Response::where('forum_id', $forumId)->get();
-        } else {
-            $responses = Response::all();
-        }
+        $responses = Response::all();  // Get all responses from the database
 
-        return response()->json($responses);
+        return response()->json([
+            'status' => true,
+            'message' => 'All responses retrieved successfully',
+            'data' => $responses,
+        ], 200);
     }
 
-    // Show a specific response
-    public function show($id)
+
+    // app/Http/Controllers/ResponseController.php
+
+    public function show(Request $request)
     {
-        $response = Response::find($id);
-        if (!$response) {
-            return response()->json(['message' => 'Response not found'], 404);
+        // Define validation rules
+        $validator = Validator::make($request->all(), [
+            'id' => 'nullable|exists:responses,id',
+            'forum_id' => 'nullable|exists:forums,id',
+            'user_id' => 'nullable|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'data' => $validator->errors(),
+            ], 200);
         }
 
-        return response()->json($response);
+        // Start with the base query for responses
+        $query = Response::query();
+
+        // Apply filters based on provided parameters
+        if ($request->has('id') && $request->id != null) {
+            $query->where('id', $request->id);
+        }
+
+        if ($request->has('forum_id') && $request->forum_id != null) {
+            $query->where('forum_id', $request->forum_id);
+        }
+
+        if ($request->has('user_id') && $request->user_id != null) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Execute the query
+        $responses = $query->get();
+
+        if ($responses->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No responses found based on the given criteria.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Responses retrieved successfully',
+            'data' => $responses,
+        ], 200);
     }
 
-    // Store a new response
+
+    // Store: Create a new response
     public function store(Request $request)
     {
-        $request->validate([
-            'forum_id' => 'required|exists:forums,id',  // Make sure the forum exists
-            'user_name' => 'required|string|max:255',
-            'comment' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'forum_id' => 'required|exists:forums,id',
+            'user_id' => 'required|exists:users,id',
+            'status' => 'required|in:active,deactive',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'data' => $validator->errors(),
+            ], 200);
+        }
 
         $response = Response::create([
             'forum_id' => $request->forum_id,
-            'user_name' => $request->user_name,
-            'comment' => $request->comment,
+            'user_id' => $request->user_id,
+            'status' => $request->status,
         ]);
 
-        return response()->json(['message' => 'Response created successfully', 'data' => $response], 201);
+        return response()->json([
+            'status' => true,
+            'message' => 'Response created successfully',
+            'data' => $response,
+        ], 200);
     }
 
-    // Update a response
-    public function update(Request $request, $id)
+    // Update: Update a response
+    public function update(Request $request)
     {
-        $response = Response::find($id);
-        if (!$response) {
-            return response()->json(['message' => 'Response not found'], 404);
-        }
-
-        $request->validate([
-            'user_name' => 'nullable|string|max:255',
-            'comment' => 'nullable|string',
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:responses,id',
+            'status' => 'required|in:active,deactive',
         ]);
 
-        $response->update($request->only(['user_name', 'comment']));
-
-        return response()->json(['message' => 'Response updated successfully', 'data' => $response]);
-    }
-
-    // Delete a response
-    public function destroy($id)
-    {
-        $response = Response::find($id);
-        if (!$response) {
-            return response()->json(['message' => 'Response not found'], 404);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'data' => $validator->errors(),
+            ], 200);
         }
 
+        $response = Response::find($request->id);
+        $response->update([
+            'status' => $request->status,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Response updated successfully',
+            'data' => $response,
+        ], 200);
+    }
+
+    // Delete: Delete a response
+    public function delete(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:responses,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'data' => $validator->errors(),
+            ], 200);
+        }
+
+        $response = Response::find($request->id);
         $response->delete();
 
-        return response()->json(['message' => 'Response deleted successfully']);
+        return response()->json([
+            'status' => true,
+            'message' => 'Response deleted successfully',
+        ], 200);
     }
 }

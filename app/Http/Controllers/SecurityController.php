@@ -196,6 +196,7 @@ class SecurityController extends Controller
         if (is_array($documentsArray)) {
             return collect($documentsArray)->map(function ($doc) {
                 return $this->getFullUrl($doc);
+                // return  env('APP_URL') . '/public/storage/' . $doc;
             })->toArray();
         }
 
@@ -206,6 +207,7 @@ class SecurityController extends Controller
     // Helper function to get the full URL of a single image or document
     protected function getFullUrl($path)
     {
-        return env('APP_URL') . '/public/storage/' . $path;
+        // dd(env('APP_URL'));
+        return config('app.url') . '/public/storage/' . $path;
     }
 }

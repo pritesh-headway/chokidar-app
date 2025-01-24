@@ -44,7 +44,7 @@ class MaintenanceController extends Controller
                         'id' => $record->id,
                         'user_id' => $record->user_id,
                         'blockNumber' => $record->block_number,
-                        'image' => env('APP_URL') . '/public/storage/' . $record->photo,  // Assuming a default image, replace as needed
+                        'image' => config('app.url') . '/public/storage/' . $record->photo,  // Assuming a default image, replace as needed
                         'ownerName' => $record->owner_name,
                         'maintenance_status' => $record->maintenance_status,
                         // 'amount' => (string)$record->amount,  // Ensure amount is in string format
@@ -120,7 +120,7 @@ class MaintenanceController extends Controller
                     'id' => $record->id,
                     'user_id' => $record->user_id,
                     'blockNumber' => $record->block_number,
-                    'image' => env('APP_URL') . '/public/storage/' . $record->photo, // You can change this to dynamic image logic
+                    'image' => config('app.url') . '/public/storage/' . $record->photo, // You can change this to dynamic image logic
                     'ownerName' => $record->owner_name,
                     'amount' => (string)$record->amount,  // Ensure amount is in string format
                     'maintenance_status' => $record->maintenance_status,

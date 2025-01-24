@@ -13,9 +13,11 @@ class ServiceProviderFactory extends Factory
 
     public function definition()
     {
+
+        $service = Service::inRandomOrder()->first();
         return [
             'full_name' => $this->faker->name,
-            'service_id' => Service::inRandomOrder()->first()->id,
+            'service_id' => $service->id,
             'mobile' => $this->faker->unique()->numerify('##########'),
             'address' => $this->faker->address,
             'profile_image' => $this->faker->randomElement(['service_provider_images/provider1.jpg', 'service_provider_images/provider2.jpg', 'service_provider_images/provider3.webp']),

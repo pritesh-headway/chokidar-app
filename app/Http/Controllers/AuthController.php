@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
@@ -15,10 +17,18 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+// use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 
 
 class AuthController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login']]);
+    }
     // Register a new user
     // public function register(Request $request)
     // {
@@ -69,7 +79,7 @@ class AuthController extends Controller
             'email' => 'nullable|email|unique:users',
             'password' => 'required|string|min:6',
         ]);
-
+        dd($validator->errors());
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
@@ -98,6 +108,7 @@ class AuthController extends Controller
 
 
 
+    /*
     public function login(Request $request)
     {
         // Validate the incoming request
@@ -135,6 +146,48 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Unauthorized'], 401);
     }
+        */
+
+    public function login(Request $request)
+    {
+        // Validate the incoming request
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        try {
+            // Attempt to authenticate and generate a token
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['message' => 'Invalid email or password'], 401);
+            }
+
+            // Retrieve the currently authenticated user using JWTAuth
+            $user = JWTAuth::user();
+
+            // Build the user details to return in the response
+            $userDetails = [
+
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'id' => $user->id,
+            ];
+
+            return response()->json([
+                'status' => true,
+                'message' => "successfully Logged in.",
+                'data' => [
+                    'token' => $token,
+                    'user' => $userDetails,
+                ]
+            ], 200);
+        } catch (JWTException $e) {
+            // Handle token generation errors
+            return response()->json(['error' => 'Could not create token'], 500);
+        }
+    }
 
     /*
     public function logout(Request $request)
@@ -159,33 +212,27 @@ class AuthController extends Controller
         ]);
     }
 */
-    public function logout(Request $request)
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
     {
         try {
-            // Get the token from the request
-            $token = $request->bearerToken();
-
-            if (!$token) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Token not provided'
-                ], 400);
-            }
-
-            // Invalidate the token and blacklist it
-            JWTAuth::setToken($token)->invalidate();
+            // Invalidate the token
+            JWTAuth::invalidate(JWTAuth::getToken());
 
             return response()->json([
                 'status' => true,
                 'message' => 'Logged out successfully'
-            ], 200);
-        } catch (JWTException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Failed to log out, please try again later'
-            ], 500);
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to logout, please try again'], 500);
         }
     }
+
 
 
     // Step 1: Generate and send OTP to the user's mobile number

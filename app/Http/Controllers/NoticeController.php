@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Notice;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NoticeController extends Controller
 {
@@ -48,6 +49,9 @@ class NoticeController extends Controller
     // Fetch all notices (accepting POST request)
     public function index(Request $request)
     {
+        // $user = Auth::user();
+        // dd($user->hello());
+
         // Retrieve all notices
         $notices = Notice::all();
 

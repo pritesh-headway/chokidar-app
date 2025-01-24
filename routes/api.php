@@ -22,31 +22,27 @@ use App\Http\Controllers\FamilyMemberDetailController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceProviderController;
 
+use App\Http\Controllers\ServiceRequestController;
+use App\Http\Controllers\ConversationController;
+// routes/api.php
+
+use App\Http\Controllers\MessageController;
 
 
-//
-// "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4xLjEyOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzM2MzE3ODg1LCJleHAiOjE3MzYzMjE0ODUsIm5iZiI6MTczNjMxNzg4NSwianRpIjoiT2NQWU0wUW9icG9rM3R5ZyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.QbJ6q-mC3TT13r0s6UHfb6Pb-eFEAF-WgxUqzb-H1eQ"
-// jwt-auth secret ukiezDev8FnMFUky4o2re9xICNjqWONgX6ycaXA1HXocwGnYDQ3t2akZfBMhtNs8
+
+
+
+
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
 // Route::post('logout', [AuthController::class, 'logout']);
 Route::post('otp-login', [AuthController::class, 'otpLogin']);
-
-// Route::post('login', [AuthController::class, 'login']);
-// Route::post('register', [AuthController::class, 'register']);
-// Route::post('logout', [AuthController::class, 'logout']);
 
 // Middleware-protected user route
 // Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 //     return $request->user();
 // });
 
-
-
-// Route::middleware(['auth'])->group(function () {
-// });
-
-// Route::get('/vehicles', [VehicleController::class, 'getVehiclesByUserId']);
 
 Route::middleware(['auth:api'])->group(function () {
 
@@ -187,11 +183,31 @@ Route::middleware(['auth:api'])->group(function () {
 
 
 
-    Route::get('/responses', [ResponseController::class, 'index']);
-    Route::get('/responses/{id}', [ResponseController::class, 'show']);
-    Route::post('/responses', [ResponseController::class, 'store']);
-    Route::post('/responses/{id}', [ResponseController::class, 'update']);
-    Route::delete('/responses/{id}', [ResponseController::class, 'destroy']);
+    Route::post('responses', [ResponseController::class, 'index']);
+    Route::post('responses-show', [ResponseController::class, 'show']);
+    Route::post('responses-create', [ResponseController::class, 'store']);
+    Route::post('responses-update', [ResponseController::class, 'update']);
+    Route::post('responses-delete', [ResponseController::class, 'delete']);
+
+
+    // routes/api.php
+
+
+
+    Route::post('conversations', [ConversationController::class, 'index']);   // Get all conversations
+    Route::post('conversations-show', [ConversationController::class, 'show']);  // Get specific conversation(s)
+    Route::post('conversations-create', [ConversationController::class, 'store']);  // Create a new conversation
+    Route::post('conversations-update', [ConversationController::class, 'update']);  // Update conversation
+    Route::post('conversations-delete', [ConversationController::class, 'destroy']);  // Delete conversation
+
+
+    Route::post('messages', [MessageController::class, 'index']);   // Get all messages
+    Route::post('messages-show', [MessageController::class, 'show']);  // Get specific message(s)
+    Route::post('messages-create', [MessageController::class, 'store']);  // Create a new message
+    Route::post('messages-update', [MessageController::class, 'update']);  // Update message
+    Route::post('messages-delete', [MessageController::class, 'destroy']);  // Delete message
+
+
 
     // routes/api.php
 
@@ -226,34 +242,17 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('service_providers-show', [ServiceProviderController::class, 'show']);
     Route::post('service_providers-update', [ServiceProviderController::class, 'update']);
     Route::post('service_providers-delete', [ServiceProviderController::class, 'destroy']);
+    Route::post('service_providers-bytype', [ServiceProviderController::class, 'getByServiceType']);
+
+
+
+    Route::post('service_requests', [ServiceRequestController::class, 'index']);
+    Route::post('service_requests-update', [ServiceRequestController::class, 'update']);
+    Route::post('service_requests-create', [ServiceRequestController::class, 'store']);
+    Route::post('service_requests-show', [ServiceRequestController::class, 'show']);
+    Route::post('service_requests-delete', [ServiceRequestController::class, 'destroy']);
 });
 
-Route::get('/test', function () {
+Route::get('test', function () {
     return response()->json(['message' => 'CORS is working!']);
 });
-
-
-//Route::get('/complaint', [ComplaintController::class, 'index']);  // Get visitors for a specific user
-// Route::post('/complaint', [ComplaintController::class, 'store']);
-// Route::get('/complaint', [ComplaintController::class, 'index']);  // Read complaints for user
-// Route::post('/complaint', [ComplaintController::class, 'store']);  // Create complaint
-// Route::post('/complaint/{id}', [ComplaintController::class, 'update']);  // Update complaint
-// Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy']);  // Delete complaint
-// Public API routes
-// Route::post('/register', [UsersController::class, 'register']);
-// Route::post('/login', [UsersController::class, 'login']);
-// Route::post('/login', [AuthController::class, 'login']);
-
-
-
-
-// Route::post('/logout', [UsersController::class, 'logout'])->middleware('auth:sanctum');
-
-// // Chokidar-specific routes
-// Route::middleware(['auth:sanctum'])->group(function () {
-//     Route::get('/chokidar', [ChokidarController::class, 'index']); // Fetch all chokidar records
-//     Route::post('/chokidar', [ChokidarController::class, 'store']); // Create a new chokidar entry
-//     Route::get('/chokidar/{id}', [ChokidarController::class, 'show']); // Fetch single chokidar record
-//     Route::put('/chokidar/{id}', [ChokidarController::class, 'update']); // Update chokidar record
-//     Route::delete('/chokidar/{id}', [ChokidarController::class, 'destroy']); // Delete chokidar record
-// });

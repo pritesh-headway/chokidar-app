@@ -117,6 +117,11 @@ DB::table('visitors')->update(['prof_image' => 'profile_photos/avatar.png']);
 php artisan config:clear
 php artisan config:cache
 
+php artisan route:clear
+php artisan cache:clear
+php artisan config:clear
+
+
 booking amenity particular
 'no' => $index + 1,
 
@@ -191,3 +196,28 @@ id	member_id	service_id	provider_id	request_status	status	created_at	updated_at
 INT	INT(foreign key from users table)	INT(foreign key from services table)	INT(foreign key from providers table)	ENUM ('pending'(default), 'completed', 'cancelled')	ENUM(active (default) , deactive)	TIMESTAMP	TIMESTAMP
 
 this table contains which member is containing which services of which providers with request status
+
+
+
+amenity description
+guard image not working first time
+
+
+role_name , role -> role members table CRUD
+
+
+messages conversations api postman
+
+contact us api
+super admin.
+
+- in services(all) and chat(all) avoid duplicate creation.
+
+
+- login 405 and token expiry
+
+messages update problem and doubt.
+
+
+
+

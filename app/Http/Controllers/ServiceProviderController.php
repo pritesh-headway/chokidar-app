@@ -5,8 +5,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ServiceProvider;
+use App\Models\Service;
 use Illuminate\Http\Request;
+use App\Models\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
 class ServiceProviderController extends Controller
@@ -89,7 +90,12 @@ class ServiceProviderController extends Controller
     public function index(Request $request)
     {
         $serviceProviders = ServiceProvider::all();
-        $serviceProviders = $serviceProviders->map(function ($provider) {
+
+        // Add index ("no") to each provider and full URLs for profile image and documents
+        $serviceProviders = $serviceProviders->map(function ($provider, $index) {
+            // Add "no" as the index (1-based index, so add 1)
+            $provider->no = $index + 1;
+
             // Add full URLs for profile image and documents
             return $this->addFullImageUrl($provider);
         });
@@ -100,6 +106,7 @@ class ServiceProviderController extends Controller
             'data' => $serviceProviders,
         ], 200);
     }
+
 
     // Get a specific service provider
     public function show(Request $request)
@@ -129,6 +136,9 @@ class ServiceProviderController extends Controller
                 ], 404);
             }
 
+            // Add "no" as the index (1-based index)
+            $serviceProvider->no = 1;  // Since we are fetching one provider, it's the first (and only) entry
+
             // Add full URLs for profile image and documents
             $serviceProvider = $this->addFullImageUrl($serviceProvider);
 
@@ -150,8 +160,9 @@ class ServiceProviderController extends Controller
                 ], 404);
             }
 
-            // Add full URLs for profile images and documents for each service provider
-            $serviceProviders = $serviceProviders->map(function ($provider) {
+            // Add "no" index to each provider and full URLs for profile images and documents
+            $serviceProviders = $serviceProviders->map(function ($provider, $index) {
+                $provider->no = $index + 1; // Add 1-based index
                 return $this->addFullImageUrl($provider);
             });
 
@@ -168,6 +179,53 @@ class ServiceProviderController extends Controller
             'message' => 'Please provide either an id or service_id.',
         ], 400);
     }
+
+    // Get service providers based on service_type
+    public function getByServiceType(Request $request)
+    {
+        // Validate the service_type input
+        $validator = Validator::make($request->all(), [
+            'service_type' => 'required|in:society,owner',  // Only 'society' or 'owner' allowed
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'data' => $validator->errors(),
+            ], 200);
+        }
+
+        // Get all service ids based on the provided service_type
+        if ($request->service_type == 'society') {
+            $serviceIds = Service::whereIn('service_type', ['society', 'both'])->pluck('id'); // 'society' or 'both'
+        } else {
+            $serviceIds = Service::whereIn('service_type', ['owner', 'both'])->pluck('id'); // 'owner' or 'both'
+        }
+
+        // Get the service providers with the service_ids retrieved from the services table
+        $serviceProviders = ServiceProvider::whereIn('service_id', $serviceIds)->get();
+
+        if ($serviceProviders->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No service providers found for the given service_type',
+            ], 404);
+        }
+
+        // Add "no" index to each provider and full URLs for profile images and documents
+        $serviceProviders = $serviceProviders->map(function ($provider, $index) {
+            $provider->no = $index + 1; // Add 1-based index
+            return $this->addFullImageUrl($provider);
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Service providers retrieved successfully',
+            'data' => $serviceProviders,
+        ], 200);
+    }
+
 
 
     // Update a service provider

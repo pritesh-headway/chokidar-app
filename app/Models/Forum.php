@@ -9,15 +9,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Forum extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'block_number',
+        'user_id',
         'forum_by',
         'title',
         'description',
         'date',
         'profile_photo',
+        'responses',
         'photos',
-        'status'
+        'status',
     ];
 
     // Relationship: A forum has many responses
