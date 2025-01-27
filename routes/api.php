@@ -26,7 +26,9 @@ use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\ConversationController;
 // routes/api.php
 
+use App\Http\Controllers\SocietyController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ContactUsController;
 
 
 
@@ -37,6 +39,12 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
 // Route::post('logout', [AuthController::class, 'logout']);
 Route::post('otp-login', [AuthController::class, 'otpLogin']);
+
+// routes/api.php
+
+
+Route::post('contact-us', [ContactUsController::class, 'store']);
+
 
 // Middleware-protected user route
 // Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -54,9 +62,26 @@ Route::middleware(['auth:api'])->group(function () {
     // Route::delete('/user/{id}', [UsersController::class, 'destroy']);
 
     Route::post('/user-read', [UsersController::class, 'index']);  // Get all users or a specific user
-    Route::post('/user-create', [UsersController::class, 'store']);  // Create a user
+    Route::post('user-create', [UsersController::class, 'store']);  // Create a user
     Route::post('/user-update', [UsersController::class, 'update']);  // Update a user
     Route::post('/user-delete', [UsersController::class, 'destroy']);  // Delete a user
+
+
+    // Create a new society
+    Route::post('/societies-create', [SocietyController::class, 'create']);
+
+    // Get a list of all societies
+    Route::post('/societies', [SocietyController::class, 'index']);
+
+    // Get a specific society by ID
+    Route::post('/societies-show', [SocietyController::class, 'show']);
+
+    // Update a society by ID
+    Route::post('/societies-update', [SocietyController::class, 'update']);
+
+    // Delete a society by ID
+    Route::post('/societies-delete', [SocietyController::class, 'destroy']);
+
 
 
     // Route::get('/family', [FamilyMemberDetailController::class, 'index']);

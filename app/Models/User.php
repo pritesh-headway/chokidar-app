@@ -28,6 +28,7 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
         'email', // Add email here
         'password', // Add password here
         'otp',
+        'society_id',
     ];
 
     protected $casts = [
@@ -100,5 +101,11 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
     public function hello()
     {
         return "hello";
+    }
+
+    // Define the relationship: A user belongs to a society
+    public function society()
+    {
+        return $this->belongsTo(Society::class);
     }
 }

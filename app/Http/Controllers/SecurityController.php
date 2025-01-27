@@ -127,21 +127,54 @@ class SecurityController extends Controller
 
         return response()->json(['message' => 'Security deleted successfully.']);
     }
-    // Display all securities with associated gate details
+    // // Display all securities with associated gate details
+    // public function index(Request $request)
+    // {
+    //     $securities = Security::whereHas('gateDetails')->get(); // Filter only securities with gate details
+
+    //     $securitiesWithDetails = $securities->map(function ($security, $index) {
+    //         $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
+    //         return [
+    //             'id' => $security->id,
+    //             'no' => $index + 1,
+    //             'guard_name' => $security->guard_name,
+    //             'personal_mobile' => $security->mobile,
+    //             'address' => $security->address,
+    //             'gate_no' => $gateDetails->gate_no ?? null, // Get gate number from gate details
+    //             'gate_mobile' => $gateDetails->gate_mobile ?? null, // Get gate mobile from gate details
+    //             'details' => $security->details,
+    //             'guard_image' => $this->getFullUrl($security->guard_image),
+    //             'documents' => $this->getFullUrls($security->documents),
+    //             'status' => $security->status,
+    //         ];
+    //     });
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Securities retrieved successfully.',
+    //         'data' => $securitiesWithDetails,
+    //     ]);
+    // }
+
     public function index(Request $request)
     {
-        $securities = Security::whereHas('gateDetails')->get(); // Filter only securities with gate details
+        // Get the logged-in user's society_id
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
 
+        // Fetch securities that belong to the logged-in user's society_id
+        $securities = Security::where('society_id', $loggedInSocietyId)
+            ->get(); // No need for whereHas('gateDetails') anymore
+
+        // Format the response
         $securitiesWithDetails = $securities->map(function ($security, $index) {
-            $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
             return [
                 'id' => $security->id,
                 'no' => $index + 1,
                 'guard_name' => $security->guard_name,
                 'personal_mobile' => $security->mobile,
                 'address' => $security->address,
-                'gate_no' => $gateDetails->gate_no ?? null, // Get gate number from gate details
-                'gate_mobile' => $gateDetails->gate_mobile ?? null, // Get gate mobile from gate details
+                'gate_no' => $security->gate_no,
                 'details' => $security->details,
                 'guard_image' => $this->getFullUrl($security->guard_image),
                 'documents' => $this->getFullUrls($security->documents),
@@ -156,35 +189,98 @@ class SecurityController extends Controller
         ]);
     }
 
-    // Show a specific security record by id with gate details
+
+
+    // // Show a specific security record by id with gate details
+    // public function show(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'id' => 'required|integer|exists:securities,id',
+    //     ]);
+
+    //     $security = Security::with('gateDetails')->findOrFail($request->id);
+
+    //     $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Security retrieved successfully.',
+    //         'data' => [
+    //             'id' => $security->id,
+    //             'no' => 1,
+    //             'guard_name' => $security->guard_name,
+    //             'personal_mobile' => $security->mobile,
+    //             'address' => $security->address,
+    //             'gate_no' => $gateDetails->gate_no ?? null,
+    //             'gate_mobile' => $gateDetails->gate_mobile ?? null,
+    //             'details' => $security->details,
+    //             'guard_image' => $this->getFullUrl($security->guard_image),
+    //             'documents' => $this->getFullUrls($security->documents),
+    //             'status' => $security->status,
+    //         ],
+    //     ]);
+    // }
+
     public function show(Request $request)
     {
+        // Validate the incoming data
         $validatedData = $request->validate([
-            'id' => 'required|integer|exists:securities,id',
+            'guard_name' => 'required|string',
+            'mobile' => 'required|string',
+            'address' => 'required|string',
+            'gate_no' => 'required|string',
+            'details' => 'nullable|string',
+            'guard_image' => 'nullable|image', // Add validation for image
+            'documents' => 'nullable|array', // Add validation for documents
+            'status' => 'required|string',
         ]);
 
-        $security = Security::with('gateDetails')->findOrFail($request->id);
+        // Get the logged-in user's society_id
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
 
-        $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
+        // Create a new security record
+        $security = new Security();
+        $security->guard_name = $validatedData['guard_name'];
+        $security->mobile = $validatedData['mobile'];
+        $security->address = $validatedData['address'];
+        $security->gate_no = $validatedData['gate_no'];
+        $security->details = $validatedData['details'];
+        $security->status = $validatedData['status'];
+        $security->society_id = $loggedInSocietyId;  // Set the society_id to the logged-in user's society_id
+
+        // Handle image upload if provided
+        if ($request->hasFile('guard_image')) {
+            $security->guard_image = $request->file('guard_image')->store('public/security_images');
+        }
+
+        // Handle documents upload if provided
+        if ($request->has('documents')) {
+            $security->documents = json_encode($request->documents); // Assuming documents are an array of file paths
+        }
+
+        // Save the security record
+        $security->save();
 
         return response()->json([
             'status' => true,
-            'message' => 'Security retrieved successfully.',
+            'message' => 'Security created successfully.',
             'data' => [
                 'id' => $security->id,
-                'no' => 1,
                 'guard_name' => $security->guard_name,
-                'personal_mobile' => $security->mobile,
+                'mobile' => $security->mobile,
                 'address' => $security->address,
-                'gate_no' => $gateDetails->gate_no ?? null,
-                'gate_mobile' => $gateDetails->gate_mobile ?? null,
+                'gate_no' => $security->gate_no,
                 'details' => $security->details,
                 'guard_image' => $this->getFullUrl($security->guard_image),
                 'documents' => $this->getFullUrls($security->documents),
                 'status' => $security->status,
+                'society_id' => $security->society_id,
             ],
-        ]);
+        ], 201);
     }
+
+
 
     // Helper function to get full URLs for multiple documents
     protected function getFullUrls($documents)

@@ -9,18 +9,86 @@ use Illuminate\Http\Request;
 class MaintenanceController extends Controller
 {
     // Fetch all maintenance records
+    // public function index(Request $request)
+    // {
+    //     // Fetch the last pending maintenance record per user_id
+    //     $pendingRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status', 'photo')
+    //         ->where('maintenance_status', 'Pending')
+    //         ->orderBy('id', 'desc')
+    //         ->get()
+    //         ->keyBy('user_id');
+
+    //     // Fetch the last completed maintenance record per user_id where no pending records exist
+    //     $completedRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status', 'photo')
+    //         ->whereNotIn('user_id', $pendingRecords->keys())
+    //         ->orderBy('id', 'desc')
+    //         ->get()
+    //         ->keyBy('user_id');
+
+    //     // Merge both pending and completed records ensuring only one record per user_id
+    //     $allRecords = $pendingRecords->union($completedRecords);
+
+    //     // Group records by the first letter of block_number
+    //     $groupedRecords = $allRecords->groupBy(function ($record) {
+    //         return strtoupper(substr($record->block_number, 0, 1));
+    //     });
+
+    //     // Format the response to match the specified structure
+    //     $response = $groupedRecords->map(function ($records, $blockLetter) {
+    //         return [
+    //             'title' => "Block-" . $blockLetter,  // Ensure block title format "Block-A", "Block-B", etc.
+    //             'rows' => $records->values()->map(function ($record, $index) {
+    //                 $date = \Carbon\Carbon::parse($record->date);  // Convert string to Carbon instance
+    //                 return [
+    //                     'no' => $index + 1,
+    //                     'id' => $record->id,
+    //                     'user_id' => $record->user_id,
+    //                     'blockNumber' => $record->block_number,
+    //                     'image' => config('app.url') . '/public/storage/' . $record->photo,  // Assuming a default image, replace as needed
+    //                     'ownerName' => $record->owner_name,
+    //                     'maintenance_status' => $record->maintenance_status,
+    //                     // 'amount' => (string)$record->amount,  // Ensure amount is in string format
+    //                     // 'date' => $date->format('d/m/Y'),  // Format date
+    //                     // 'description' => $record->description,
+    //                     // 'status' => ucfirst(strtolower($record->maintenance_status)),  // Ensure proper capitalization
+    //                 ];
+    //             })->toArray(),
+    //         ];
+    //     });
+
+    //     // Sort the response by block title alphabetically
+    //     $sortedResponse = $response->sortBy('title')->values();
+
+    //     // Return the response with grouped, formatted, and sorted data
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Maintenance records fetched successfully',
+    //         'data' => $sortedResponse->toArray(),
+    //     ], 200);
+    // }
+
+    // Fetch all maintenance records
     public function index(Request $request)
     {
-        // Fetch the last pending maintenance record per user_id
+        // Get the logged-in user's society_id
+        $loggedInSocietyId = auth()->user()->society_id;
+
+        // Fetch the last pending maintenance record per user_id within the same society
         $pendingRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status', 'photo')
             ->where('maintenance_status', 'Pending')
+            ->whereHas('user', function ($query) use ($loggedInSocietyId) {
+                $query->where('society_id', $loggedInSocietyId);
+            })
             ->orderBy('id', 'desc')
             ->get()
             ->keyBy('user_id');
 
-        // Fetch the last completed maintenance record per user_id where no pending records exist
+        // Fetch the last completed maintenance record per user_id where no pending records exist, within the same society
         $completedRecords = Maintenance::select('id', 'block_number', 'user_id', 'owner_name', 'amount', 'date', 'description', 'maintenance_status', 'photo')
             ->whereNotIn('user_id', $pendingRecords->keys())
+            ->whereHas('user', function ($query) use ($loggedInSocietyId) {
+                $query->where('society_id', $loggedInSocietyId);
+            })
             ->orderBy('id', 'desc')
             ->get()
             ->keyBy('user_id');
@@ -44,13 +112,13 @@ class MaintenanceController extends Controller
                         'id' => $record->id,
                         'user_id' => $record->user_id,
                         'blockNumber' => $record->block_number,
-                        'image' => config('app.url') . '/public/storage/' . $record->photo,  // Assuming a default image, replace as needed
+                        'image' => config('app.url') . '/public/storage/' . $record->photo,  // Generate image URL
                         'ownerName' => $record->owner_name,
                         'maintenance_status' => $record->maintenance_status,
-                        // 'amount' => (string)$record->amount,  // Ensure amount is in string format
-                        // 'date' => $date->format('d/m/Y'),  // Format date
+                        // Uncomment as needed for additional fields
+                        // 'amount' => (string)$record->amount,
+                        // 'date' => $date->format('d/m/Y'),
                         // 'description' => $record->description,
-                        // 'status' => ucfirst(strtolower($record->maintenance_status)),  // Ensure proper capitalization
                     ];
                 })->toArray(),
             ];
@@ -66,6 +134,9 @@ class MaintenanceController extends Controller
             'data' => $sortedResponse->toArray(),
         ], 200);
     }
+
+
+
 
 
     public function show(Request $request)

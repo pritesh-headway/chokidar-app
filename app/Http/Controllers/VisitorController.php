@@ -9,17 +9,99 @@ use Illuminate\Support\Facades\Log;
 
 class VisitorController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $id = $request->input('id');
+    //     $userId = $request->input('user_id');
+
+    //     if ($id) {
+    //         // Fetch specific visitor by id or all visitors if id is 'all'
+    //         if ($id === 'all') {
+    //             $visitors = Visitor::orderBy('created_at', 'desc')->get();
+    //         } else {
+    //             $visitor = Visitor::find($id);
+    //             if (!$visitor) {
+    //                 return response()->json([
+    //                     'status' => false,
+    //                     'message' => 'Visitor not found',
+    //                     'data' => []
+    //                 ], 200);
+    //             }
+    //             $visitors = collect([$visitor]);
+    //         }
+    //     } elseif ($userId) {
+    //         // Fetch visitors for specific user_id or all users if user_id is 'all'
+    //         if ($userId === 'all') {
+    //             $visitors = Visitor::orderBy('created_at', 'desc')->get();
+    //         } else {
+    //             $visitors = Visitor::where('user_id', $userId)
+    //                 ->orderBy('created_at', 'desc') // Ensure visitors are ordered by created_at
+    //                 ->get();
+    //             if ($visitors->isEmpty()) {
+    //                 return response()->json([
+    //                     'status' => false,
+    //                     'message' => 'No visitors found for this user',
+    //                     'data' => []
+    //                 ], 200);
+    //             }
+    //         }
+    //     } else {
+    //         // If neither id nor user_id is provided
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Either id or user_id is required',
+    //             'data' => []
+    //         ], 200);
+    //     }
+
+    //     // Format the response
+    //     $data = [];
+    //     foreach ($visitors as $index => $visitor) {
+    //         $data[] = [
+    //             'no' => $index + 1,
+    //             'id' => $visitor->id,
+    //             'user_id' => $visitor->user_id,
+    //             'blockNumber' => $visitor->block_number,
+    //             'image' => $this->getVisitorImage($visitor), // Dynamic image based on visitor
+    //             'visitorName' => $visitor->visitor_name,
+    //             'date' => \Carbon\Carbon::parse($visitor->date)->format('d-m-Y'), // Format date as required
+    //             'reason' => $visitor->reason,
+    //             'mobile' => $visitor->mobile,
+    //             'status' => $visitor->visitor_status,
+    //         ];
+    //     }
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Visitors fetched successfully',
+    //         'data' => $data
+    //     ]);
+    // }
+
+
     public function index(Request $request)
     {
+        // Get logged-in user's society_id
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
+
+        // Get 'id' and 'user_id' from the request input
         $id = $request->input('id');
         $userId = $request->input('user_id');
 
         if ($id) {
-            // Fetch specific visitor by id or all visitors if id is 'all'
+            // Fetch a specific visitor by ID or all visitors if 'id' is 'all'
             if ($id === 'all') {
-                $visitors = Visitor::orderBy('created_at', 'desc')->get();
+                // Get all visitors where the associated user belongs to the same society as the logged-in user
+                $visitors = Visitor::whereHas('user', function ($query) use ($loggedInSocietyId) {
+                    $query->where('society_id', $loggedInSocietyId);
+                })
+                    ->orderBy('created_at', 'desc')
+                    ->get();
             } else {
+                // Fetch a specific visitor by ID
                 $visitor = Visitor::find($id);
+
                 if (!$visitor) {
                     return response()->json([
                         'status' => false,
@@ -27,16 +109,44 @@ class VisitorController extends Controller
                         'data' => []
                     ], 200);
                 }
+
+                // Ensure the visitor belongs to a user in the same society
+                $visitorUser = $visitor->user;
+                if (!$visitorUser || $visitorUser->society_id !== $loggedInSocietyId) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Visitor not authorized',
+                        'data' => []
+                    ], 200);
+                }
+
                 $visitors = collect([$visitor]);
             }
         } elseif ($userId) {
-            // Fetch visitors for specific user_id or all users if user_id is 'all'
+            // Fetch visitors for a specific user_id or all users if 'user_id' is 'all'
             if ($userId === 'all') {
-                $visitors = Visitor::orderBy('created_at', 'desc')->get();
-            } else {
-                $visitors = Visitor::where('user_id', $userId)
-                    ->orderBy('created_at', 'desc') // Ensure visitors are ordered by created_at
+                // Get all visitors where the associated user belongs to the same society as the logged-in user
+                $visitors = Visitor::whereHas('user', function ($query) use ($loggedInSocietyId) {
+                    $query->where('society_id', $loggedInSocietyId);
+                })
+                    ->orderBy('created_at', 'desc')
                     ->get();
+            } else {
+                // Fetch visitors for a specific user
+                $user = User::find($userId);
+
+                if (!$user || $user->society_id !== $loggedInSocietyId) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'User not authorized or does not belong to your society',
+                        'data' => []
+                    ], 200);
+                }
+
+                $visitors = Visitor::where('user_id', $userId)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
                 if ($visitors->isEmpty()) {
                     return response()->json([
                         'status' => false,
@@ -46,7 +156,7 @@ class VisitorController extends Controller
                 }
             }
         } else {
-            // If neither id nor user_id is provided
+            // If neither 'id' nor 'user_id' is provided
             return response()->json([
                 'status' => false,
                 'message' => 'Either id or user_id is required',
@@ -62,9 +172,9 @@ class VisitorController extends Controller
                 'id' => $visitor->id,
                 'user_id' => $visitor->user_id,
                 'blockNumber' => $visitor->block_number,
-                'image' => $this->getVisitorImage($visitor), // Dynamic image based on visitor
+                'image' => $this->getVisitorImage($visitor), // Generate dynamic visitor image
                 'visitorName' => $visitor->visitor_name,
-                'date' => \Carbon\Carbon::parse($visitor->date)->format('d-m-Y'), // Format date as required
+                'date' => \Carbon\Carbon::parse($visitor->date)->format('d-m-Y'), // Format date
                 'reason' => $visitor->reason,
                 'mobile' => $visitor->mobile,
                 'status' => $visitor->visitor_status,
@@ -77,6 +187,7 @@ class VisitorController extends Controller
             'data' => $data
         ]);
     }
+
 
     private function getVisitorImage($visitor)
     {

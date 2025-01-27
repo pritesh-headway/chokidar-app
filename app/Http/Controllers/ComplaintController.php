@@ -10,41 +10,118 @@ use Illuminate\Validation\ValidationException;
 class ComplaintController extends Controller
 {
     // Retrieve complaints either for a specific user or all complaints
+    // public function index(Request $request)
+    // {
+    //     // Get 'user_id' from the input body, defaulting to 'all' if not provided
+    //     $userId = $request->input('user_id', 'all');
+
+    //     if ($userId !== 'all') {
+    //         // Retrieve complaints for a specific user
+    //         $complaints = Complaint::where('user_id', $userId)->get();
+    //     } else {
+    //         // Retrieve all complaints
+    //         $complaints = Complaint::all();
+    //     }
+
+    //     // Format the response to match the desired structure
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Complaints retrieved successfully.',
+    //         'data' => $complaints->map(function ($complaint) {
+    //             return [
+    //                 'no' => $complaint->id,
+    //                 'blockNumber' => $complaint->block_number,
+    //                 'image' => asset('storage/' . $complaint->image), // Generate URL for the single image
+    //                 'complainant' => $complaint->complaint_by,
+    //                 'date' =>  \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
+    //                 'complainDescription' => $complaint->complaint_desc,
+    //                 'complainTitle' => $complaint->complaint_title,
+    //                 'status' => $complaint->complaint_status,
+    //                 'photos' => array_map(function ($photo) {
+    //                     return asset('storage/' . $photo); // Generate URL for each photo in the array
+    //                 }, json_decode($complaint->photos)),  // Assuming photos are stored as JSON
+    //             ];
+    //         }),
+    //     ]);
+    // }
+
     public function index(Request $request)
     {
-        // Get 'user_id' from the input body, defaulting to 'all' if not provided
+        // Get the logged-in user's society_id
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
+
+        // Get all user IDs that belong to the same society_id as the logged-in user
+        $userIdsInSameSociety = \App\Models\User::where('society_id', $loggedInSocietyId)->pluck('id');
+
+        // Check 'user_id' input from the body, defaulting to 'all'
         $userId = $request->input('user_id', 'all');
 
+        // Query the complaints table
+        $query = Complaint::whereIn('user_id', $userIdsInSameSociety);
+
         if ($userId !== 'all') {
-            // Retrieve complaints for a specific user
-            $complaints = Complaint::where('user_id', $userId)->get();
-        } else {
-            // Retrieve all complaints
-            $complaints = Complaint::all();
+            // Filter complaints for the specific user_id
+            $query->where('user_id', $userId);
         }
 
-        // Format the response to match the desired structure
+        // Retrieve the complaints
+        $complaints = $query->get();
+
+        // Format the response
         return response()->json([
             'status' => true,
             'message' => 'Complaints retrieved successfully.',
-            'data' => $complaints->map(function ($complaint) {
+            'data' => $complaints->map(function ($complaint, $index) {
                 return [
-                    'no' => $complaint->id,
+                    'no' => $index + 1, // Set 'no' as $index + 1
+                    'id' => $complaint->id, // Set 'id' as the complaint id
+                    'user_id' => $complaint->user_id,
                     'blockNumber' => $complaint->block_number,
                     'image' => asset('storage/' . $complaint->image), // Generate URL for the single image
                     'complainant' => $complaint->complaint_by,
-                    'date' =>  \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
+                    'date' => \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
                     'complainDescription' => $complaint->complaint_desc,
                     'complainTitle' => $complaint->complaint_title,
                     'status' => $complaint->complaint_status,
                     'photos' => array_map(function ($photo) {
                         return asset('storage/' . $photo); // Generate URL for each photo in the array
-                    }, json_decode($complaint->photos)),  // Assuming photos are stored as JSON
+                    }, json_decode($complaint->photos)), // Assuming photos are stored as JSON
                 ];
             }),
         ]);
     }
 
+    // // Retrieve a specific complaint by ID
+    // public function show(Request $request)
+    // {
+    //     // Get 'id' from the input body
+    //     $complaintId = $request->input('id');
+
+    //     $complaint = Complaint::find($complaintId);
+
+    //     if (!$complaint) {
+    //         return response()->json(['status' => false, 'message' => 'Complaint not found.', 'data' => null], 404);
+    //     }
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Complaint retrieved successfully.',
+    //         'data' => [
+    //             'no' => $complaint->id,
+    //             'blockNumber' => $complaint->block_number,
+    //             'image' => asset('storage/' . $complaint->image),  // Generate URL for the image
+    //             'complainant' => $complaint->complaint_by,
+    //             'date' =>  \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
+    //             'complainDescription' => $complaint->complaint_desc,
+    //             'complainTitle' => $complaint->complaint_title,
+    //             'status' => $complaint->complaint_status,
+    //             'photos' => array_map(function ($photo) {
+    //                 return asset('storage/' . $photo); // Generate URL for each photo in the array
+    //             }, json_decode($complaint->photos)),  // Assuming photos are stored as JSON
+    //         ]
+    //     ]);
+    // }
 
     // Retrieve a specific complaint by ID
     public function show(Request $request)
@@ -52,10 +129,22 @@ class ComplaintController extends Controller
         // Get 'id' from the input body
         $complaintId = $request->input('id');
 
+        // Get the logged-in user's society_id
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
+
+        // Retrieve the complaint
         $complaint = Complaint::find($complaintId);
 
         if (!$complaint) {
             return response()->json(['status' => false, 'message' => 'Complaint not found.', 'data' => null], 404);
+        }
+
+        // Verify if the complaint belongs to the same society as the logged-in user
+        $complainant = \App\Models\User::find($complaint->user_id);
+
+        if (!$complainant || $complainant->society_id !== $loggedInSocietyId) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access to this complaint.', 'data' => null], 403);
         }
 
         return response()->json([
@@ -63,19 +152,21 @@ class ComplaintController extends Controller
             'message' => 'Complaint retrieved successfully.',
             'data' => [
                 'no' => $complaint->id,
+                'user_id' => $complaint->user_id,
                 'blockNumber' => $complaint->block_number,
-                'image' => asset('storage/' . $complaint->image),  // Generate URL for the image
+                'image' => asset('storage/' . $complaint->image), // Generate URL for the image
                 'complainant' => $complaint->complaint_by,
-                'date' =>  \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
+                'date' => \Carbon\Carbon::parse($complaint->date)->format('d-m-Y'),
                 'complainDescription' => $complaint->complaint_desc,
                 'complainTitle' => $complaint->complaint_title,
                 'status' => $complaint->complaint_status,
                 'photos' => array_map(function ($photo) {
                     return asset('storage/' . $photo); // Generate URL for each photo in the array
-                }, json_decode($complaint->photos)),  // Assuming photos are stored as JSON
-            ]
+                }, json_decode($complaint->photos)), // Assuming photos are stored as JSON
+            ],
         ]);
     }
+
 
     // Store a new complaint
     public function store(Request $request)

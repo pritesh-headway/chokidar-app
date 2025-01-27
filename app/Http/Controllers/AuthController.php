@@ -27,7 +27,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
     // Register a new user
     // public function register(Request $request)
@@ -79,7 +79,7 @@ class AuthController extends Controller
             'email' => 'nullable|email|unique:users',
             'password' => 'required|string|min:6',
         ]);
-        dd($validator->errors());
+        // dd($validator->errors());
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
@@ -103,7 +103,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        return response()->json(["status" => true, 'message' => 'User registered successfully', 'user' => $user], 201);
     }
 
 

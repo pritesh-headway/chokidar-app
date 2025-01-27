@@ -113,6 +113,11 @@ DB::table('visitors')->update(['prof_image' => 'profile_photos/avatar.png']);
 
 DB::table('visitors')->update(['prof_image' => 'profile_photos/avatar.png']);
 
+DB::table('notices')->update(['society_id' => rand(1,3)]);
+
+DB::table('roles')->get()->each(function($role) { DB::table('roles')->where('id', $role->id)->update(['society_id' => rand(1, 3)]); });
+
+
 
 php artisan config:clear
 php artisan config:cache
@@ -221,3 +226,5 @@ messages update problem and doubt.
 
 
 
+notices url change
+recheck all files with factory and other things after society_id dynamic.

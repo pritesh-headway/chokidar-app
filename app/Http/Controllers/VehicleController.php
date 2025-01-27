@@ -184,9 +184,71 @@ class VehicleController extends Controller
     //     return $images[$vehicle->vehicle_type] ?? 'http://192.168.1.17/chokidar/public/storage/vehicles/logo.png'; // Default image
     // }
 
+    // public function index(Request $request)
+    // {
+    //     $query = Vehicle::query();
+
+    //     // Check if 'id' or 'user_id' is provided and apply the appropriate filters
+    //     if ($request->has('id') && $request->id !== 'all') {
+    //         $query->where('id', $request->id);
+    //     } elseif ($request->has('user_id') && $request->user_id !== 'all') {
+    //         $query->where('user_id', $request->user_id);
+    //     }
+
+    //     // If 'all' is given for either 'id' or 'user_id', return all vehicles
+    //     if ($request->id === 'all' || $request->user_id === 'all') {
+    //         $vehicles = $query->get();
+    //     } else {
+    //         $vehicles = $query->get();
+    //     }
+
+    //     // Group the vehicles by the first letter of the block_number
+    //     $grouped = $vehicles->groupBy(function ($vehicle) {
+    //         return strtoupper(substr($vehicle->block_number, 0, 1)); // Group by the first letter of block_number
+    //     });
+
+    //     // Sort the groups alphabetically
+    //     $sortedGrouped = $grouped->sortKeys();
+
+    //     // Prepare the final response in the desired format
+    //     $response = $sortedGrouped->map(function ($rows, $title) {
+    //         return [
+    //             'title' => 'Block-' . $title, // Format the title as "Block-A", "Block-B", etc.
+    //             'rows' => $rows->map(function ($vehicle, $index) {
+    //                 // Assigning a placeholder image based on vehicle type or another logic
+    //                 // $image = $vehicle->vehicle_type == '2-Wheeler' ? 'https://example.com/images/logo.png' : 'https://example.com/images/india_flag.png';
+
+    //                 return [
+    //                     'no' => $index + 1,
+    //                     'id' => $vehicle->id,
+    //                     'user_id' => $vehicle->user_id,
+    //                     'blockNumber' => $vehicle->block_number,
+    //                     // 'image' => $image, // Placeholder or dynamically assigned image
+    //                     'vehicleNumber' => $vehicle->vehicle_number,
+    //                     'type' => $vehicle->vehicle_type,
+    //                 ];
+    //             })->toArray(),
+    //         ];
+    //     });
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Vehicles retrieved successfully',
+    //         'data' => $response->values()->toArray(),
+    //     ]);
+    // }
+
     public function index(Request $request)
     {
-        $query = Vehicle::query();
+        // Get the logged-in user's society_id
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
+
+        // Get all user IDs that belong to the same society_id as the logged-in user
+        $userIdsInSameSociety = \App\Models\User::where('society_id', $loggedInSocietyId)->pluck('id');
+
+        // Query the vehicles table
+        $query = Vehicle::whereIn('user_id', $userIdsInSameSociety);
 
         // Check if 'id' or 'user_id' is provided and apply the appropriate filters
         if ($request->has('id') && $request->id !== 'all') {
@@ -196,11 +258,7 @@ class VehicleController extends Controller
         }
 
         // If 'all' is given for either 'id' or 'user_id', return all vehicles
-        if ($request->id === 'all' || $request->user_id === 'all') {
-            $vehicles = $query->get();
-        } else {
-            $vehicles = $query->get();
-        }
+        $vehicles = $query->get();
 
         // Group the vehicles by the first letter of the block_number
         $grouped = $vehicles->groupBy(function ($vehicle) {
@@ -215,15 +273,11 @@ class VehicleController extends Controller
             return [
                 'title' => 'Block-' . $title, // Format the title as "Block-A", "Block-B", etc.
                 'rows' => $rows->map(function ($vehicle, $index) {
-                    // Assigning a placeholder image based on vehicle type or another logic
-                    // $image = $vehicle->vehicle_type == '2-Wheeler' ? 'https://example.com/images/logo.png' : 'https://example.com/images/india_flag.png';
-
                     return [
                         'no' => $index + 1,
                         'id' => $vehicle->id,
                         'user_id' => $vehicle->user_id,
                         'blockNumber' => $vehicle->block_number,
-                        // 'image' => $image, // Placeholder or dynamically assigned image
                         'vehicleNumber' => $vehicle->vehicle_number,
                         'type' => $vehicle->vehicle_type,
                     ];

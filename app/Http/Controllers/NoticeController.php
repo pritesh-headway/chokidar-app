@@ -47,13 +47,43 @@ class NoticeController extends Controller
     }
 
     // Fetch all notices (accepting POST request)
+    // public function index(Request $request)
+    // {
+    //     // $user = Auth::user();
+    //     // dd($user->hello());
+
+    //     // Retrieve all notices
+    //     $notices = Notice::all();
+
+    //     // Map the notices to include a consistent "no" index
+    //     $noticesWithNo = $notices->map(function ($notice, $index) {
+    //         return [
+    //             'no' => $index + 1,  // Provide a consistent index number starting from 1
+    //             'id' => $notice->id,
+    //             'notice_title' => $notice->notice_title,
+    //             'notice_desc' => $notice->notice_desc,
+    //             'date' => \Carbon\Carbon::parse($notice->date)->format('d-m-Y'),
+    //             'time' => $notice->time,
+    //             'status' => $notice->status,
+    //             'documents' => json_decode($notice->documents), // Convert documents URL array back to array
+    //         ];
+    //     });
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Notices retrieved successfully.',
+    //         'data' => $noticesWithNo
+    //     ]);
+    // }
+
     public function index(Request $request)
     {
-        // $user = Auth::user();
-        // dd($user->hello());
+        // Get the logged-in user's society_id
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
 
-        // Retrieve all notices
-        $notices = Notice::all();
+        // Retrieve notices where society_id matches the logged-in user's society_id
+        $notices = Notice::where('society_id', $loggedInSocietyId)->get();
 
         // Map the notices to include a consistent "no" index
         $noticesWithNo = $notices->map(function ($notice, $index) {
@@ -75,6 +105,7 @@ class NoticeController extends Controller
             'data' => $noticesWithNo
         ]);
     }
+
 
     // Fetch a specific notice by ID (ID comes from the input body)
     public function show(Request $request)
