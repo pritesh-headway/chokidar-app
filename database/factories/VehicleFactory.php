@@ -22,7 +22,11 @@ class VehicleFactory extends Factory
         // ];
 
         // Randomly select a user from the users table
-        $user = User::inRandomOrder()->first();  // Get a random user
+        // $user = User::inRandomOrder()->first();  // Get a random user
+        $user = User::whereIn('role_id', [3, 4])  // Select users whose role_id is 3 or 4
+            ->inRandomOrder()
+            ->first();  // Get a random user from the filtered list
+
 
         return [
             'block_number' => $user ? $user->block_number : 'Unknown',  // Use the user's block_number

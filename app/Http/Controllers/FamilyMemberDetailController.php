@@ -120,7 +120,7 @@ class FamilyMemberDetailController extends Controller
             'member_name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',  // Ensure the user_id exists in the users table
             'mobile' => 'required|digits:10',  // Validate mobile number
-            'status' => 'required|string',
+            'status' => 'nullable|string',
         ]);
 
         // Fetch the block_number from the users table based on user_id
@@ -134,7 +134,7 @@ class FamilyMemberDetailController extends Controller
         $familyMember->member_name = $validated['member_name'];
         $familyMember->user_id = $validated['user_id'];
         $familyMember->mobile = $validated['mobile'];
-        $familyMember->status = $validated['status'];
+        $familyMember->status = $validated['status'] ?? "active";
         $familyMember->block_number = $user->block_number; // Set the block_number from the user table
         $familyMember->save();
 

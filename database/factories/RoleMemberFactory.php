@@ -34,6 +34,8 @@
 namespace Database\Factories;
 
 use App\Models\RoleMember;
+use App\Models\Designation;
+
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -56,7 +58,7 @@ class RoleMemberFactory extends Factory
             throw new \Exception('No more unique users available for selection.');
         }
 
-        $role = Role::inRandomOrder()->first();
+        $role = Designation::inRandomOrder()->first();
 
         // Add the selected user ID to the array of selected users
         self::$selectedUsers[] = $user->id;

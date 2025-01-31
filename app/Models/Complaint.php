@@ -19,6 +19,8 @@ class Complaint extends Model
         'complaint_status',
         'photos',
         'status',
+        'image',
+        'reason',
     ];
 
     // Accessor to format the date as d-m-Y

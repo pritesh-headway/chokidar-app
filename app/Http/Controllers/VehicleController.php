@@ -9,15 +9,38 @@ use Illuminate\Http\Request;
 class VehicleController extends Controller
 {
     // Store a newly created vehicle
+    // Store a new vehicle
     public function store(Request $request)
     {
+        // Ensure the logged-in user's id matches the user_id in the request
+        if (auth()->user()->id !== (int)$request->user_id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'You are not authorized to add vehicles for other users',
+                'data' => []
+            ], 200);
+        }
+
+        // Validate incoming request
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'vehicle_number' => 'required|string',
             'vehicle_type' => 'required|in:2-wheeler,4-wheeler',
-            // 'vehicle_image' => 'nullable|string',
             'status' => 'nullable|in:active,deactive',
         ]);
+
+        // Check if a vehicle with the same vehicle number already exists for the user
+        $existingVehicle = Vehicle::where('user_id', $request->user_id)
+            ->where('vehicle_number', $request->vehicle_number)
+            ->first();
+
+        if ($existingVehicle) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This vehicle number is already registered for this user.',
+                'data' => []
+            ], 409); // HTTP status code 409 for conflict (duplicate entry)
+        }
 
         // Fetch the block_number from the users table using user_id
         $user = User::findOrFail($request->user_id);
@@ -28,43 +51,155 @@ class VehicleController extends Controller
             'user_id' => $request->user_id,
             'vehicle_number' => $request->vehicle_number,
             'vehicle_type' => $request->vehicle_type,
-            // 'vehicle_image' => $request->vehicle_image,
-            'status' => $request->status,
+            'status' => $request->status ?? "active",
             'block_number' => $blockNumber,
         ]);
 
-        return response()->json($vehicle, 201);
+        return response()->json([
+            'status' => true,
+            'message' => 'Vehicle created successfully',
+            'data' => $vehicle
+        ], 201); // HTTP status code 201 for created
     }
+
+
+    // Update the specified vehicle
+    // Update the specified vehicle
+    // public function update(Request $request)
+    // {
+    //     // dd(auth()->user()->id);
+    //     // Ensure the logged-in user's id matches the user_id of the vehicle
+    //     if (auth()->user()->id !== (int)$request->user_id) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'You are not authorized to update this vehicle. The user ID does not match the logged-in user.',
+    //             'data' => []
+    //         ], 403); // HTTP status code 403 for forbidden
+    //     }
+
+    //     // Validate incoming request
+    //     $validator = \Validator::make($request->all(), [
+    //         'id' => 'required|exists:vehicles,id',
+    //         // 'user_id' => 'required|exists:users,id', // Ensure user_id exists
+    //         'vehicle_number' => 'nullable|string',
+    //         'vehicle_type' => 'nullable|in:2-wheeler,4-wheeler',
+    //         'status' => 'nullable|in:active,deactive',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Validation failed.',
+    //             'errors' => $validator->errors()
+    //         ], 422); // HTTP status code 422 for validation error
+    //     }
+
+    //     // Find the vehicle
+    //     $vehicle = Vehicle::findOrFail($request->id);
+
+    //     // If the vehicle belongs to a different user, return an error
+    //     if ($vehicle->user_id !== (int)$request->user_id) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'The vehicle does not belong to the specified user.',
+    //             'data' => []
+    //         ], 403); // Forbidden error
+    //     }
+
+    //     // Only update the fields that are provided
+    //     $vehicle->update($request->only(['user_id', 'vehicle_number', 'vehicle_type', 'status']));
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Vehicle updated successfully',
+    //         'data' => $vehicle
+    //     ]);
+    // }
 
     // Update the specified vehicle
     public function update(Request $request)
     {
-        $request->validate([
+        // Validate incoming request
+        $validator = \Validator::make($request->all(), [
             'id' => 'required|exists:vehicles,id',
             'vehicle_number' => 'nullable|string',
             'vehicle_type' => 'nullable|in:2-wheeler,4-wheeler',
-            // 'vehicle_image' => 'nullable|string',
             'status' => 'nullable|in:active,deactive',
         ]);
 
-        $vehicle = Vehicle::findOrFail($request->id);
-        $vehicle->update($request->only(['vehicle_number', 'vehicle_type', 'vehicle_image', 'status']));
+        // Return validation errors if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors()
+            ], 422); // HTTP status code 422 for validation error
+        }
 
-        return response()->json($vehicle);
+        // Find the vehicle
+        $vehicle = Vehicle::findOrFail($request->id);
+
+        // Ensure the logged-in user's id matches the user_id of the vehicle
+        if (auth()->user()->id !== $vehicle->user_id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'You are not authorized to update this vehicle. The user ID does not match the logged-in user.',
+                'data' => []
+            ], 403); // HTTP status code 403 for forbidden
+        }
+
+        // Only update the fields that are provided in the request
+        $vehicle->update($request->only(['vehicle_number', 'vehicle_type', 'status']));
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Vehicle updated successfully',
+            'data' => $vehicle
+        ]);
     }
 
+
+    // Remove the specified vehicle
     // Remove the specified vehicle
     public function destroy(Request $request)
     {
+        // Validate the incoming request to ensure the vehicle exists
         $request->validate([
             'id' => 'required|exists:vehicles,id',
         ]);
 
-        $vehicle = Vehicle::findOrFail($request->id);
+        // Fetch the vehicle
+        $vehicle = Vehicle::find($request->id);
+
+        // If vehicle is not found (should never reach here because of validation)
+        if (!$vehicle) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Vehicle not found.',
+                'data' => []
+            ], 200);
+        }
+
+        // Check if the logged-in user is the vehicle's owner or an admin
+        if ($vehicle->user_id !== (int)auth()->user()->id && auth()->user()->role_id !== 2) {
+            return response()->json([
+                'status' => false,
+                'message' => 'You are not authorized to delete this vehicle.',
+                'data' => []
+            ], 200); // Forbidden status code
+        }
+
+        // Soft delete the vehicle
         $vehicle->delete();
 
-        return response()->json(['message' => 'Successfully deleted the vehicle.'], 204);
+        return response()->json([
+            'status' => true,
+            'message' => 'Vehicle successfully deleted.',
+            'data' => []
+        ], 200); // No content, as the vehicle is successfully deleted
     }
+
+
 
     // Fetch vehicles for a given user by id
     // Fetch vehicles for a given user by id or all vehicles if 'user_id' is "all"

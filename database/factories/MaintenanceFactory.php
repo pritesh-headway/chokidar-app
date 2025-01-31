@@ -13,7 +13,8 @@ class MaintenanceFactory extends Factory
     public function definition()
     {
         // Randomly pick a user from the users table
-        $user = User::inRandomOrder()->first();
+        // $user = User::inRandomOrder()->first();
+        $user = User::where('society_id', 2)->inRandomOrder()->first();
 
         return [
             'block_number' => $user->block_number,  // Use the user's block_number

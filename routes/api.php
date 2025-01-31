@@ -2,33 +2,37 @@
 //  php artisan serve --host=192.168.1.12 --port=8000
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Middleware\RoleMiddleware;
 // use App\Http\Controllers\ChokidarController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\AmenityController;
-use App\Http\Controllers\BookingAmenityController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SocietyController;
 use App\Http\Controllers\VehicleController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\SecurityController;
-use App\Http\Controllers\GateDetailController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\ComplaintController;
-use App\Http\Controllers\MaintenanceController;
-use App\Http\Controllers\RoleMemberController;
-use App\Http\Controllers\FamilyMemberDetailController;
-use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\ServiceProviderController;
+use App\Http\Controllers\ContactUsController;
 
-use App\Http\Controllers\ServiceRequestController;
-use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\GateDetailController;
+use App\Http\Controllers\RoleMemberController;
 // routes/api.php
 
-use App\Http\Controllers\SocietyController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\DesignationController;
+use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\BookingAmenityController;
+use App\Http\Controllers\ServiceRequestController;
+
 
 
 
@@ -41,6 +45,58 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::post('otp-login', [AuthController::class, 'otpLogin']);
 
 // routes/api.php
+
+use App\Http\Controllers\ServiceProviderController;
+use App\Http\Controllers\FamilyMemberDetailController;
+
+
+
+// Route::group(['auth:api' => ['route:super-admin']], function () {
+//     Route::post('/super-admin-dashboard', [SuperAdminController::class, 'index']);
+// });
+
+// Route::middleware(['auth:api', 'role:super-admin'])->group(function () {
+//     Route::post('/super-admin-dashboard', [SuperAdminController::class, 'index']);
+// });
+
+// Get a list of all societies
+Route::post('/societies', [SocietyController::class, 'index']);
+
+// Get a specific society by ID
+Route::post('/societies-show', [SocietyController::class, 'show']);
+
+// This route is only accessible by super-admins
+Route::group(['middleware' => ['role:super-admin']], function () {
+    Route::post('/super-admin-dashboard', [SuperAdminController::class, 'index']);
+    // Create a new society
+    Route::post('/societies-create', [SocietyController::class, 'create']);
+
+    // // Get a list of all societies
+    // Route::post('/societies', [SocietyController::class, 'index']);
+
+    // // Get a specific society by ID
+    // Route::post('/societies-show', [SocietyController::class, 'show']);
+
+    // Update a society by ID
+    Route::post('/societies-update', [SocietyController::class, 'update']);
+
+    // Delete a society by ID
+    Route::post('/societies-delete', [SocietyController::class, 'destroy']);
+});
+
+// This route is accessible by both super-admins and admins
+Route::group(['middleware' => ['role:super-admin,admin']], function () {
+    Route::post('/admin-dashboard', [AdminController::class, 'index']);
+
+    Route::post('register-security', [SecurityController::class, 'registerSecurity']);
+});
+
+
+
+// Route::group(['auth:api' => ['route:admin,super-admin']], function () {
+//     Route::post('/admin-dashboard', [AdminController::class, 'index']);
+// });
+
 
 
 Route::post('contact-us', [ContactUsController::class, 'store']);
@@ -65,22 +121,23 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('user-create', [UsersController::class, 'store']);  // Create a user
     Route::post('/user-update', [UsersController::class, 'update']);  // Update a user
     Route::post('/user-delete', [UsersController::class, 'destroy']);  // Delete a user
+    Route::post('/user-inactive', [UsersController::class, 'inactiveUsers']);
 
 
-    // Create a new society
-    Route::post('/societies-create', [SocietyController::class, 'create']);
+    // // Create a new society
+    // Route::post('/societies-create', [SocietyController::class, 'create']);
 
-    // Get a list of all societies
-    Route::post('/societies', [SocietyController::class, 'index']);
+    // // Get a list of all societies
+    // Route::post('/societies', [SocietyController::class, 'index']);
 
-    // Get a specific society by ID
-    Route::post('/societies-show', [SocietyController::class, 'show']);
+    // // Get a specific society by ID
+    // Route::post('/societies-show', [SocietyController::class, 'show']);
 
-    // Update a society by ID
-    Route::post('/societies-update', [SocietyController::class, 'update']);
+    // // Update a society by ID
+    // Route::post('/societies-update', [SocietyController::class, 'update']);
 
-    // Delete a society by ID
-    Route::post('/societies-delete', [SocietyController::class, 'destroy']);
+    // // Delete a society by ID
+    // Route::post('/societies-delete', [SocietyController::class, 'destroy']);
 
 
 
@@ -127,6 +184,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/amenity-show', [AmenityController::class, 'show']);
     Route::post('/amenity-update', [AmenityController::class, 'update']);
     Route::post('/amenity-delete', [AmenityController::class, 'destroy']);
+    Route::post('/amenity-delete-image', [AmenityController::class, 'deleteAmenityImage']);
 
 
     Route::post('/booking', [BookingAmenityController::class, 'index']);
@@ -134,6 +192,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/booking-show', [BookingAmenityController::class, 'show']);
     Route::post('/booking-update', [BookingAmenityController::class, 'update']);
     Route::post('/booking-delete', [BookingAmenityController::class, 'destroy']);
+
+    Route::post('/user-role', [UserRoleController::class, 'store']);
+    Route::put('/user-role/{id}', [UserRoleController::class, 'update']);
+    Route::delete('/user-role/{id}', [UserRoleController::class, 'destroy']);
 
 
 
@@ -239,11 +301,11 @@ Route::middleware(['auth:api'])->group(function () {
 
 
 
-    Route::post('role-create', [RoleController::class, 'create']); // Create role
-    Route::post('role', [RoleController::class, 'index']); // Get all roles
-    Route::post('role-show', [RoleController::class, 'show']); // Get role by ID
-    Route::post('role-update', [RoleController::class, 'update']); // Update role by ID
-    Route::post('role-delete', [RoleController::class, 'destroy']); // Delete role by ID
+    Route::post('role-create', [DesignationController::class, 'create']); // Create role
+    Route::post('role', [DesignationController::class, 'index']); // Get all roles
+    Route::post('role-show', [DesignationController::class, 'show']); // Get role by ID
+    Route::post('role-update', [DesignationController::class, 'update']); // Update role by ID
+    Route::post('role-delete', [DesignationController::class, 'destroy']); // Delete role by ID
 
 
 

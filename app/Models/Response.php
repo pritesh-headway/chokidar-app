@@ -15,6 +15,19 @@ class Response extends Model
         'status',
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($response) {
+            // When a new response is added, update the response count in the corresponding forum
+            $response->forum->updateResponseCount();
+        });
+
+        static::deleted(function ($response) {
+            // When a response is deleted, update the response count in the corresponding forum
+            $response->forum->updateResponseCount();
+        });
+    }
+
     // Relationship with Forum model
     public function forum()
     {

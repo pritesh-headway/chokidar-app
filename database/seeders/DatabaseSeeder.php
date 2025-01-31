@@ -6,6 +6,8 @@ use App\Models\Vehicle;
 use Illuminate\Database\Seeder;
 use App\Models\FamilyMemberDetail;
 use App\Models\User; // Ensure this points to your Users model
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,7 +40,27 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersSeeder::class);
         $this->call(NoticeSeeder::class);
         $this->call([
-            RoleSeeder::class,  // Add this line
+            DesignationSeeder::class,  // Add this line
         ]);
+
+
+        // Create roles
+        Role::create(['name' => 'super-admin']);
+        Role::create(['name' => 'admin']);
+        Role::create(['name' => 'owner']);
+        Role::create(['name' => 'tenant']);
+
+        // Create permissions
+        Permission::create(['name' => 'create post']);
+        Permission::create(['name' => 'edit post']);
+        Permission::create(['name' => 'delete post']);
+        Permission::create(['name' => 'view post']);
+
+        // Assign permissions to roles
+        $superAdminRole = Role::findByName('super-admin');
+        $adminRole = Role::findByName('admin');
+
+        $superAdminRole->givePermissionTo(Permission::all()); // super-admin gets all permissions
+        $adminRole->givePermissionTo('create post', 'edit post'); // admin gets limited permissions
     }
 }

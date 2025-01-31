@@ -23,6 +23,16 @@ class Forum extends Model
         'status',
     ];
 
+    // Method to update the number of responses
+    public function updateResponseCount()
+    {
+        // Count the number of responses for the current forum
+        $responseCount = $this->responses()->count();
+
+        // Update the forum's response count
+        $this->update(['responses' => $responseCount]);
+    }
+
     // Relationship: A forum has many responses
     public function responses()
     {

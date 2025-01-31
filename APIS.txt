@@ -117,14 +117,21 @@ DB::table('notices')->update(['society_id' => rand(1,3)]);
 
 DB::table('roles')->get()->each(function($role) { DB::table('roles')->where('id', $role->id)->update(['society_id' => rand(1, 3)]); });
 
+DB::table('maintenance')->update(['photo' => 'profile_photos/avatar.png']);
 
-
+DB::table('gate_details')->update(['society_id' => 2]);
 php artisan config:clear
 php artisan config:cache
 
 php artisan route:clear
 php artisan cache:clear
 php artisan config:clear
+
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
 
 
 booking amenity particular
@@ -228,3 +235,30 @@ messages update problem and doubt.
 
 notices url change
 recheck all files with factory and other things after society_id dynamic.
+
+
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+
+$user = User::find(247); // Replace with your user ID
+$user->assignRole('super-admin'); // Assign super-admin role
+
+$user = User::find(241); // Another user
+$user->assignRole('admin'); // Assign admin role
+
+
+
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+
+// Create a role if not exists
+$role = Role::firstOrCreate(['name' => 'super-admin']);
+$adminRole = Role::firstOrCreate(['name' => 'admin']);
+
+// Assign roles to users
+$user = User::find(241); // Replace with your user ID
+$user->assignRole($role); // Assign super-admin role
+
+$user2 = User::find(247); // Another user
+$user2->assignRole($adminRole); // Assign admin role
+

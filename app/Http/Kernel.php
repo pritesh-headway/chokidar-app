@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use Spatie\Permission\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 // use Tymon\JWTAuth\Http\Middleware\Authenticate;
 
@@ -41,6 +42,7 @@ class Kernel extends HttpKernel
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
         ],
     ];
 
@@ -62,5 +64,17 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // 'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        'auth:api' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        // 'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        // 'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        // 'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        // 'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+
+        // 'role' => \App\Http\Middleware\RoleMiddleware::class,
+        // 'route' => \App\Http\Middleware\RoleMiddleware::class,
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
+
+
+
     ];
 }

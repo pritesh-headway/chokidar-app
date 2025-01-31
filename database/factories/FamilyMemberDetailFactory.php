@@ -14,7 +14,8 @@ class FamilyMemberDetailFactory extends Factory
 
     public function definition()
     {
-        $user = User::inRandomOrder()->first();
+        // $user = User::inRandomOrder()->first();
+        $user = User::whereIn('role', ['owner', 'tenant'])->inRandomOrder()->first();
         return [
             // 'block_number' => $this->faker->regexify('[A-Z]-[0-9]{3}'),
             'block_number' => $user->block_number,

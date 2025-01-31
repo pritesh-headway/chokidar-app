@@ -39,21 +39,24 @@ class FamilyMemberDetailSeeder extends Seeder
         // Empty the family_member_details table first (preserving structure)
         // FamilyMemberDetail::truncate();
 
-        // Get all user ids and their block_number from the users table
-        $users = User::all(); // This will get all users with their respective block numbers
+        // // Get all user ids and their block_number from the users table
+        // $users = User::all(); // This will get all users with their respective block numbers
 
-        // Loop through each user and add multiple family members for each
-        foreach ($users as $user) {
-            // Create 3 family members for each user (you can adjust the count as needed)
-            for ($i = 1; $i <= 3; $i++) {
-                FamilyMemberDetail::create([
-                    'block_number' => $user->block_number, // Use the block_number of the user
-                    'member_name' => 'Family Member ' . $user->id . '-' . $i,
-                    'user_id' => $user->id,  // Use existing user_id from the users table
-                    'mobile' => '901234567' . $i,
-                    'status' => 'active',  // You can randomly set this or change based on your needs
-                ]);
-            }
-        }
+        // // Loop through each user and add multiple family members for each
+        // foreach ($users as $user) {
+        //     // Create 3 family members for each user (you can adjust the count as needed)
+        //     for ($i = 1; $i <= 3; $i++) {
+        //         FamilyMemberDetail::create([
+        //             'block_number' => $user->block_number, // Use the block_number of the user
+        //             'member_name' => 'Family Member ' . $user->id . '-' . $i,
+        //             'user_id' => $user->id,  // Use existing user_id from the users table
+        //             'mobile' => '901234567' . $i,
+        //             'status' => 'active',  // You can randomly set this or change based on your needs
+        //         ]);
+        //     }
+        // }
+
+        // FamilyMemberDetail::truncate();
+        FamilyMemberDetail::factory(10)->create();
     }
 }

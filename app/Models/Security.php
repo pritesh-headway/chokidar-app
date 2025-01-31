@@ -19,10 +19,17 @@ class Security extends Model
         'guard_image',
         'documents',
         'status',
+        'society_id',
+        'user_id'
     ];
 
     public function gateDetails()
     {
         return $this->hasMany(GateDetail::class, 'security_id');
+    }
+
+    public function security()
+    {
+        return $this->hasOne(Security::class, 'user_id');
     }
 }

@@ -84,7 +84,7 @@ class ResponseController extends Controller
         $validator = Validator::make($request->all(), [
             'forum_id' => 'required|exists:forums,id',
             'user_id' => 'required|exists:users,id',
-            'status' => 'required|in:active,deactive',
+            'status' => 'nullable|in:active,deactive',
         ]);
 
         if ($validator->fails()) {
@@ -95,10 +95,23 @@ class ResponseController extends Controller
             ], 200);
         }
 
+        // Check if a response with the same forum_id and user_id already exists
+        $existingResponse = Response::where('forum_id', $request->forum_id)
+            ->where('user_id', $request->user_id)
+            ->first();
+
+        if ($existingResponse) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Response already exists for this forum and user.',
+                'data' => null,
+            ], 400);
+        }
+
         $response = Response::create([
             'forum_id' => $request->forum_id,
             'user_id' => $request->user_id,
-            'status' => $request->status,
+            'status' => $request->status ?? "active",
         ]);
 
         return response()->json([
@@ -111,6 +124,7 @@ class ResponseController extends Controller
     // Update: Update a response
     public function update(Request $request)
     {
+        // dd($request);
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:responses,id',
             'status' => 'required|in:active,deactive',

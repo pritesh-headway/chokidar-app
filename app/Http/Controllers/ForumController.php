@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Forum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -140,22 +141,80 @@ class ForumController extends Controller
     }
     // Store, update, and destroy methods remain the same as above,
     // but you should ensure `addFullImageUrl` is called before returning the response
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'block_number' => 'required|string|max:50',
+    //         'forum_by' => 'required|string|max:50',
+    //         'title' => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'date' => 'required|date',
+    //         'profile_photo' => 'required|string|max:256',
+    //         'responses' => 'nullable|integer',
+    //         'photos' => 'nullable|array',
+    //         'status' => 'nullable|in:active,deactive',
+    //     ]);
+
+    //     $forum = Forum::create($validated);
+
+    //     $forum = $this->addFullImageUrl($forum);
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Forum created successfully.',
+    //         'data' => $forum
+    //     ], 201);
+    // }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'block_number' => 'required|string|max:50',
-            'forum_by' => 'required|string|max:50',
+            'user_id' => 'required|exists:users,id', // Ensure user_id exists
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'date' => 'required|date',
-            'profile_photo' => 'required|string|max:256',
             'responses' => 'nullable|integer',
-            'photos' => 'nullable|array',
+            'photos' => 'nullable',
             'status' => 'nullable|in:active,deactive',
         ]);
 
-        $forum = Forum::create($validated);
+        // Fetch the user details using user_id
+        $user = User::findOrFail($validated['user_id']);
 
+        // Store the profile photo and other images
+        // $profilePhotoUrl = $this->storeFileInPublicFolder($request->file('profile_photo'), 'forum_images');
+
+        $photos = [];
+        if ($request->hasFile('photos')) {
+            if (is_array($request->file('photos'))) {
+                foreach ($request->file('photos') as $photo) {
+                    $photoPath = $this->storeFileInPublicFolder($photo, 'forum_images');
+                    $photos[] = $photoPath;
+                }
+            } else {
+                $photoPath = $this->storeFileInPublicFolder($request->file('photos'), 'forum_images');
+                $photos[] = $photoPath;
+            }
+        }
+
+        // Prepare the forum data
+        $forumData = [
+            'user_id' => $validated['user_id'],
+            'block_number' => $user->block_number,
+            'forum_by' => $user->first_name . ' ' . $user->last_name,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'date' => $validated['date'],
+            'profile_photo' => $user->profile_photo,
+            'photos' => json_encode($photos), // Store multiple photos as JSON
+            'responses' => 0, // Default response count, will be updated later
+            'status' => $validated['status'] ?? 'active', // Set default status to active if not provided
+        ];
+
+        // Create the forum entry
+        $forum = Forum::create($forumData);
+
+        // Add full URL for profile photo and photos
         $forum = $this->addFullImageUrl($forum);
 
         return response()->json([
@@ -165,21 +224,69 @@ class ForumController extends Controller
         ], 201);
     }
 
+    protected function storeFileInPublicFolder($file, $folder)
+    {
+        // Generate a unique file name
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $filename = str_replace(' ', '_', $filename);
+        // Move the file to the desired folder in public/storage
+        $file->move(public_path("storage/{$folder}"), $filename);
+
+        // Return the relative path to the file
+        return "{$folder}/{$filename}";
+    }
+
+
+    // public function update(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'id' => 'required|integer',
+    //         'block_number' => 'nullable|string|max:50',
+    //         'forum_by' => 'nullable|string|max:50',
+    //         'title' => 'nullable|string|max:255',
+    //         'description' => 'nullable|string',
+    //         'date' => 'nullable|date',
+    //         'profile_photo' => 'nullable|string|max:256',
+    //         'responses' => 'nullable|integer',
+    //         'photos' => 'nullable|array',
+    //         'status' => 'nullable|in:active,deactive',
+    //     ]);
+
+    //     $forum = Forum::find($validated['id']);
+    //     if (!$forum) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Forum not found.',
+    //             'data' => null
+    //         ], 404);
+    //     }
+
+    //     $forum->update($validated);
+
+    //     $forum = $this->addFullImageUrl($forum);
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Forum updated successfully.',
+    //         'data' => $forum
+    //     ]);
+    // }
+
+
+
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|integer',
-            'block_number' => 'nullable|string|max:50',
-            'forum_by' => 'nullable|string|max:50',
+            'id' => 'required|integer|exists:forums,id', // Ensure forum exists
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'date' => 'nullable|date',
-            'profile_photo' => 'nullable|string|max:256',
             'responses' => 'nullable|integer',
-            'photos' => 'nullable|array',
+            'photos' => 'nullable',
             'status' => 'nullable|in:active,deactive',
         ]);
 
+        // Fetch the forum to update
         $forum = Forum::find($validated['id']);
         if (!$forum) {
             return response()->json([
@@ -189,8 +296,40 @@ class ForumController extends Controller
             ], 404);
         }
 
-        $forum->update($validated);
+        // Fetch the user details using user_id from the forum
+        $user = User::findOrFail($forum->user_id);
 
+        // Prepare the forum data for update
+        $forumData = [
+            'title' => $validated['title'] ?? $forum->title,
+            'description' => $validated['description'] ?? $forum->description,
+            'date' => $validated['date'] ??  \Carbon\Carbon::parse($forum->date)->format('Y-m-d'),
+
+            'block_number' => $user->block_number, // Fetch block_number from the user
+            'forum_by' => $user->first_name . ' ' . $user->last_name, // Concatenate first and last name
+            'status' => $validated['status'] ?? $forum->status, // Keep the current status if not provided
+        ];
+
+        // Handle photos (multiple or single)
+        if ($request->hasFile('photos')) {
+            $photos = [];
+            // dd($request->file('photos'));
+            if (is_array($request->file('photos'))) {
+                foreach ($request->file('photos') as $photo) {
+                    $photoPath = $this->storeFileInPublicFolder($photo, 'forum_images');
+                    $photos[] = $photoPath;
+                }
+            } else {
+                $photoPath = $this->storeFileInPublicFolder($request->file('photos'), 'forum_images');
+                $photos[] = $photoPath;
+            }
+            $forumData['photos'] = json_encode($photos); // Store photos as JSON
+        }
+
+        // Update the forum with the new data
+        $forum->update($forumData);
+
+        // Add full URL for the photos
         $forum = $this->addFullImageUrl($forum);
 
         return response()->json([
@@ -200,12 +339,14 @@ class ForumController extends Controller
         ]);
     }
 
+
     public function destroy(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|integer'
+            'id' => 'required|integer|exists:forums,id', // Ensure the forum exists
         ]);
 
+        // Fetch the forum to delete
         $forum = Forum::find($validated['id']);
         if (!$forum) {
             return response()->json([
@@ -215,12 +356,16 @@ class ForumController extends Controller
             ], 404);
         }
 
+        // Optionally, delete the associated responses if needed
+        // Forum::find($validated['id'])->responses()->delete(); // Uncomment if you want to delete responses
+
+        // Delete the forum record
         $forum->delete();
 
         return response()->json([
             'status' => true,
             'message' => 'Forum deleted successfully.',
-            'data' => null
+            'data' => null // No need to return anything in the data, as it's deleted
         ]);
     }
 }

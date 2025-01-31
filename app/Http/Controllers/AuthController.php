@@ -65,6 +65,48 @@ class AuthController extends Controller
     //     return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     // }
 
+    // public function register(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'block_number' => 'required|string|max:50|unique:users',
+    //         'first_name' => 'required|string|max:50',
+    //         'last_name' => 'required|string|max:50',
+    //         'role' => 'required|in:owner,admin,coowner,committee',
+    //         'mobile' => 'required|string|max:10|unique:users',
+    //         'block' => 'required|string|max:50',
+    //         'profile_photo' => 'nullable|image|max:2048', // Ensure it's an image and within size limits
+    //         'status' => 'nullable|in:active,inactive',
+    //         'email' => 'nullable|email|unique:users',
+    //         'password' => 'required|string|min:6',
+    //     ]);
+    //     // dd($validator->errors());
+    //     if ($validator->fails()) {
+    //         return response()->json($validator->errors(), 422);
+    //     }
+
+    //     // Handle the file upload for profile photo (if provided)
+    //     $profilePhotoPath = null;
+    //     if ($request->hasFile('profile_photo')) {
+    //         $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
+    //     }
+
+    //     $user = User::create([
+    //         'block_number' => $request->block_number,
+    //         'first_name' => $request->first_name,
+    //         'last_name' => $request->last_name,
+    //         'role' => $request->role,
+    //         'mobile' => $request->mobile,
+    //         'block' => $request->block,
+    //         'profile_photo' => $request->profile_photo,  // Store the path to the image
+    //         // 'status' => $request->status ?? 'active',
+    //         'status' => 'inactive',
+    //         'email' => $request->email,
+    //         'password' => Hash::make($request->password),
+    //     ]);
+
+    //     return response()->json(["status" => true, 'message' => 'User registered successfully', 'user' => $user], 201);
+    // }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -74,22 +116,37 @@ class AuthController extends Controller
             'role' => 'required|in:owner,admin,coowner,committee',
             'mobile' => 'required|string|max:10|unique:users',
             'block' => 'required|string|max:50',
-            'profile_photo' => 'nullable|image|max:2048', // Ensure it's an image and within size limits
+            'profile_photo' => 'nullable|image', // Ensure it's an image and within size limits |max:2048
             'status' => 'nullable|in:active,inactive',
             'email' => 'nullable|email|unique:users',
             'password' => 'required|string|min:6',
+            'society_id' => 'required|string'
         ]);
-        // dd($validator->errors());
+
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
         // Handle the file upload for profile photo (if provided)
         $profilePhotoPath = null;
         if ($request->hasFile('profile_photo')) {
-            $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
+            // Get the file and define the destination path
+            $file = $request->file('profile_photo');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Create a unique filename
+            $destinationPath = public_path('storage/profile_photos'); // Define the directory in public/storage
+
+            // Move the file to the desired directory
+            $file->move($destinationPath, $fileName); // Move the file to the directory
+
+            // Store the relative path in the database (relative to public/storage)
+            $profilePhotoPath = 'profile_photos/' . $fileName;
         }
 
+        // Create the user with the uploaded profile photo
         $user = User::create([
             'block_number' => $request->block_number,
             'first_name' => $request->first_name,
@@ -97,14 +154,22 @@ class AuthController extends Controller
             'role' => $request->role,
             'mobile' => $request->mobile,
             'block' => $request->block,
-            'profile_photo' => $profilePhotoPath,  // Store the path to the image
-            'status' => $request->status ?? 'active',
+            'profile_photo' => $profilePhotoPath, // Save the relative path to the uploaded image
+            'status' => 'inactive', // Default status to inactive
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'society_id' => $request->society_id,
         ]);
 
-        return response()->json(["status" => true, 'message' => 'User registered successfully', 'user' => $user], 201);
+        return response()->json([
+            'status' => true,
+            'message' => 'User registered successfully',
+            'user' => $user,
+        ], 201);
     }
+
+
+
 
 
 

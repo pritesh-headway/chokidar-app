@@ -24,7 +24,7 @@ class RoleMember extends Model
     // Define relationships
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Designation::class);
     }
 
     public function user()

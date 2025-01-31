@@ -11,7 +11,7 @@
 //     public function create(Request $request)
 //     {
 //         $validator = Validator::make($request->all(), [
-//             'role_name' => 'required|string|unique:roles,role_name|max:255', // role_name is required
+//             'role_name' => 'required|string|unique:designations,role_name|max:255', // role_name is required
 //             'status' => 'nullable|in:active,deactive', // status is optional and should be either active or deactive
 //         ]);
 
@@ -27,7 +27,7 @@
 //         $status = $request->status ?? 'active';
 
 //         // Create the role
-//         $role = Role::create([
+//         $role = Designation::create([
 //             'role_name' => $request->role_name,
 //             'status' => $status, // Use default status if not provided
 //         ]);
@@ -43,7 +43,7 @@
 //     // Get all roles
 //     public function index(Request $request)
 //     {
-//         $roles = Role::all();
+//         $roles = Designation::all();
 
 //         // Add "no" field for indexing
 //         $roles = $roles->map(function ($role, $index) {
@@ -63,7 +63,7 @@
 //     public function show(Request $request)
 //     {
 //         $validator = Validator::make($request->all(), [
-//             'id' => 'required|exists:roles,id',
+//             'id' => 'required|exists:designations,id',
 //         ]);
 
 //         if ($validator->fails()) {
@@ -74,7 +74,7 @@
 //             ], 200);
 //         }
 
-//         $role = Role::find($request->id);
+//         $role = Designation::find($request->id);
 
 //         return response()->json([
 //             'status' => true,
@@ -87,8 +87,8 @@
 //     public function update(Request $request)
 //     {
 //         $validator = Validator::make($request->all(), [
-//             'id' => 'required|exists:roles,id',
-//             'role_name' => 'required|string|unique:roles,role_name,' . $request->id . '|max:255',
+//             'id' => 'required|exists:designations,id',
+//             'role_name' => 'required|string|unique:designations,role_name,' . $request->id . '|max:255',
 //             'status' => 'required|in:active,deactive',
 //         ]);
 
@@ -100,7 +100,7 @@
 //             ], 200);
 //         }
 
-//         $role = Role::find($request->id);
+//         $role = Designation::find($request->id);
 //         $role->role_name = $request->role_name;
 //         $role->status = $request->status;
 //         $role->save();
@@ -116,7 +116,7 @@
 //     public function destroy(Request $request)
 //     {
 //         $validator = Validator::make($request->all(), [
-//             'id' => 'required|exists:roles,id',
+//             'id' => 'required|exists:designations,id',
 //         ]);
 
 //         if ($validator->fails()) {
@@ -127,7 +127,7 @@
 //             ], 200);
 //         }
 
-//         $role = Role::find($request->id);
+//         $role = Designation::find($request->id);
 //         $role->delete();
 
 //         return response()->json([
@@ -141,17 +141,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+// use App\Models\Role;
+use App\Models\Designation;
+use Illuminate\Support\Facades\Log;
+
+// use Log;
+
+
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class RoleController extends Controller
+class DesignationController extends Controller
 {
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'role_name' => 'required|string|max:255|unique:roles,role_name,NULL,id,society_id,' . auth()->user()->society_id, // Add unique constraint based on role_name and society_id
+            'role_name' => 'required|string|max:255|unique:designations,role_name,NULL,id,society_id,' . auth()->user()->society_id, // Add unique constraint based on role_name and society_id
             'status' => 'nullable|in:active,deactive',
         ]);
 
@@ -169,7 +175,7 @@ class RoleController extends Controller
         $society_id = auth()->user()->society_id;
 
         // Debugging log
-        \Log::info('Logged-in User Society ID: ' . $society_id);
+        Log::info('Logged-in User Society ID: ' . $society_id);
 
         // Check if society_id is valid
         if (!$society_id) {
@@ -180,7 +186,7 @@ class RoleController extends Controller
         }
 
         // Create the role and associate it with the society_id
-        $role = Role::create([
+        $role = Designation::create([
             'role_name' => $request->role_name,
             'status' => $status,
             'society_id' => $society_id, // Ensure the correct society_id is passed
@@ -203,7 +209,7 @@ class RoleController extends Controller
         $user = auth()->user();
         $society_id = $user->society_id;
 
-        $roles = Role::where('society_id', $society_id)->get(); // Filter roles by society_id
+        $roles = Designation::where('society_id', $society_id)->get(); // Filter roles by society_id
 
         // Add "no" field for indexing
         $roles = $roles->map(function ($role, $index) {
@@ -222,7 +228,7 @@ class RoleController extends Controller
     public function show(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:roles,id',
+            'id' => 'required|exists:designations,id',
         ]);
 
         if ($validator->fails()) {
@@ -238,7 +244,7 @@ class RoleController extends Controller
         $society_id = $user->society_id;
 
         // Find the role and ensure it belongs to the same society as the logged-in user
-        $role = Role::where('id', $request->id)->where('society_id', $society_id)->first();
+        $role = Designation::where('id', $request->id)->where('society_id', $society_id)->first();
 
         if (!$role) {
             return response()->json([
@@ -258,8 +264,8 @@ class RoleController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:roles,id',
-            'role_name' => 'required|string|unique:roles,role_name,' . $request->id . '|max:255',
+            'id' => 'required|exists:designations,id',
+            'role_name' => 'required|string|unique:designations,role_name,' . $request->id . '|max:255',
             'status' => 'required|in:active,deactive',
             'society_id' => 'required|exists:societies,id', // Ensure society_id is passed and valid
         ]);
@@ -277,7 +283,7 @@ class RoleController extends Controller
         $society_id = $user->society_id;
 
         // Ensure the role belongs to the same society as the logged-in user
-        $role = Role::where('id', $request->id)->where('society_id', $society_id)->first();
+        $role = Designation::where('id', $request->id)->where('society_id', $society_id)->first();
 
         if (!$role) {
             return response()->json([
@@ -303,7 +309,7 @@ class RoleController extends Controller
     public function destroy(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:roles,id',
+            'id' => 'required|exists:designations,id',
         ]);
 
         if ($validator->fails()) {
@@ -319,7 +325,7 @@ class RoleController extends Controller
         $society_id = $user->society_id;
 
         // Ensure the role belongs to the same society as the logged-in user
-        $role = Role::where('id', $request->id)->where('society_id', $society_id)->first();
+        $role = Designation::where('id', $request->id)->where('society_id', $society_id)->first();
 
         if (!$role) {
             return response()->json([

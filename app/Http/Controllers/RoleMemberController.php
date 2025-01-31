@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Designation;
 use App\Models\RoleMember;
 use App\Models\Role;
 use App\Models\User;
@@ -15,7 +16,7 @@ class RoleMemberController extends Controller
     // {
     //     // Validate only the required fields for role member creation
     //     $validator = Validator::make($request->all(), [
-    //         'role_id' => 'required|exists:roles,id', // role_id is required and must exist in the roles table
+    //         'role_id' => 'required|exists:designations,id', // role_id is required and must exist in the roles table
     //         'user_id' => 'required|exists:users,id', // user_id is required and must exist in the users table
     //         'profile_image' => 'nullable|string', // profile_image is optional
     //         'mobile' => 'nullable|string|max:15', // mobile is optional
@@ -34,7 +35,7 @@ class RoleMemberController extends Controller
     //     }
 
     //     // Retrieve the role and user from the database
-    //     $role = Role::find($request->role_id);
+    //     $role = Designation::find($request->role_id);
     //     $user = User::find($request->user_id);
 
     //     // Set default value for status if not provided
@@ -110,7 +111,7 @@ class RoleMemberController extends Controller
     {
         // Validate only the required fields for role member creation
         $validator = Validator::make($request->all(), [
-            'role_id' => 'required|exists:roles,id', // role_id is required and must exist in the roles table
+            'role_id' => 'required|exists:designations,id', // role_id is required and must exist in the roles table
             'user_id' => 'required|exists:users,id', // user_id is required and must exist in the users table
             'profile_image' => 'nullable|string', // profile_image is optional
             'mobile' => 'nullable|string|max:15', // mobile is optional
@@ -129,7 +130,7 @@ class RoleMemberController extends Controller
         }
 
         // Retrieve the role and user from the database
-        $role = Role::find($request->role_id);
+        $role = Designation::find($request->role_id);
         $user = User::find($request->user_id);
 
         // Ensure the logged-in user's society_id matches the society_id of the role
@@ -219,7 +220,7 @@ class RoleMemberController extends Controller
     //     // Validate input for any of the possible parameters
     //     $validator = Validator::make($request->all(), [
     //         'id' => 'nullable|exists:role_members,id',
-    //         'role_id' => 'nullable|exists:roles,id',
+    //         'role_id' => 'nullable|exists:designations,id',
     //         'user_id' => 'nullable|exists:users,id',
     //     ]);
 
@@ -318,7 +319,7 @@ class RoleMemberController extends Controller
     //     // Validate that only the 'id' field is required
     //     $validator = Validator::make($request->all(), [
     //         'id' => 'required|exists:role_members,id', // Ensure id exists in the role_members table
-    //         'role_id' => 'nullable|exists:roles,id', // role_id is optional, but if provided, it should exist in roles table
+    //         'role_id' => 'nullable|exists:designations,id', // role_id is optional, but if provided, it should exist in roles table
     //         'user_id' => 'nullable|exists:users,id', // user_id is optional, but if provided, it should exist in users table
     //         'status' => 'nullable|in:active,deactive', // status is optional, but if provided, it should be either active or deactive
     //     ]);
@@ -337,7 +338,7 @@ class RoleMemberController extends Controller
     //     // If role_id is provided, update it, else keep the old value
     //     if ($request->has('role_id')) {
     //         $roleMember->role_id = $request->role_id;
-    //         $roleMember->role_name = Role::find($request->role_id)->role_name; // Update the role_name
+    //         $roleMember->role_name = Designation::find($request->role_id)->role_name; // Update the role_name
     //     }
 
     //     // If user_id is provided, update it, else keep the old value
@@ -372,7 +373,7 @@ class RoleMemberController extends Controller
         // Validate input for any of the possible parameters
         $validator = Validator::make($request->all(), [
             'id' => 'nullable|exists:role_members,id',
-            'role_id' => 'nullable|exists:roles,id',
+            'role_id' => 'nullable|exists:designations,id',
             'user_id' => 'nullable|exists:users,id',
         ]);
 
@@ -410,7 +411,7 @@ class RoleMemberController extends Controller
             }
 
             // Ensure the role's society_id matches the logged-in user's society_id
-            $role = Role::find($roleMember->role_id);
+            $role = Designation::find($roleMember->role_id);
             if ($role->society_id != auth()->user()->society_id) {
                 return response()->json([
                     'status' => false,
@@ -429,7 +430,7 @@ class RoleMemberController extends Controller
 
         // If role_id is provided
         if ($request->has('role_id')) {
-            $role = Role::find($request->role_id);
+            $role = Designation::find($request->role_id);
             // Ensure the logged-in user's society_id matches the society_id of the role
             if ($role->society_id != auth()->user()->society_id) {
                 return response()->json([
@@ -467,7 +468,7 @@ class RoleMemberController extends Controller
 
             // Filter role members by society_id of the logged-in user
             $roleMembers = $roleMembers->filter(function ($roleMember) {
-                $role = Role::find($roleMember->role_id);
+                $role = Designation::find($roleMember->role_id);
                 return $role && $role->society_id == auth()->user()->society_id;
             });
 
@@ -498,7 +499,7 @@ class RoleMemberController extends Controller
     //     // Validate that only the 'id' field is required
     //     $validator = Validator::make($request->all(), [
     //         'id' => 'required|exists:role_members,id', // Ensure id exists in the role_members table
-    //         'role_id' => 'nullable|exists:roles,id', // role_id is optional, but if provided, it should exist in roles table
+    //         'role_id' => 'nullable|exists:designations,id', // role_id is optional, but if provided, it should exist in roles table
     //         'user_id' => 'nullable|exists:users,id', // user_id is optional, but if provided, it should exist in users table
     //         'status' => 'nullable|in:active,deactive', // status is optional, but if provided, it should be either active or deactive
     //     ]);
@@ -517,7 +518,7 @@ class RoleMemberController extends Controller
     //     // If role_id is provided, update it, else keep the old value
     //     if ($request->has('role_id')) {
     //         $roleMember->role_id = $request->role_id;
-    //         $roleMember->role_name = Role::find($request->role_id)->role_name; // Update the role_name
+    //         $roleMember->role_name = Designation::find($request->role_id)->role_name; // Update the role_name
     //     }
 
     //     // If user_id is provided, update it, else keep the old value
@@ -567,7 +568,7 @@ class RoleMemberController extends Controller
         // Validate that only the 'id' field is required
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:role_members,id', // Ensure id exists in the role_members table
-            'role_id' => 'nullable|exists:roles,id', // role_id is optional, but if provided, it should exist in roles table
+            'role_id' => 'nullable|exists:designations,id', // role_id is optional, but if provided, it should exist in roles table
             'user_id' => 'nullable|exists:users,id', // user_id is optional, but if provided, it should exist in users table
             'status' => 'nullable|in:active,deactive', // status is optional, but if provided, it should be either active or deactive
         ]);
@@ -586,7 +587,7 @@ class RoleMemberController extends Controller
         // If role_id is provided, update it, else keep the old value
         if ($request->has('role_id')) {
             $roleMember->role_id = $request->role_id;
-            $roleMember->role_name = Role::find($request->role_id)->role_name; // Update the role_name
+            $roleMember->role_name = Designation::find($request->role_id)->role_name; // Update the role_name
         }
 
         // If user_id is provided, update it, else keep the old value
@@ -750,7 +751,7 @@ class RoleMemberController extends Controller
 
             // Ensure the role's society_id matches the logged-in user's society_id
             if ($roleMember) {
-                $role = Role::find($roleMember->role_id);
+                $role = Designation::find($roleMember->role_id);
                 if ($role->society_id != auth()->user()->society_id) {
                     return response()->json([
                         'status' => false,
@@ -775,7 +776,7 @@ class RoleMemberController extends Controller
 
             // Check if all role members belong to the same society as the logged-in user
             foreach ($roleMembers as $roleMember) {
-                $role = Role::find($roleMember->role_id);
+                $role = Designation::find($roleMember->role_id);
                 if ($role->society_id != auth()->user()->society_id) {
                     return response()->json([
                         'status' => false,
@@ -802,7 +803,7 @@ class RoleMemberController extends Controller
 
             // Check if all role members belong to the same society as the logged-in user
             foreach ($roleMembers as $roleMember) {
-                $role = Role::find($roleMember->role_id);
+                $role = Designation::find($roleMember->role_id);
                 if ($role->society_id != auth()->user()->society_id) {
                     return response()->json([
                         'status' => false,

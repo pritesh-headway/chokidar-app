@@ -19,7 +19,9 @@ class Notice extends Model
         'notice_desc',
         'date',
         'time',
-        'status'
+        'status',
+        'society_id',
+        'documents'
     ];
 
     // Accessor for the 'date' field to return it in d-m-Y format

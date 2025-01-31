@@ -13,6 +13,6 @@ class VehicleSeeder extends Seeder
         // \App\Models\Vehicle::factory(30)->create();  // Creates 30 vehicles linked to 10 random users
         // Vehicle::truncate();
         // Create 5 vehicles with random users
-        Vehicle::factory()->count(5)->create();
+        Vehicle::factory()->count(10)->create();
     }
 }
