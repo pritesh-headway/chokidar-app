@@ -7,16 +7,26 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject; // Import the JWTSubject interface
 use Illuminate\Foundation\Auth\User as Authenticatable; // Import Authenticatable
 
-class User extends Authenticatable implements JWTSubject // Implement JWTSubject
+class User extends Authenticatable implements JWTSubject, FilamentUser // Implement JWTSubject
 {
     use HasFactory;
+    use Notifiable;
     // use HasRoles;
 
     protected $guard_name = 'api';
+    protected $attributes = [
+        'first_name' => 'Super',
+        'last_name' => 'Admin',
+        'mobile' => '8347400096',
+        'status' => 'active',
+
+    ];
+
 
     protected $table = 'users'; // Specify the table associated with the model
 
@@ -48,6 +58,24 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
+
+    // Define setRole method to set role_id
+    public function setRole($role)
+    {
+        // Check if the $role is a string (role name) and retrieve the Role model instance
+        if (is_string($role)) {
+            $role = Role::where('name', $role)->first(); // Get Role by name
+        }
+
+        // Ensure the role is an instance of the Role model before accessing its properties
+        if ($role instanceof Role) {
+            $this->role_id = $role->id;
+            $this->save();
+        } else {
+            throw new \Exception("Role not found or invalid.");
+        }
+    }
+
 
     // Check if the user has a specific role
     public function hasRole($role)
@@ -129,5 +157,24 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Check if the user has access to Filament (Super Admin, Admin, etc.)
+     */
+    public function canAccessFilament(): bool
+    {
+        // Only Super Admin and Admin can access Filament
+        return in_array($this->role_id, [1, 2]);  // Adjust IDs based on your role table
+    }
+
+    /**
+     * Implement the method from FilamentUser interface.
+     * This checks if the user can access the Filament panel.
+     */
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        // Only allow users who can access Filament
+        return $this->canAccessFilament();
     }
 }

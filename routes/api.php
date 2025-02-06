@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\HouseController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\AmenityController;
@@ -20,18 +21,16 @@ use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\ComplaintController;
-use App\Http\Controllers\ContactUsController;
 
+use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\GateDetailController;
-use App\Http\Controllers\RoleMemberController;
 // routes/api.php
 
-use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\RoleMemberController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\BookingAmenityController;
-use App\Http\Controllers\ServiceRequestController;
 
 
 
@@ -40,13 +39,16 @@ use App\Http\Controllers\ServiceRequestController;
 
 
 Route::post('register', [AuthController::class, 'register']);
+
 Route::post('login', [AuthController::class, 'login'])->name('login');
 // Route::post('logout', [AuthController::class, 'logout']);
 Route::post('otp-login', [AuthController::class, 'otpLogin']);
 
 // routes/api.php
 
+use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\ServiceProviderController;
+use App\Http\Controllers\Backend\AllSocietyController;
 use App\Http\Controllers\FamilyMemberDetailController;
 
 
@@ -67,7 +69,6 @@ Route::post('/societies-show', [SocietyController::class, 'show']);
 
 // This route is only accessible by super-admins
 Route::group(['middleware' => ['role:super-admin']], function () {
-    Route::post('/super-admin-dashboard', [SuperAdminController::class, 'index']);
     // Create a new society
     Route::post('/societies-create', [SocietyController::class, 'create']);
 
@@ -84,18 +85,21 @@ Route::group(['middleware' => ['role:super-admin']], function () {
     Route::post('/societies-delete', [SocietyController::class, 'destroy']);
 });
 
-// This route is accessible by both super-admins and admins
-Route::group(['middleware' => ['role:super-admin,admin']], function () {
-    Route::post('/admin-dashboard', [AdminController::class, 'index']);
+// // This route is accessible by both super-admins and admins
+// Route::group(['middleware' => ['role:super-admin,admin']], function () {
+//     Route::post('/admin-dashboard', [AdminController::class, 'index']);
 
-    Route::post('register-security', [SecurityController::class, 'registerSecurity']);
-});
+//     Route::post('register-security', [SecurityController::class, 'registerSecurity']);
+// });
 
 
 
 // Route::group(['auth:api' => ['route:admin,super-admin']], function () {
 //     Route::post('/admin-dashboard', [AdminController::class, 'index']);
 // });
+
+Route::post('/societyregister', [AllSocietyController::class, 'create'])->name('society.register');
+
 
 
 
@@ -150,6 +154,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/family-create', [FamilyMemberDetailController::class, 'store']);
     Route::post('/family-update', [FamilyMemberDetailController::class, 'update']);
     Route::post('/family-delete', [FamilyMemberDetailController::class, 'destroy']);
+
+    Route::post('register-security', [SecurityController::class, 'registerSecurity']);
 
 
     // // Vehicle CRUD routes
@@ -254,6 +260,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/gate-details-show', [GateDetailController::class, 'show']);  // Accept ID in input body
     Route::post('/gate-details-update', [GateDetailController::class, 'update']);  // POST for update with ID in body
     Route::post('/gate-details-delete', [GateDetailController::class, 'destroy']);  // POST for delete with ID in body
+    Route::post('/gate-details-gate-no', [GateDetailController::class, 'getByGateNo']);  // POST for delete with ID in body
 
 
 
@@ -262,11 +269,14 @@ Route::middleware(['auth:api'])->group(function () {
     // Route::post('/forums', [ForumController::class, 'store']);
     // Route::post('/forums/{id}', [ForumController::class, 'update']);
     // Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
-    Route::post('/forums', [ForumController::class, 'index']);  // For listing forums
+    // Route::post('/forums', [ForumController::class, 'index']);  // For listing forums
+    Route::post('/forums', [ForumController::class, 'getAllActiveForums']);  // For listing forums
     Route::post('/forums-show', [ForumController::class, 'show']);  // For showing a specific forum
     Route::post('/forums-create', [ForumController::class, 'store']);  // For storing a new forum
     Route::post('/forums-update', [ForumController::class, 'update']);  // For updating a forum
     Route::post('/forums-delete', [ForumController::class, 'destroy']);  // For deleting a forum
+    Route::post('/forums-allinactive', [ForumController::class, 'getAllInactiveForums']);
+    Route::post('/forums-allactive', [ForumController::class, 'getAllactiveForums']);
 
 
 
@@ -296,7 +306,13 @@ Route::middleware(['auth:api'])->group(function () {
 
 
 
+
     // routes/api.php
+    Route::post('house-create', [HouseController::class, 'store']);
+    Route::post('house', [HouseController::class, 'index']);
+    Route::post('house-show', [HouseController::class, 'show']);
+    Route::post('house-update', [HouseController::class, 'update']);
+    Route::post('house-delete', [HouseController::class, 'destroy']);
 
 
 
@@ -338,6 +354,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('service_requests-create', [ServiceRequestController::class, 'store']);
     Route::post('service_requests-show', [ServiceRequestController::class, 'show']);
     Route::post('service_requests-delete', [ServiceRequestController::class, 'destroy']);
+    Route::post('get_all_personal_services', [ServiceRequestController::class, 'getServiceRequestsByMemberId']);
 });
 
 Route::get('test', function () {

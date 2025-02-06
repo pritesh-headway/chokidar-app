@@ -8,37 +8,12 @@ use App\Models\Security;
 use App\Models\UserRole;
 use App\Models\GateDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SecurityController extends Controller
 {
-    // Display a listing of the securities (by user_id if provided)
-    // public function index(Request $request)
-    // {
-    //     $securities = Security::all();
 
-    //     // Add full URLs for images and documents
-    //     $securitiesWithUrls = $securities->map(function ($security) {
-    //         return [
-    //             'id' => $security->id,
-    //             'guard_name' => $security->guard_name,
-    //             'mobile' => $security->mobile,
-    //             'address' => $security->address,
-    //             'gate_no' => $security->gate_no,
-    //             'details' => $security->details,
-    //             'guard_image' => env('APP_URL') . '/public/storage/' . $security->guard_image,
-    //             'documents' => env('APP_URL') . '/public/storage/' . $security->documents,
-    //             'status' => $security->status,
-    //         ];
-    //     });
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Securities retrieved successfully.',
-    //         'data' => $securitiesWithUrls,
-    //     ]);
-    // }
-    // Store a new security record
     public function store(Request $request)
     {
         // Validate the request
@@ -68,35 +43,10 @@ class SecurityController extends Controller
             'status' => $status,
         ]);
 
+
         return response()->json(['message' => 'Security record created successfully.', 'data' => $security], 201);
     }
 
-    // // Show a specific security record
-    // public function show(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'id' => 'required|integer|exists:securities,id',
-    //     ]);
-
-    //     // Retrieve the security record by id
-    //     $security = Security::findOrFail($request->id);
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Security retrieved successfully.',
-    //         'data' => [
-    //             'id' => $security->id,
-    //             'guard_name' => $security->guard_name,
-    //             'mobile' => $security->mobile,
-    //             'address' => $security->address,
-    //             'gate_no' => $security->gate_no,
-    //             'details' => $security->details,
-    //             'guard_image' => $security->guard_image,
-    //             'documents' => $security->documents,
-    //             'status' => $security->status,
-    //         ],
-    //     ]);
-    // }
 
     public function show(Request $request)
     {
@@ -151,6 +101,7 @@ class SecurityController extends Controller
             return [
                 'id' => $security->id,
                 'guard_name' => $security->guard_name,
+                'user_id' => $security->user_id,
                 'mobile' => $security->mobile,
                 'address' => $security->address,
                 'gate_no' => $security->gate_no,
@@ -170,26 +121,207 @@ class SecurityController extends Controller
         ], 200);
     }
 
-    // Update a specific security record
+
+    // public function update(Request $request)
+    // {
+    //     // Custom validation messages
+    //     $messages = [
+    //         'id.required' => 'Security ID is required.',
+    //         'id.exists' => 'Invalid security ID.',
+    //         'guard_name.max' => 'Guard name must not exceed 50 characters.',
+    //         'mobile.max' => 'Mobile number must not exceed 20 characters.',
+    //         'address.max' => 'Address must not exceed 255 characters.',
+    //         'gate_no.integer' => 'Gate number must be an integer.',
+    //         'guard_image.max' => 'Guard image path must not exceed 256 characters.',
+    //         'status.in' => 'Invalid status value.',
+    //     ];
+
+    //     // Validate input
+    //     $validator = Validator::make($request->all(), [
+    //         'id' => 'required|integer|exists:securities,id',
+    //         'guard_name' => 'nullable|string|max:50',
+    //         'mobile' => 'nullable|string|max:20',
+    //         'address' => 'nullable|string|max:255',
+    //         'gate_no' => 'nullable|integer',
+    //         'details' => 'nullable|string',
+    //         'guard_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
+    //         'documents' => 'nullable|array',
+    //         'documents.*' => 'file|mimes:pdf,doc,docx|max:5120', // 5MB max per file
+    //         'status' => 'nullable|in:active,deactive',
+    //     ], $messages);
+
+    //     // Return errors if validation fails
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Validation errors',
+    //             'errors' => $validator->errors()
+    //         ], 422);
+    //     }
+
+    //     // Find the security record
+    //     $security = Security::findOrFail($request->id);
+
+    //     // Update the security guard's details
+    //     $security->guard_name = $request->guard_name ?? $security->guard_name;
+    //     $security->mobile = $request->mobile ?? $security->mobile;
+    //     $security->address = $request->address ?? $security->address;
+    //     $security->gate_no = $request->gate_no ?? $security->gate_no;
+    //     $security->details = $request->details ?? $security->details;
+    //     $security->status = $request->status ?? $security->status;
+
+    //     // Handle guard image update
+    //     if ($request->hasFile('guard_image')) {
+    //         // Delete the old guard image if it exists
+    //         if ($security->guard_image && file_exists(public_path($security->guard_image))) {
+    //             unlink(public_path($security->guard_image));
+    //         }
+
+    //         // Store the new guard image
+    //         $guardImagePath = $this->storeFileInPublicFolder($request->file('guard_image'), 'guard_images');
+    //         $security->guard_image = $guardImagePath;
+    //     }
+
+    //     // Handle documents update
+    //     if ($request->hasFile('documents')) {
+    //         // Delete the old documents if they exist
+    //         if ($security->documents) {
+    //             $oldDocuments = json_decode($security->documents, true);
+    //             foreach ($oldDocuments as $oldDocument) {
+    //                 if (file_exists(public_path($oldDocument))) {
+    //                     unlink(public_path($oldDocument));
+    //                 }
+    //             }
+    //         }
+
+    //         // Store the new documents
+    //         $documentPaths = [];
+    //         foreach ($request->file('documents') as $document) {
+    //             $fileName = $document->getClientOriginalName();
+    //             $document->move(public_path('storage/guard_documents'), $fileName);
+    //             $documentPaths[] = 'guard_documents/' . $fileName;
+    //         }
+    //         $security->documents = json_encode($documentPaths);
+    //     }
+
+    //     // Save the updated security record
+    //     $security->save();
+
+    //     // Update related user record (if mobile or status is updated)
+    //     $user = User::find($security->user_id);
+    //     if ($user) {
+    //         $user->mobile = $request->mobile ?? $user->mobile;
+    //         $user->status = $request->status ?? $user->status;
+    //         $user->save();
+    //     }
+
+    //     // Update related gate_details record
+    //     $gateDetail = GateDetail::where('security_id', $security->id)->first();
+    //     if ($gateDetail) {
+    //         $gateDetail->gate_no = $request->gate_no ?? $gateDetail->gate_no;
+    //         $gateDetail->gate_mobile = $request->mobile ?? $gateDetail->gate_mobile;
+    //         $gateDetail->status = $request->status ?? $gateDetail->status;
+    //         $gateDetail->save();
+    //     }
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Security guard updated successfully',
+    //         'data' => $security
+    //     ], 200);
+    // }
+
     public function update(Request $request)
     {
-        $validatedData = $request->validate([
+        // Validate input
+        $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:securities,id',
-            'guard_name' => 'nullable|string|max:50',
+            'first_name' => 'nullable|string|max:50',
+            'last_name' => 'nullable|string|max:50',
             'mobile' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
             'gate_no' => 'nullable|integer',
-            'details' => 'nullable|string',
-            'guard_image' => 'nullable|string|max:256',
-            'documents' => 'nullable|array',
-            'status' => 'nullable|in:active,deactive',
+            'address' => 'nullable|string|max:255',
         ]);
 
-        $security = Security::findOrFail($request->id);
-        $security->update($validatedData);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
-        return response()->json(['message' => 'Security updated successfully.', 'data' => $security]);
+        // Fetch the security record
+        $security = Security::findOrFail($request->id);
+        $user = User::findOrFail($security->user_id);
+        $gateDetail = GateDetail::where('security_id', $security->id)->first();
+
+        // Validate mobile only if it's changed
+        if ($request->filled('mobile') && $request->mobile !== $user->mobile) {
+            $mobileExists = User::where('mobile', $request->mobile)->where('id', '!=', $user->id)->exists();
+            if ($mobileExists) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation errors',
+                    'errors' => ['mobile' => ['This mobile number is already registered.']],
+                ], 422);
+            }
+        }
+
+        // Start Transaction to ensure all updates succeed together
+        DB::beginTransaction();
+        try {
+            // Prepare updated values
+            $updateData = [];
+            if ($request->filled('first_name') || $request->filled('last_name')) {
+                $guard_name = trim(($request->first_name ?? $user->first_name) . ' ' . ($request->last_name ?? $user->last_name));
+                $updateData['guard_name'] = $guard_name;
+            }
+            if ($request->filled('gate_no')) {
+                $updateData['gate_no'] = $request->gate_no;
+            }
+            if ($request->filled('address')) {
+                $updateData['address'] = $request->address;
+            }
+            if ($request->filled('mobile')) {
+                $updateData['mobile'] = $request->mobile;
+            }
+
+            // Update only changed fields in Security table
+            $security->update($updateData);
+
+            // Update only changed fields in User table
+            $user->update($request->only(['first_name', 'last_name', 'mobile']));
+
+            // Update only changed fields in GateDetails table (if exists)
+            if ($gateDetail) {
+                $gateDetail->update([
+                    'gate_no' => $request->gate_no ?? $gateDetail->gate_no,
+                    // 'gate_mobile' => $request->mobile ?? $gateDetail->gate_mobile
+                ]);
+            }
+
+            DB::commit(); // Commit transaction
+            $data = $security;
+            $data->gate_mobile = $gateDetail->gate_mobile;
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Security guard updated successfully',
+                'data' => $data,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback on error
+            return response()->json([
+                'status' => false,
+                'message' => 'Update failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
+
+
 
     // Destroy a specific security record
     public function destroy(Request $request)
@@ -219,34 +351,6 @@ class SecurityController extends Controller
         return response()->json(['status' => true, 'message' => 'Security and associated records deleted successfully.']);
     }
 
-    // // Display all securities with associated gate details
-    // public function index(Request $request)
-    // {
-    //     $securities = Security::whereHas('gateDetails')->get(); // Filter only securities with gate details
-
-    //     $securitiesWithDetails = $securities->map(function ($security, $index) {
-    //         $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
-    //         return [
-    //             'id' => $security->id,
-    //             'no' => $index + 1,
-    //             'guard_name' => $security->guard_name,
-    //             'personal_mobile' => $security->mobile,
-    //             'address' => $security->address,
-    //             'gate_no' => $gateDetails->gate_no ?? null, // Get gate number from gate details
-    //             'gate_mobile' => $gateDetails->gate_mobile ?? null, // Get gate mobile from gate details
-    //             'details' => $security->details,
-    //             'guard_image' => $this->getFullUrl($security->guard_image),
-    //             'documents' => $this->getFullUrls($security->documents),
-    //             'status' => $security->status,
-    //         ];
-    //     });
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Securities retrieved successfully.',
-    //         'data' => $securitiesWithDetails,
-    //     ]);
-    // }
 
     public function index(Request $request)
     {
@@ -271,6 +375,7 @@ class SecurityController extends Controller
             return [
                 'id' => $security->id,
                 'no' => $index + 1,
+                'user_id' => $security->user_id,
                 'guard_name' => $security->guard_name,
                 'personal_mobile' => $security->mobile,
                 'address' => $security->address,
@@ -290,37 +395,6 @@ class SecurityController extends Controller
         ]);
     }
 
-
-
-    // // Show a specific security record by id with gate details
-    // public function show(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'id' => 'required|integer|exists:securities,id',
-    //     ]);
-
-    //     $security = Security::with('gateDetails')->findOrFail($request->id);
-
-    //     $gateDetails = $security->gateDetails->first(); // Get the first associated gate detail
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Security retrieved successfully.',
-    //         'data' => [
-    //             'id' => $security->id,
-    //             'no' => 1,
-    //             'guard_name' => $security->guard_name,
-    //             'personal_mobile' => $security->mobile,
-    //             'address' => $security->address,
-    //             'gate_no' => $gateDetails->gate_no ?? null,
-    //             'gate_mobile' => $gateDetails->gate_mobile ?? null,
-    //             'details' => $security->details,
-    //             'guard_image' => $this->getFullUrl($security->guard_image),
-    //             'documents' => $this->getFullUrls($security->documents),
-    //             'status' => $security->status,
-    //         ],
-    //     ]);
-    // }
 
 
 
@@ -352,289 +426,6 @@ class SecurityController extends Controller
 
 
 
-    // public function registerSecurity(Request $request)
-    // {
-    //     // Validate the incoming data
-    //     $validatedData = $request->validate([
-    //         'first_name' => 'required|string|max:255',
-    //         'last_name' => 'required|string|max:255',
-    //         'mobile' => 'required|string|max:15|unique:users,mobile',
-    //         'otp' => 'required|string',
-    //         'gate_no' => 'required|string|max:255',
-    //         'address' => 'required|string',
-    //         'guard_image' => 'required|image|mimes:jpeg,png,jpg,gif',
-    //         'documents' => 'required|file|mimes:pdf,doc,docx',
-    //         'status' => 'nullable|in:active,deactive',
-    //         'society_id' => 'nullable|exists:societies,id', // Assuming you have a societies table
-    //         'role' => 'nullable|in:security', // Only allow "security" role
-    //     ]);
-
-    //     // Check if the user is an admin
-    //     $user = auth()->user();
-    //     if ($user->role !== 'admin') {
-    //         return response()->json(['message' => 'Forbidden'], 403);
-    //     }
-
-    //     // Create the user record for the security guard
-    //     $securityUser = User::create([
-    //         'first_name' => $validatedData['first_name'],
-    //         'last_name' => $validatedData['last_name'],
-    //         'mobile' => $validatedData['mobile'],
-    //         'otp' => $validatedData['otp'],
-    //         'gate_no' => $validatedData['gate_no'],
-    //         'address' => $validatedData['address'],
-    //         'guard_image' => $request->file('guard_image')->store('images'),
-    //         'documents' => $request->file('documents')->store('documents'),
-    //         'status' => $validatedData['status'] ?? 'active',
-    //         'society_id' => $validatedData['society_id'] ?? auth()->user()->society_id,
-    //         'role' => 'security', // Set the role to 'security'
-    //     ]);
-
-    //     // Add role to user_roles table
-    //     $role = Role::where('name', 'security')->first();
-    //     $securityUser->roles()->attach($role);
-
-    //     // Create security guard record
-    //     Security::create([
-    //         'user_id' => $securityUser->id,
-    //         'gate_no' => $validatedData['gate_no'],
-    //         'address' => $validatedData['address'],
-    //         'guard_image' => $request->file('guard_image')->store('images'),
-    //         'documents' => $request->file('documents')->store('documents'),
-    //         'status' => $validatedData['status'] ?? 'active',
-    //         'society_id' => $validatedData['society_id'] ?? auth()->user()->society_id,
-    //     ]);
-
-    //     return response()->json(['message' => 'Security guard added successfully'], 201);
-    // }
-
-    // public function registerSecurity(Request $request)
-    // {
-    //     // Custom validation messages
-    //     $messages = [
-    //         'first_name.required' => 'First name is required.',
-    //         'last_name.required' => 'Last name is required.',
-    //         'mobile.required' => 'Mobile number is required.',
-    //         'mobile.unique' => 'This mobile number is already registered.',
-    //         'otp.required' => 'OTP is required.',
-    //         'gate_no.required' => 'Gate number is required.',
-    //         'address.required' => 'Address is required.',
-    //         'status.in' => 'Invalid status value.',
-    //         'society_id.exists' => 'Invalid society ID.',
-    //         'role_id.exists' => 'Invalid role ID.',
-    //         'guard_image.required' => 'Guard image is required.',
-    //         'guard_image.image' => 'Guard image must be an image file.',
-    //         'guard_image.mimes' => 'Guard image must be of type jpeg, png, jpg, or gif.',
-    //         'documents.required' => 'Documents are required.',
-    //         'documents.file' => 'Documents must be a valid file.',
-    //         'documents.mimes' => 'Documents must be of type pdf, doc, or docx.',
-    //     ];
-
-    //     // Validate input (excluding files)
-    //     $validator = Validator::make($request->all(), [
-    //         'first_name' => 'required|string|max:255',
-    //         'last_name' => 'required|string|max:255',
-    //         'mobile' => 'required|string',
-    //         'otp' => 'required|string',
-    //         'gate_no' => 'required|string|max:255',
-    //         'address' => 'required|string',
-    //         'status' => 'nullable|in:active,deactive',
-    //         'society_id' => 'nullable|exists:societies,id',
-    //         'role_id' => 'nullable|exists:roles,id',
-    //         'guard_image' => 'required|image|mimes:jpeg,png,jpg,gif',
-    //         'documents' => 'required|file|mimes:pdf,doc,docx',
-    //     ], $messages);
-    //     // dd(auth()->user());
-    //     // Return errors if validation fails
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Validation errors',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-
-    //     // Check if the user is an admin
-    //     $user = auth()->user();
-    //     if ($user->role_id !== Role::where('name', 'admin')->first()->id) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Forbidden. Only an admin can register a security guard.'
-    //         ], 403);
-    //     }
-    //     // dd($user);
-    //     // Create security guard in users table
-    //     $securityUser = User::create([
-    //         'first_name' => $request->first_name,
-    //         'last_name' => $request->last_name,
-    //         'mobile' => (int)$request->mobile,
-    //         'otp' => $request->otp,
-    //         'status' => $request->status ?? 'active',
-    //         'society_id' =>  $user->society_id,
-    //         'role_id' => $request->role_id ?? Role::where('name', 'security')->first()->id,
-    //     ]);
-
-    //     // Assign security role in user_roles table
-    //     $role = Role::where('name', 'security')->first();
-    //     $securityUser->roles()->attach($role);
-
-    //     // Create security guard entry in securities table
-    //     $security = Security::create([
-    //         'user_id' => $securityUser->id,
-    //         'guard_name' => $securityUser->first_name . ' ' . $securityUser->last_name,
-    //         'gate_no' => $request->gate_no,
-    //         'address' => $request->address,
-    //         'mobile' => $securityUser->mobile,
-    //         'guard_image' => $request->file('guard_image')->store('images'),
-    //         'documents' => $request->file('documents')->store('documents'),
-    //         'status' => $request->status ?? 'active',
-    //         'society_id' =>  $user->society_id,
-    //         'details' => $request->details,
-    //     ]);
-
-    //     // Create entry in gate_details table
-    //     GateDetail::create([
-    //         'society_id' => $user->society_id,
-    //         'gate_no' => $request->gate_no,
-    //         'security_id' => $security->id,
-    //         'gate_mobile' => $request->mobile,
-    //         'status' => $request->status ?? 'active',
-    //     ]);
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Security guard added successfully',
-    //         'data' => $security
-    //     ], 201);
-    // }
-
-    // public function registerSecurity(Request $request)
-    // {
-    //     // Custom validation messages
-    //     $messages = [
-    //         'first_name.required' => 'First name is required.',
-    //         'last_name.required' => 'Last name is required.',
-    //         'mobile.required' => 'Mobile number is required.',
-    //         'mobile.unique' => 'This mobile number is already registered.',
-    //         'otp.required' => 'OTP is required.',
-    //         'gate_no.required' => 'Gate number is required.',
-    //         'address.required' => 'Address is required.',
-    //         'status.in' => 'Invalid status value.',
-    //         'society_id.exists' => 'Invalid society ID.',
-    //         'role_id.exists' => 'Invalid role ID.',
-    //         'guard_image.required' => 'Guard image is required.',
-    //         'guard_image.image' => 'Guard image must be an image file.',
-    //         'guard_image.mimes' => 'Guard image must be of type jpeg, png, jpg, or gif.',
-    //         'documents.required' => 'Documents are required.',
-    //         'documents.file' => 'Documents must be a valid file.',
-    //         'documents.mimes' => 'Documents must be of type pdf, doc, or docx.',
-    //     ];
-
-    //     // Validate input (excluding files)
-    //     $validator = Validator::make($request->all(), [
-    //         'first_name' => 'required|string|max:255',
-    //         'last_name' => 'required|string|max:255',
-    //         'mobile' => 'required|string',
-    //         'otp' => 'required|string',
-    //         'gate_no' => 'required|string|max:255',
-    //         'address' => 'required|string',
-    //         'status' => 'nullable|in:active,deactive',
-    //         'society_id' => 'nullable|exists:societies,id',
-    //         'role_id' => 'nullable|exists:roles,id',
-    //         'guard_image' => 'required|image|mimes:jpeg,png,jpg,gif',
-    //         'documents' => 'required|file',
-    //     ], $messages);
-
-    //     // Return errors if validation fails
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Validation errors',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-    //     // dd($request->file('documents'));
-    //     // Check if the user is an admin
-    //     $user = auth()->user();
-    //     if ($user->role_id !== Role::where('name', 'admin')->first()->id) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Forbidden. Only an admin can register a security guard.'
-    //         ], 403);
-    //     }
-
-    //     // Create security guard in users table
-    //     $securityUser = User::create([
-    //         'first_name' => $request->first_name,
-    //         'last_name' => $request->last_name,
-    //         'mobile' => (int)$request->mobile,
-    //         'otp' => $request->otp,
-    //         'status' => $request->status ?? 'active',
-    //         'society_id' => $user->society_id,
-    //         'role_id' => $request->role_id ?? Role::where('name', 'security')->first()->id,
-    //     ]);
-
-    //     // Assign security role in user_roles table
-    //     $role = Role::where('name', 'security')->first();
-    //     $securityUser->roles()->attach($role);
-
-    //     // Store the guard image in public/storage/guard_images
-    //     $guardImagePath = $this->storeFileInPublicFolder($request->file('guard_image'), 'guard_images');
-
-    //     // Store multiple documents and generate their paths in public/storage/guard_documents
-    //     $documentPaths = [];
-    //     // dd('hhh ', $request->file('documents'));
-    //     // foreach ($request->file('documents') as $document) {
-    //     //     // Ensure the document is stored in the correct directory
-
-    //     //     $documentPath = $document->store('guard_documents', 'public');
-    //     //     $documentPaths[] = $documentPath;
-    //     // }
-    //     if ($request->hasFile('documents')) {
-    //         foreach ($request->file('documents') as $document) {
-    //             // Get the original file name
-    //             $fileName = $document->getClientOriginalName();
-
-    //             // Move the file to public/storage/guard_documents
-    //             $document->move(public_path('storage/guard_documents'), $fileName);
-
-    //             // Add the relative path for access
-    //             $documentPaths[] = 'guard_documents/' . $fileName;
-    //         }
-    //     }
-
-    //     // dd($documentPaths);
-    //     // Create security guard entry in securities table, linking the user_id
-    //     $security = Security::create([
-    //         'user_id' => $securityUser->id, // Link the security guard with the user
-    //         'guard_name' => $securityUser->first_name . ' ' . $securityUser->last_name,
-    //         'gate_no' => $request->gate_no,
-    //         'address' => $request->address,
-    //         'mobile' => $securityUser->mobile,
-    //         'guard_image' => $guardImagePath,  // Store the relative path
-    //         'documents' => json_encode($documentPaths), // Store the relative paths as JSON array
-    //         'status' => $request->status ?? 'active',
-    //         'society_id' => $user->society_id,
-    //         'details' => $request->details,
-    //     ]);
-
-    //     // Create entry in gate_details table
-    //     GateDetail::create([
-    //         'society_id' => $user->society_id,
-    //         'gate_no' => $request->gate_no,
-    //         'security_id' => $security->id,
-    //         'gate_mobile' => $request->mobile,
-    //         'status' => $request->status ?? 'active',
-    //     ]);
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Security guard added successfully',
-    //         'data' => $security
-    //     ], 201);
-    // }
-
-
     public function registerSecurity(Request $request)
     {
         // Custom validation messages
@@ -652,32 +443,27 @@ class SecurityController extends Controller
             'guard_image.required' => 'Guard image is required.',
             'guard_image.image' => 'Guard image must be an image file.',
             'guard_image.mimes' => 'Guard image must be of type jpeg, png, jpg, or gif.',
-            'documents.*.file' => 'Each document must be a valid file.',
-            // 'documents.required' => 'Documents are required.',
-            // 'documents.file' => 'Documents must be a valid file.',
-            // 'documents.mimes' => 'Documents must be of type pdf, doc, or docx.',
+            'documents.required' => 'Documents are required.',
+            'documents.file' => 'Documents must be a valid file.',
+            'documents.mimes' => 'Documents must be of type pdf, doc, or docx.',
         ];
+
         // Validate input (excluding files)
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'mobile' => 'required|string|unique:users,mobile',
-            'otp' => 'required|string',
+            'otp' => 'sometimes|string',
             'gate_no' => 'required|string|max:255',
             'address' => 'required|string',
             'status' => 'nullable|in:active,deactive',
             'society_id' => 'nullable|exists:societies,id',
             'role_id' => 'nullable|exists:roles,id',
             'guard_image' => 'required|image|mimes:jpeg,png,jpg,gif',
-            // 'documents.*' => 'required|file|array',  // Assuming multiple documents
-            'documents' => 'nullable|array',  // Ensure documents is an array
-            'documents.*' => 'file', // Allow various file types for documents
-            // 'documents.*' => 'file|array', // File validation for each document
-            // 'documents.*' => 'file',
+            'documents' => 'required|array',
+            'documents.*' => 'file',
         ], $messages);
 
-        // dd($request->file('documents'));
-        // dd(is_array($request->file('documents')));
         // Return errors if validation fails
         if ($validator->fails()) {
             return response()->json([
@@ -695,50 +481,41 @@ class SecurityController extends Controller
                 'message' => 'Forbidden. Only an admin can register a security guard.'
             ], 403);
         }
-        // dd($request->file('documents'));
-        // Step 1: Create security user in the 'users' table
+
+        // Create security guard in users table
         $securityUser = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'mobile' => $request->mobile,
-            'otp' => $request->otp,
+            'mobile' => (int)$request->mobile,
+            'otp' => $request->otp ?? '0096',
             'status' => $request->status ?? 'active',
             'society_id' => $user->society_id,
             'role_id' => $request->role_id ?? Role::where('name', 'security')->first()->id,
         ]);
 
-        // dd($securityUser->id);
-        $usersID = $securityUser->id;
-
-        // Step 2: Assign security role in user_roles table
+        // Assign security role in user_roles table
         $role = Role::where('name', 'security')->first();
         $securityUser->roles()->attach($role);
 
-        // Step 3: Store guard image in public/storage/guard_images
+        // Store the guard image in public/storage/guard_images
         $guardImagePath = $this->storeFileInPublicFolder($request->file('guard_image'), 'guard_images');
 
-        // Step 4: Store multiple documents and generate their paths in public/storage/guard_documents
-        // $documentPaths = [];
+        // Store multiple documents and generate their paths in public/storage/guard_documents
         $documentPaths = [];
         if ($request->hasFile('documents')) {
-            // If it's multiple files
-            if (is_array($request->file('documents'))) {
-                foreach ($request->file('documents') as $document) {
-                    // Store each document and get the path
-                    $documentPath = $this->storeFileInPublicFolder($document, 'guard_documents');
-                    $documentPaths[] = $documentPath;
-                }
-            } else {
-                // If it's a single file
-                $documentPath = $this->storeFileInPublicFolder($request->file('documents'), 'guard_documents');
-                $documentPaths[] = $documentPath;
+            foreach ($request->file('documents') as $document) {
+                // Get the original file name
+                $fileName = $document->getClientOriginalName();
+
+                // Move the file to public/storage/guard_documents
+                $document->move(public_path('storage/guard_documents'), $fileName);
+
+                // Add the relative path for access
+                $documentPaths[] = 'guard_documents/' . $fileName;
             }
         }
 
-
-
-
-        // Step 5: Create security guard entry in the 'securities' table, linking to the user
+        // Create security guard entry in securities table, linking the user_id
         $security = Security::create([
             'user_id' => $securityUser->id, // Link the security guard with the user
             'guard_name' => $securityUser->first_name . ' ' . $securityUser->last_name,
@@ -749,25 +526,27 @@ class SecurityController extends Controller
             'documents' => json_encode($documentPaths), // Store the relative paths as JSON array
             'status' => $request->status ?? 'active',
             'society_id' => $user->society_id,
-            'details' => $request->details,
+            'details' => $request->details ?? '',
         ]);
 
-        // Step 6: Create entry in gate_details table
+        // Create entry in gate_details table
         GateDetail::create([
             'society_id' => $user->society_id,
             'gate_no' => $request->gate_no,
             'security_id' => $security->id,
-            'gate_mobile' => $request->mobile,
+            'gate_mobile' => $securityUser->mobile,
             'status' => $request->status ?? 'active',
         ]);
 
-        // Return success response
         return response()->json([
             'status' => true,
             'message' => 'Security guard added successfully',
             'data' => $security
         ], 201);
     }
+
+
+
 
 
 

@@ -387,6 +387,20 @@ class ComplaintController extends Controller
                 $documentPaths[] = $this->storeFileInPublicFolder($request->file('photos'), 'complaint_images');
             }
         }
+        if ($request->complaint_status == 'rejected') {
+            if ($request->reason == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Reason is required for rejecting.',
+                    // 'data' => $booking
+                ]);
+            } else {
+                $complaint->reason = $request->reason;
+                $complaint->complaint_status = $request->complaint_status;
+            }
+        } else {
+            $complaint->complaint_status = $request->complaint_status;
+        }
 
         // Update the complaint fields
         $complaint->update([

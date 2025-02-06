@@ -39,6 +39,21 @@ class GateDetailController extends Controller
         $gateDetail = GateDetail::findOrFail($request->id);
         return response()->json($gateDetail);
     }
+    // Fetch gate details by gate_no and society_id
+    public function getByGateNo(Request $request)
+    {
+        $validated = $request->validate([
+            'gate_no' => 'required|integer',
+        ]);
+
+        $societyId = auth()->user()->society_id;
+
+        $gateDetails = GateDetail::where('gate_no', $validated['gate_no'])
+            ->where('society_id', $societyId)
+            ->get();
+
+        return response()->json($gateDetails);
+    }
 
     // Update a specific gate detail (POST request with ID in body)
     public function update(Request $request)

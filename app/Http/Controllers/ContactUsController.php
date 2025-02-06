@@ -4,7 +4,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactUs;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Notifications\ContactUsNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\ContactUsSubmitted;
 use Illuminate\Support\Facades\Mail;
@@ -40,6 +43,10 @@ class ContactUsController extends Controller
         ]);
 
         Mail::to('durgesh.hirani@headway.org.in')->send(new ContactUsSubmitted($contactUs));
+
+        // Send notification to admin
+        $admin = User::where('role_id', 1)->first(); // Assuming role_id 1 is for admin
+        Notification::send($admin, new ContactUsNotification($contactUs->toArray()));
 
         return response()->json(['status' => true, 'message' => 'Contact submitted successfully!', 'data' => $contactUs], 201);
     }

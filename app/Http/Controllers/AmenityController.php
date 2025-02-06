@@ -213,7 +213,7 @@ class AmenityController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'amenity_image' => 'required|image|mimes:jpeg,png,jpg,gif', // Validate the single amenity image
-            'amenity_images' => 'required|array', // Validate that amenity_images is an array
+            'amenity_images' => 'sometimes|array', // Validate that amenity_images is an array
             'amenity_images.*' => 'image', // Validate that each file in amenity_images is an image
             'status' => 'sometimes|in:active,deactive',
         ]);
@@ -379,6 +379,60 @@ class AmenityController extends Controller
 
 
 
+    // public function deleteAmenityImage(Request $request)
+    // {
+    //     // Validate request
+    //     $request->validate([
+    //         'id' => 'required',
+    //         'file_path' => 'required|string', // The exact file path to delete
+    //     ]);
+    //     $id = $request->id;
+    //     // dd($request->file_path);
+    //     $url = $request->file_path;
+
+    //     // Find the position of "storage/"
+    //     $storagePos = strpos($url, 'amenity_images/');
+    //     $filteredUrl = substr($url, $storagePos);
+    //     // dd($filteredUrl);
+    //     // Find the amenity record
+    //     $amenity = Amenity::find($id);
+    //     if (!$amenity) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Amenity not found'
+    //         ], 404);
+    //     }
+
+    //     // Decode amenity_images field (assuming it's stored as JSON)
+    //     $images = json_decode($amenity->amenity_images, true) ?? [];
+
+    //     // Check if the file exists in the images list
+    //     if (!in_array($url, $images)) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'File not found in amenity_images'
+    //         ], 404);
+    //     }
+
+    //     // Convert file path for storage deletion
+    //     $storageFilePath = str_replace("public/storage/", "public/", $url);
+
+
+
+    //     // Remove the deleted file from the array
+    //     $images = array_values(array_diff($images, [$url]));
+
+    //     // Update the record with the modified amenity_images array
+    //     $amenity->amenity_images = json_encode($images);
+    //     $amenity->save();
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Image deleted successfully',
+    //         'remaining_images' => $images
+    //     ], 200);
+    // }
+
     public function deleteAmenityImage(Request $request)
     {
         // Validate request
@@ -387,6 +441,12 @@ class AmenityController extends Controller
             'file_path' => 'required|string', // The exact file path to delete
         ]);
         $id = $request->id;
+
+        $url = $request->file_path;
+
+        // Find the position of "storage/"
+        $storagePos = strpos($url, 'amenity_images/');
+        $filteredUrl = substr($url, $storagePos);
 
         // Find the amenity record
         $amenity = Amenity::find($id);
@@ -401,7 +461,7 @@ class AmenityController extends Controller
         $images = json_decode($amenity->amenity_images, true) ?? [];
 
         // Check if the file exists in the images list
-        if (!in_array($request->file_path, $images)) {
+        if (!in_array($filteredUrl, $images)) {
             return response()->json([
                 'status' => false,
                 'message' => 'File not found in amenity_images'
@@ -409,7 +469,7 @@ class AmenityController extends Controller
         }
 
         // Convert file path for storage deletion
-        $storageFilePath = str_replace("public/storage/", "public/", $request->file_path);
+        $storageFilePath = str_replace("public/storage/", "public/", $filteredUrl);
 
         // Delete the file from storage
         if (Storage::exists($storageFilePath)) {
@@ -417,7 +477,7 @@ class AmenityController extends Controller
         }
 
         // Remove the deleted file from the array
-        $images = array_values(array_diff($images, [$request->file_path]));
+        $images = array_values(array_diff($images, [$filteredUrl]));
 
         // Update the record with the modified amenity_images array
         $amenity->amenity_images = json_encode($images);
@@ -429,6 +489,10 @@ class AmenityController extends Controller
             'remaining_images' => $images
         ], 200);
     }
+
+
+
+
 
 
     public function destroy(Request $request)

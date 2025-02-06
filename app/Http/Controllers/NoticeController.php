@@ -61,11 +61,14 @@ class NoticeController extends Controller
         $validated = $request->validate([
             'notice_title' => 'required|string|max:255',
             'notice_desc' => 'required|string',
-            'date' => 'required|date',
-            'time' => 'required|date_format:H:i:s',
+            'date' => 'sometimes|date',
+            'time' => 'sometimes|date_format:H:i:s',
             'documents' => 'nullable',  // documents should be an array of file uploads
         ]);
 
+        // Get current time for date and time
+        $currentDate = now()->toDateString(); // Current date in Y-m-d format
+        $currentTime = now()->format('g:i A'); // Current time in 12-hour AM/PM format
         // Handle document and photo uploads
         $documentPaths = [];
         if ($request->hasFile('documents')) {
@@ -88,8 +91,8 @@ class NoticeController extends Controller
         $notice = Notice::create([
             'notice_title' => $request->notice_title,
             'notice_desc' => $request->notice_desc,
-            'date' => $request->date,
-            'time' => $request->time,
+            'date' => $request->date ?? $currentDate,
+            'time' => $request->time ?? now()->format('H:i:s'),
             'status' => 'active',  // Default status set to active
             'documents' => json_encode($documentPaths), // Store document URLs as JSON array
             'society_id' => $user->society_id, // Take society_id from authenticated user's society_id
@@ -141,8 +144,8 @@ class NoticeController extends Controller
 
         // Retrieve notices where society_id matches the logged-in user's society_id
         $notices = Notice::where('society_id', $loggedInSocietyId)
-            ->orderBy('date', 'desc') // Order by date (most recent first)
-            ->paginate(10); // 10 notices per page
+            ->orderBy('updated_at', 'desc') // Order by date (most recent first)
+            ->get(); // 10 notices per page
 
         // Map the notices to include a consistent "no" index
         $noticesWithNo = $notices->map(function ($notice, $index) {
@@ -152,7 +155,7 @@ class NoticeController extends Controller
                 'notice_title' => $notice->notice_title,
                 'notice_desc' => $notice->notice_desc,
                 'date' => \Carbon\Carbon::parse($notice->date)->format('d-m-Y'),
-                'time' => $notice->time,
+                'time' => \Carbon\Carbon::parse($notice->time)->format('g:i A'),
                 'status' => $notice->status,
                 'documents' => $notice->documents ? array_map(function ($document) {
                     return asset('storage/' . $document); // Generate URL for each document in the array
@@ -166,6 +169,8 @@ class NoticeController extends Controller
             'data' => $noticesWithNo
         ]);
     }
+
+
 
 
 

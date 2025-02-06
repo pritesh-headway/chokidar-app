@@ -61,6 +61,46 @@ class ServiceRequestController extends Controller
         ]);
     }
 
+    public function getServiceRequestsByMemberId(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'member_id' => 'required|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed.',
+                'data' => $validator->errors(),
+            ]);
+        }
+
+        $serviceRequests = ServiceRequest::where('member_id', $request->member_id)
+            ->with(['service:id,service_name', 'provider:id,full_name,mobile'])
+            ->get();
+
+        $serviceRequests->transform(function ($item, $key) {
+            return [
+                'no' => $key + 1,
+                'id' => $item->id,
+                'member_id' => $item->member_id,
+                'service_name' => optional($item->service)->service_name,
+                'provider_name' => optional($item->provider)->full_name,
+                'mobile' => optional($item->provider)->mobile,
+                'request_status' => $item->request_status,
+                'created_at' => $item->created_at->toIso8601String(),
+                'updated_at' => $item->updated_at->toIso8601String(),
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Service requests retrieved successfully.',
+            'data' => $serviceRequests,
+        ]);
+    }
+
+
     // Flexible fetching based on query parameters
     public function show(Request $request)
     {

@@ -263,6 +263,10 @@ $user2 = User::find(247); // Another user
 $user2->assignRole($adminRole); // Assign admin role
 
 
- city state postal_code contact_number type status
-reguister() method,
+city state postal_code contact_number type status
+register() method,
 registersociety form add users inputs
+
+houses controller for web supre admin
+houses / views and user detaisl in society view section
+    

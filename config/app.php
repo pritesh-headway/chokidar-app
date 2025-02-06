@@ -172,6 +172,9 @@ return [
         App\Providers\RouteServiceProvider::class,
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        Filament\FilamentServiceProvider::class,
+        // App\Providers\Filament\SuperAdminPanelProvider::class,
     ],
 
 

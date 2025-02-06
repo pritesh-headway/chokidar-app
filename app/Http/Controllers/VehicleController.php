@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Vehicle;
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class VehicleController extends Controller
 {
@@ -26,6 +27,8 @@ class VehicleController extends Controller
             'user_id' => 'required|exists:users,id',
             'vehicle_number' => 'required|string',
             'vehicle_type' => 'required|in:2-wheeler,4-wheeler',
+            'vehicle_brand' => 'nullable|string|max:255',
+            'vehicle_model' => 'nullable|string|max:255',
             'status' => 'nullable|in:active,deactive',
         ]);
 
@@ -51,6 +54,8 @@ class VehicleController extends Controller
             'user_id' => $request->user_id,
             'vehicle_number' => $request->vehicle_number,
             'vehicle_type' => $request->vehicle_type,
+            'vehicle_brand' => $request->vehicle_brand,
+            'vehicle_model' => $request->vehicle_model,
             'status' => $request->status ?? "active",
             'block_number' => $blockNumber,
         ]);
@@ -61,6 +66,7 @@ class VehicleController extends Controller
             'data' => $vehicle
         ], 201); // HTTP status code 201 for created
     }
+
 
 
     // Update the specified vehicle
@@ -120,10 +126,12 @@ class VehicleController extends Controller
     public function update(Request $request)
     {
         // Validate incoming request
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'id' => 'required|exists:vehicles,id',
             'vehicle_number' => 'nullable|string',
             'vehicle_type' => 'nullable|in:2-wheeler,4-wheeler',
+            'vehicle_brand' => 'nullable|string|max:255',
+            'vehicle_model' => 'nullable|string|max:255',
             'status' => 'nullable|in:active,deactive',
         ]);
 
@@ -139,17 +147,23 @@ class VehicleController extends Controller
         // Find the vehicle
         $vehicle = Vehicle::findOrFail($request->id);
 
-        // Ensure the logged-in user's id matches the user_id of the vehicle
-        if (auth()->user()->id !== $vehicle->user_id) {
-            return response()->json([
-                'status' => false,
-                'message' => 'You are not authorized to update this vehicle. The user ID does not match the logged-in user.',
-                'data' => []
-            ], 403); // HTTP status code 403 for forbidden
-        }
+        // // Ensure the logged-in user's id matches the user_id of the vehicle
+        // if (auth()->user()->id !== $vehicle->user_id) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'You are not authorized to update this vehicle. The user ID does not match the logged-in user.',
+        //         'data' => []
+        //     ], 403); // HTTP status code 403 for forbidden
+        // }
 
         // Only update the fields that are provided in the request
-        $vehicle->update($request->only(['vehicle_number', 'vehicle_type', 'status']));
+        $vehicle->update($request->only([
+            'vehicle_number',
+            'vehicle_type',
+            'vehicle_brand',
+            'vehicle_model',
+            'status'
+        ]));
 
         return response()->json([
             'status' => true,
@@ -157,6 +171,7 @@ class VehicleController extends Controller
             'data' => $vehicle
         ]);
     }
+
 
 
     // Remove the specified vehicle
@@ -415,6 +430,8 @@ class VehicleController extends Controller
                         'blockNumber' => $vehicle->block_number,
                         'vehicleNumber' => $vehicle->vehicle_number,
                         'type' => $vehicle->vehicle_type,
+                        'brand' => $vehicle->vehicle_brand, // Added vehicle_brand
+                        'model' => $vehicle->vehicle_model, // Added vehicle_model
                     ];
                 })->toArray(),
             ];

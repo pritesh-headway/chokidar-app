@@ -2,9 +2,8 @@
 
 namespace App\Http;
 
-use Spatie\Permission\Middleware\RoleMiddleware;
+use App\Http\Middleware\WebMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-// use Tymon\JWTAuth\Http\Middleware\Authenticate;
 
 class Kernel extends HttpKernel
 {
@@ -19,7 +18,6 @@ class Kernel extends HttpKernel
         // Add middleware you need globally here
         \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Http\Middleware\HandleCors::class,
-        \App\Http\Middleware\TrustProxies::class,
 
     ];
 
@@ -30,12 +28,11 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\WebMiddleware::class,
         ],
 
         'api' => [
@@ -58,22 +55,21 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // 'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
-        'auth:api' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
         // 'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         // 'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         // 'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         // 'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-
         // 'role' => \App\Http\Middleware\RoleMiddleware::class,
         // 'route' => \App\Http\Middleware\RoleMiddleware::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
-
+        'auth.api' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        'auth.web' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'web' => \App\Http\Middleware\WebMiddleware::class,
 
 
     ];

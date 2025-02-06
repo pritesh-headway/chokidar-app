@@ -18,6 +18,8 @@ class Vehicle extends Model
         'user_id',
         // 'vehicle_image',
         'status',
+        'vehicle_brand',
+        'vehicle_model',
     ];
 
     /**

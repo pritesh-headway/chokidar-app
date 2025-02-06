@@ -337,6 +337,7 @@ class UsersController extends Controller
                         'totalMembers' => $this->familyMemberCount($user->id),
                         'society_id' => $user->society_id ?? null,
                         'email' => $user->email,
+                        'created_at' =>  \Carbon\Carbon::parse($user->created_at)->format('Y-m-d'),
                         'email_verified_at' => $user->email_verified_at,
                     ];
                 }
@@ -670,6 +671,7 @@ class UsersController extends Controller
                         'totalMembers' => $this->familyMemberCount($user->id),
                         'society_id' => $user->society_id ?? null,
                         'email' => $user->email,
+                        'created_at' =>  \Carbon\Carbon::parse($user->created_at)->format('Y-m-d'),
                         'email_verified_at' => $user->email_verified_at,
                     ];
                 }
@@ -826,36 +828,105 @@ class UsersController extends Controller
     // }
 
 
+    // public function store(Request $request)
+    // {
+    //     // dd($request);
+    //     // Define required keys
+    //     $requiredKeys = [
+    //         'first_name',
+    //         'last_name',
+    //         'mobile',
+    //         'email',
+    //         'profile_photo',
+    //         'block_number',
+    //         'block',
+    //         'status',
+    //         'role_id', // role_id must be passed
+    //     ];
+
+    //     // Check for missing required keys
+    //     $missingKeys = [];
+    //     foreach ($requiredKeys as $key) {
+    //         if (!$request->has($key)) {
+    //             $missingKeys[] = $key;
+    //         }
+    //     }
+
+    //     if (!empty($missingKeys)) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Missing required keys',
+    //             'missing_keys' => $missingKeys
+    //         ], 400);
+    //     }
+
+    //     // Get logged-in user
+    //     $loggedInUser = auth()->user();
+
+    //     // Only super-admin (1) or admin (2) can create users
+    //     if (!in_array($loggedInUser->role_id, [1, 2])) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Only super-admin or admin can create users'
+    //         ], 403);
+    //     }
+
+    //     // Ensure the user is created within the same society
+    //     $society_id = $loggedInUser->society_id;
+
+    //     // Validate input
+    //     $validatedData = $request->validate([
+    //         'first_name' => 'required|string|max:50',
+    //         'last_name' => 'required|string|max:50',
+    //         'mobile' => 'required|string|size:10',
+    //         'profile_photo' => 'required|image',
+    //         'email' => 'nullable|email',
+    //         'block_number' => 'required|string|max:50',
+    //         'block' => 'required|string|max:50',
+    //         'status' => 'required|in:active,inactive',
+    //         'role_id' => 'required|in:3,4', // Ensure role_id is either 3 (owner) or 4 (tenant)
+    //     ]);
+
+    //     // Assign society_id from the logged-in admin
+    //     $validatedData['society_id'] = $society_id;
+
+    //     // Debugging: Log role_id being passed
+    //     Log::info('Role ID from request: ' . $request->role_id);
+
+    //     // if ($request->hasFile('profile_photo')) {
+    //     //     $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
+    //     //     $validatedData['profile_photo'] = $profilePhotoPath;
+    //     // }
+    //     $guardImagePath = $this->storeFileInPublicFolder($request->file('profile_photo'), 'profile_photos');
+    //     $validatedData['profile_photo'] = $guardImagePath;
+
+    //     // Encrypt password if provided
+    //     if ($request->filled('password')) {
+    //         $validatedData['password'] = bcrypt($request->password);
+    //     }
+
+    //     // Ensure role_id is stored as an integer
+    //     $validatedData['role_id'] = (int)$request->role_id;
+
+    //     // Attempt user creation
+    //     try {
+    //         $user = User::create($validatedData);
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'User created successfully',
+    //             'data' => $user
+    //         ], 201);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error creating user: ' . $e->getMessage());
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Internal Server Error'
+    //         ], 500);
+    //     }
+    // }
+
     public function store(Request $request)
     {
-        // Define required keys
-        $requiredKeys = [
-            'first_name',
-            'last_name',
-            'mobile',
-            'email',
-            'block_number',
-            'block',
-            'status',
-            'role_id', // role_id must be passed
-        ];
-
-        // Check for missing required keys
-        $missingKeys = [];
-        foreach ($requiredKeys as $key) {
-            if (!$request->has($key)) {
-                $missingKeys[] = $key;
-            }
-        }
-
-        if (!empty($missingKeys)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Missing required keys',
-                'missing_keys' => $missingKeys
-            ], 400);
-        }
-
         // Get logged-in user
         $loggedInUser = auth()->user();
 
@@ -867,33 +938,26 @@ class UsersController extends Controller
             ], 403);
         }
 
-        // Ensure the user is created within the same society
-        $society_id = $loggedInUser->society_id;
-
         // Validate input
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'mobile' => 'required|string|size:10',
+            'mobile' => 'required|digits:10', // Only numbers, exactly 10 digits
+            'profile_photo' => 'required|image', // Ensuring image format
             'email' => 'nullable|email',
             'block_number' => 'required|string|max:50',
-            'block' => 'required|string|max:50',
             'status' => 'required|in:active,inactive',
             'role_id' => 'required|in:3,4', // Ensure role_id is either 3 (owner) or 4 (tenant)
         ]);
 
+        // Auto-derive block from block_number
+        $validatedData['block'] = strtoupper(substr($validatedData['block_number'], 0, 1));
+
         // Assign society_id from the logged-in admin
-        $validatedData['society_id'] = $society_id;
+        $validatedData['society_id'] = $loggedInUser->society_id;
 
-        // Debugging: Log role_id being passed
-        Log::info('Role ID from request: ' . $request->role_id);
-
-        // if ($request->hasFile('profile_photo')) {
-        //     $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
-        //     $validatedData['profile_photo'] = $profilePhotoPath;
-        // }
-        $guardImagePath = $this->storeFileInPublicFolder($request->file('profile_photo'), 'profile_photos');
-        $validatedData['profile_photo'] = $guardImagePath;
+        // Store profile photo using custom method
+        $validatedData['profile_photo'] = $this->storeFileInPublicFolder($request->file('profile_photo'), 'profile_photos');
 
         // Encrypt password if provided
         if ($request->filled('password')) {
@@ -901,7 +965,8 @@ class UsersController extends Controller
         }
 
         // Ensure role_id is stored as an integer
-        $validatedData['role_id'] = (int)$request->role_id;
+        $validatedData['role_id'] = (int)$validatedData['role_id'];
+        // dd($validatedData);
 
         // Attempt user creation
         try {
@@ -912,7 +977,8 @@ class UsersController extends Controller
                 'data' => $user
             ], 201);
         } catch (\Exception $e) {
-            Log::error('Error creating user: ' . $e->getMessage());
+            Log::error('Error creating user: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            // dd($e);
             return response()->json([
                 'status' => false,
                 'message' => 'Internal Server Error'
@@ -920,8 +986,16 @@ class UsersController extends Controller
         }
     }
 
+
     protected function storeFileInPublicFolder($file, $folder)
     {
+        // dd($file);
+        // if ($file == null) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Profile photo is required. try to upload again.'
+        //     ], 200);
+        // }
         // Generate a unique file name
         $filename = time() . '_' . $file->getClientOriginalName();
         $filename = str_replace(' ', '_', $filename);

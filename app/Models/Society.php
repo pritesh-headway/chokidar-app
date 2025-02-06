@@ -32,4 +32,9 @@ class Society extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function houses()
+    {
+        return $this->hasMany(House::class);
+    }
 }

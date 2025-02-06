@@ -29,83 +29,6 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
-    // Register a new user
-    // public function register(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'block_number' => 'required|string|max:50|unique:users',
-    //         'first_name' => 'required|string|max:50',
-    //         'last_name' => 'required|string|max:50',
-    //         'role' => 'required|in:owner,admin,coowner,committee',
-    //         'mobile' => 'required|string|max:10|unique:users',
-    //         'block' => 'required|string|max:50',
-    //         'profile_photo' => 'nullable|string|max:256',
-    //         'status' => 'nullable|in:active,inactive',
-    //         'email' => 'nullable|email|unique:users',
-    //         'password' => 'required|string|min:6',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json($validator->errors(), 422);
-    //     }
-
-    //     $user = User::create([
-    //         'block_number' => $request->block_number,
-    //         'first_name' => $request->first_name,
-    //         'last_name' => $request->last_name,
-    //         'role' => $request->role,
-    //         'mobile' => $request->mobile,
-    //         'block' => $request->block,
-    //         'profile_photo' => $request->profile_photo,
-    //         'status' => $request->status ?? 'active',
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //     ]);
-
-    //     return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-    // }
-
-    // public function register(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'block_number' => 'required|string|max:50|unique:users',
-    //         'first_name' => 'required|string|max:50',
-    //         'last_name' => 'required|string|max:50',
-    //         'role' => 'required|in:owner,admin,coowner,committee',
-    //         'mobile' => 'required|string|max:10|unique:users',
-    //         'block' => 'required|string|max:50',
-    //         'profile_photo' => 'nullable|image|max:2048', // Ensure it's an image and within size limits
-    //         'status' => 'nullable|in:active,inactive',
-    //         'email' => 'nullable|email|unique:users',
-    //         'password' => 'required|string|min:6',
-    //     ]);
-    //     // dd($validator->errors());
-    //     if ($validator->fails()) {
-    //         return response()->json($validator->errors(), 422);
-    //     }
-
-    //     // Handle the file upload for profile photo (if provided)
-    //     $profilePhotoPath = null;
-    //     if ($request->hasFile('profile_photo')) {
-    //         $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
-    //     }
-
-    //     $user = User::create([
-    //         'block_number' => $request->block_number,
-    //         'first_name' => $request->first_name,
-    //         'last_name' => $request->last_name,
-    //         'role' => $request->role,
-    //         'mobile' => $request->mobile,
-    //         'block' => $request->block,
-    //         'profile_photo' => $request->profile_photo,  // Store the path to the image
-    //         // 'status' => $request->status ?? 'active',
-    //         'status' => 'inactive',
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //     ]);
-
-    //     return response()->json(["status" => true, 'message' => 'User registered successfully', 'user' => $user], 201);
-    // }
 
     public function register(Request $request)
     {
@@ -113,7 +36,7 @@ class AuthController extends Controller
             'block_number' => 'required|string|max:50|unique:users',
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'role' => 'required|in:owner,admin,coowner,committee',
+            'role_id' => 'required|in:1,2,3,4',
             'mobile' => 'required|string|max:10|unique:users',
             'block' => 'required|string|max:50',
             'profile_photo' => 'nullable|image', // Ensure it's an image and within size limits |max:2048
@@ -151,7 +74,7 @@ class AuthController extends Controller
             'block_number' => $request->block_number,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'role' => $request->role,
+            'role_id' => $request->role_id,
             'mobile' => $request->mobile,
             'block' => $request->block,
             'profile_photo' => $profilePhotoPath, // Save the relative path to the uploaded image
@@ -172,47 +95,6 @@ class AuthController extends Controller
 
 
 
-
-    /*
-    public function login(Request $request)
-    {
-        // Validate the incoming request
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-
-
-        // Check the credentials
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = JWTAuth::fromUser($user);  // Generate JWT token
-
-            // Build the user details to return in the response
-            $userDetails = [
-                'fullname' => [
-                    'firstname' => $user->first_name,
-                    'lastname' => $user->last_name,
-                ],
-                'email' => $user->email,
-                'password' => $user->password,
-                'role' => $user->role,
-                'id' => $user->id,
-            ];
-
-            return response()->json([
-                'status' => true,
-                'data' => [
-                    'token' => $token,
-                    'user' => $userDetails
-                ]
-            ], 200);
-        }
-
-        return response()->json(['message' => 'Unauthorized'], 401);
-    }
-        */
-
     public function login(Request $request)
     {
         // Validate the incoming request
@@ -229,7 +111,6 @@ class AuthController extends Controller
 
             // Retrieve the currently authenticated user using JWTAuth
             $user = JWTAuth::user();
-
             // Build the user details to return in the response
             $userDetails = [
 
@@ -283,11 +164,33 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    // public function logout()
+    // {
+    //     try {
+    //         // Invalidate the token
+    //         JWTAuth::invalidate(JWTAuth::getToken());
+    //         // auth()->logout();
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Logged out successfully'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => 'Failed to logout, please try again'], 500);
+    //     }
+    // }
+
     public function logout()
     {
         try {
             // Invalidate the token
-            JWTAuth::invalidate(JWTAuth::getToken());
+            $token = JWTAuth::getToken();
+            if ($token) {
+                JWTAuth::invalidate($token);
+            }
+
+            // Log out the user
+            auth()->logout();
 
             return response()->json([
                 'status' => true,

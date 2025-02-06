@@ -198,7 +198,8 @@ class BookingAmenityController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:booking_amenities,id',
-            'booking_status' => 'required|string|in:Pending,Approved,Rejected',
+            'booking_status' => 'sometimes|string|in:Pending,Approved,Rejected',
+            'reason' => 'sometimes',
             'from' => 'sometimes|date_format:H:i',
             'to' => 'sometimes|date_format:H:i|after:from',
             'day' => 'sometimes|date_format:Y-m-d',
@@ -240,7 +241,21 @@ class BookingAmenityController extends Controller
         }
 
         // Update booking status
-        $booking->booking_status = $request->booking_status;
+        // $booking->booking_status = $request->booking_status;
+        if ($request->booking_status == 'Rejected') {
+            if ($request->reason == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Reason is required for rejecting.',
+                    // 'data' => $booking
+                ]);
+            } else {
+                $booking->reason = $request->reason;
+                $booking->booking_status = $request->booking_status;
+            }
+        } else {
+            $booking->booking_status = $request->booking_status;
+        }
 
         // Check and update 'from' (start_time) and 'to' (end_time) if present
         if ($request->has('from') && $request->has('to')) {

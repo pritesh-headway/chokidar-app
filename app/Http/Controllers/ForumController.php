@@ -91,6 +91,7 @@ class ForumController extends Controller
 
             return [
                 'id' => $forum->id,
+                'society_id' => \App\Models\User::find($forum->user_id)->society_id,
                 'block_number' => $forum->block_number,
                 'user_id' => $forum->user_id,
                 'forum_by' => $forum->forum_by,
@@ -113,32 +114,104 @@ class ForumController extends Controller
         ]);
     }
 
+    public function getAllInactiveForums(Request $request)
+    {
+        $request->merge(['status' => 'deactive']);
+        return $this->show($request);
+    }
+
+    public function getAllActiveForums(Request $request)
+    {
+        $request->merge(['status' => 'active']);
+        return $this->show($request);
+    }
+
 
     public function show(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|integer'
+            'id' => 'nullable|integer',
+            'status' => 'nullable|in:active,deactive'
         ]);
 
-        $forum = Forum::find($validated['id']);
+        $loggedInUser = auth()->user();
+        $loggedInSocietyId = $loggedInUser->society_id;
 
-        if (!$forum) {
+        // If 'id' is provided, return the specific forum
+        if (!empty($validated['id'])) {
+            $forum = Forum::find($validated['id']);
+
+            if (!$forum) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Forum not found.',
+                    'data' => null
+                ], 404);
+            }
+
+            // Ensure the forum belongs to the logged-in user's society
+            if (\App\Models\User::find($forum->user_id)->society_id !== $loggedInSocietyId) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unauthorized access to this forum.',
+                    'data' => null
+                ], 403);
+            }
+
+            $forum = $this->addFullImageUrl($forum);
+            $forum->no = 1; // Since this is a single item, "no" is set to 1
+
             return response()->json([
-                'status' => false,
-                'message' => 'Forum not found.',
-                'data' => null
-            ], 404);
+                'status' => true,
+                'message' => 'Forum retrieved successfully.',
+                'data' => $forum
+            ]);
         }
 
-        $forum = $this->addFullImageUrl($forum);
-        $forum->no = 1; // Since this is a single item, "no" is set to 1
+        // If 'status' is provided, return all forums with that status
+        if (!empty($validated['status'])) {
+            $forums = Forum::where('status', $validated['status'])
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->filter(function ($forum) use ($loggedInSocietyId) {
+                    return \App\Models\User::find($forum->user_id)->society_id === $loggedInSocietyId;
+                })
+                ->values()
+                ->map(function ($forum, $index) {
+                    $forum = $this->addFullImageUrl($forum);
+                    return [
+                        'id' => $forum->id,
+                        'society_id' => \App\Models\User::find($forum->user_id)->society_id,
+                        'block_number' => $forum->block_number,
+                        'user_id' => $forum->user_id,
+                        'forum_by' => $forum->forum_by,
+                        'title' => $forum->title,
+                        'description' => $forum->description,
+                        'date' => \Carbon\Carbon::parse($forum->date)->format('d-m-Y'),
+                        'profile_photo' => $forum->profile_photo,
+                        'responses' => $forum->responses_count,
+                        'photos' => $forum->photos,
+                        'status' => $forum->status,
+                        'created_at' => $forum->created_at->toIso8601String(),
+                        'updated_at' => $forum->updated_at->toIso8601String(),
+                        'no' => $index + 1,
+                    ];
+                });
+
+            return response()->json([
+                'status' => true,
+                'message' => "Forums with status '{$validated['status']}' retrieved successfully.",
+                'data' => $forums
+            ]);
+        }
 
         return response()->json([
-            'status' => true,
-            'message' => 'Forum retrieved successfully.',
-            'data' => $forum
-        ]);
+            'status' => false,
+            'message' => 'Please provide either an id or a status.',
+            'data' => null
+        ], 400);
     }
+
     // Store, update, and destroy methods remain the same as above,
     // but you should ensure `addFullImageUrl` is called before returning the response
     // public function store(Request $request)

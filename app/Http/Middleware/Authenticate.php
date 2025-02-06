@@ -59,6 +59,7 @@ class Authenticate
 
     public function handle($request, Closure $next, ...$guards)
     {
+        // dd(123);
         // If the user is not authenticated using JWT
         if (!auth()->user()) {
             return response()->json(['error' => 'Unauthorized'], 401);

@@ -15,7 +15,8 @@ class ServiceRequestFactory extends Factory
 
     public function definition()
     {
-        $user = User::inRandomOrder()->first();
+        $user = User::where('society_id', 2)->inRandomOrder()->first();
+
         $service = Service::inRandomOrder()->first();
         $provider = ServiceProvider::inRandomOrder()->first();
         return [
