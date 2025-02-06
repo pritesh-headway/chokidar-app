@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation Format</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            border: 1px solid #000;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .header img {
+            max-width: 100px;
+        }
+
+        .header .title {
+            text-align: center;
+            flex: 1;
+        }
+
+        .title h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .contact {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .details,
+        .terms {
+            margin-top: 20px;
+        }
+
+        .quotation-info {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #f4f4f4;
+        }
+
+        .terms {
+            margin-top: 20px;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        .container2 {
+            width: 98%;
+            margin: 20px auto;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .header2 {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid black;
+            padding-bottom: 5px;
+        }
+
+        .header2 div {
+            font-weight: bold;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding-top: 10px;
+        }
+
+        .left {
+            width: 60%;
+        }
+
+        .right {
+            width: 35%;
+            border-left: 1px solid black;
+            padding-left: 10px;
+        }
+
+        .right table {
+            width: 100%;
+        }
+
+        .right td {
+            padding: 3px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+                border-left: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="Company Logo">
+            <div class="title">
+                <h2>NILKANTH SALES AGENCY</h2>
+                <p class="contact">SHOP NO. 17, GARASIYA BOARDING, 6 RAJPUTPARA, RAJKOT 360 001<br>
+                    Mo. +91 88663 48866, e-mail: mailto:nilkanth_2014@yahoo.com</p>
+            </div>
+        </div>
+
+        <div class="container2">
+            <div class="header2">
+                <div>Debit Memo</div>
+                <div>QUOTATION</div>
+                <div>Original</div>
+            </div>
+            <div class="content">
+                <div class="left">
+                    <p><strong>M/s. : SHARDA EXTRUSION</strong></p>
+                    <p>PLOT NO.12, GELI ESTATE<br>SHED NO.245<br>REPUTE FOOD GATE</p>
+                    <p><strong>SHAPAR (VERAVAL) - 360024</strong></p>
+                    <p><strong>Mo No :</strong> 12345 67890</p>
+                    <p><strong>Place of Supply :</strong> 24-Gujarat</p>
+                    <p><strong>GSTIN No. :</strong> 24AAZPU5853A1Z9</p>
+                </div>
+                <div class="right">
+                    <table>
+                        <tr>
+                            <td><strong>Quotation No.</strong></td>
+                            <td>: 93</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Date</strong></td>
+                            <td>: 04/01/2025</td>
+                        </tr>
+                        <tr>
+                            <td>Kindly Atten</td>
+                            <td>:</td>
+                        </tr>
+                        <tr>
+                            <td>P.O. No.</td>
+                            <td>:</td>
+                        </tr>
+                        <tr>
+                            <td>Transport</td>
+                            <td>: SELF</td>
+                        </tr>
+                        <tr>
+                            <td>L.R. No.</td>
+                            <td>:</td>
+                        </tr>
+                        <tr>
+                            <td>L.R. Date</td>
+                            <td>: / /</td>
+                        </tr>
+                        <tr>
+                            <td>Destination</td>
+                            <td>:</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <table>
+            <tr>
+                <th>Sr.</th>
+                <th>Product Name</th>
+                <th>HSN Code</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th>SGST</th>
+                <th>CGST</th>
+                <th>Net Amount</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>CG MAKE 100 HP 3-PH 1440 RPM IE3 MOTOR</td>
+                <td>85015210</td>
+                <td>5</td>
+                <td>174845.00</td>
+                <td>874225.00</td>
+                <td>9%</td>
+                <td>9%</td>
+                <td>1031585.50</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>CG MAKE 150 HP 3-PH 1440 RPM IE3 MOTOR</td>
+                <td>85015210</td>
+                <td>5</td>
+                <td>237695.00</td>
+                <td>1188475.00</td>
+                <td>9%</td>
+                <td>9%</td>
+                <td>1402400.50</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>CG MAKE 5 HP 3-PH 1440 RPM FLANGE IE3 MOTOR</td>
+                <td>85015210</td>
+                <td>5</td>
+                <td>14150.00</td>
+                <td>70750.00</td>
+                <td>9%</td>
+                <td>9%</td>
+                <td>83485.00</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>New Product Example</td>
+                <td>85015211</td>
+                <td>2</td>
+                <td>50000.00</td>
+                <td>100000.00</td>
+                <td>9%</td>
+                <td>9%</td>
+                <td>118000.00</td>
+            </tr>
+        </table>
+
+        <!-- <div class="quotation-info">
+            <strong>Quotation No.:</strong> 93 &nbsp;&nbsp;&nbsp; <strong>Date:</strong> 04/01/2025<br>
+            <strong>Kindly Atten:</strong> _____ &nbsp;&nbsp;&nbsp; <strong>P.O. No.:</strong> _____<br>
+            <strong>Transport:</strong> SELF &nbsp;&nbsp;&nbsp; <strong>L.R. No.:</strong> / /<br>
+            <strong>Destination:</strong> ______
+        </div>
+
+        <div class="details">
+            <h3>Debit Memo</h3>
+            <p><strong>M/s: SHARDA EXTRUSION</strong></p>
+            <p>PLOT NO.12, GELI ESTATE, SHED NO.245, REPUTE FOOD GATE</p>
+            <p><strong>SHAPAR(VERAVAL) - 360024</strong></p>
+            <p><strong>Mo No:</strong> 12345 67890</p>
+            <p><strong>Place of Supply:</strong> 24-Gujarat</p>
+            <p><strong>GSTIN No:</strong> 24AAZPU5853A1Z9</p>
+        </div>
+
+        <table>
+            <tr>
+                <th>Sr.</th>
+                <th>Product Name</th>
+                <th>HSN/SAC</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th>GST</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>CG MAKE 100 HP 3-PH 1440 RPM IE3 MOTOR</td>
+                <td>85015210</td>
+                <td>5</td>
+                <td>174845.00</td>
+                <td>874225.00</td>
+                <td>18%</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>CG MAKE 150 HP 3-PH 1440 RPM IE3 MOTOR</td>
+                <td>85015210</td>
+                <td>5</td>
+                <td>237695.00</td>
+                <td>1188475.00</td>
+                <td>18%</td>
+            </tr>
+        </table> -->
+
+        <div class="terms">
+            <h3>Terms & Conditions</h3>
+            <p>1. Goods once sold will not be taken back.</p>
+            <p>2. Interest @18% p.a. will be charged if payment is not made within due date.</p>
+            <p>3. Our risk and responsibility ceases as soon as the goods leave our premises.</p>
+            <p>4. Subject to 'RAJKOT' Jurisdiction only.</p>
+        </div>
+
+        <div class="footer">
+            <p>For, NILKANTH SALES AGENCY</p>
+            <p>(Authorised Signatory)</p>
+        </div>
+    </div>
+</body>
+
+</html>

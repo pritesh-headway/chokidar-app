@@ -213,3 +213,6 @@ registersociety form add users inputs
 
 houses controller for web supre admin
 houses / views and user detaisl in society view section
+
+wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains website.org --no-parent  wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains website.org --no-parent wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains website.org --no-parent  https://uiparadox.co.uk/public/templates/astro-aura/
+wget --mirror --convert-links --adjust-extension --page-requisites  --no-parent https://uiparadox.co.uk/public/templates/astro-aura/

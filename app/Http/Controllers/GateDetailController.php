@@ -19,21 +19,36 @@ class GateDetailController extends Controller
 
         $gateDetail = GateDetail::create($validated);
 
-        return response()->json($gateDetail, 201);
+        return response()->json([
+            'status' => true,
+            'message' => 'Gate detail retrieved successfully',
+            'data' => $gateDetail
+        ]);
     }
     public function index(Request $request)
     {
-        $gateDetails = GateDetail::all();
-        return response()->json($gateDetails);
+        $gateDetails = GateDetail::where('status', 'active')->get();
+        return response()->json([
+            'status' => true,
+            'message' => 'Gate detail retrieved successfully',
+            'data' => $gateDetails
+        ]);
     }
+
     public function show(Request $request)
     {
         $validated = $request->validate([
             'id' => 'required|integer|exists:gate_details,id',
         ]);
 
-        $gateDetail = GateDetail::findOrFail($request->id);
-        return response()->json($gateDetail);
+        $gateDetail = GateDetail::where('status', 'active')
+            ->findOrFail($request->id);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Gate detail retrieved successfully',
+            'data' => $gateDetail
+        ]);
     }
 
     public function getByGateNo(Request $request)
@@ -48,7 +63,11 @@ class GateDetailController extends Controller
             ->where('society_id', $societyId)
             ->get();
 
-        return response()->json($gateDetails);
+        return response()->json([
+            'status' => true,
+            'message' => 'Gate detail retrieved successfully',
+            'data' => $gateDetails
+        ]);
     }
     public function update(Request $request)
     {
@@ -63,7 +82,11 @@ class GateDetailController extends Controller
         $gateDetail = GateDetail::findOrFail($request->id);
         $gateDetail->update($validated);
 
-        return response()->json($gateDetail);
+        return response()->json([
+            'status' => true,
+            'message' => 'Gate detail retrieved successfully',
+            'data' => $gateDetail
+        ]);
     }
     public function destroy(Request $request)
     {
@@ -74,6 +97,9 @@ class GateDetailController extends Controller
         $gateDetail = GateDetail::findOrFail($request->id);
         $gateDetail->delete();
 
-        return response()->json(['message' => 'Gate detail deleted successfully.']);
+        return response()->json([
+            'status' => true,
+            'message' => 'Gate detail deleted successfully'
+        ]);
     }
 }

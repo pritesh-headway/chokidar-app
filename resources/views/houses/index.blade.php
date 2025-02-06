@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mt-5 small-text">
         <h2>House Listings</h2>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">Back</a>
+        <a href="{{ route('societies.index') }}" class="btn btn-secondary mb-3">Back</a>
         <div class="table-responsive">
             <table class="table table-striped table-bordered table-sm">
                 <thead class="thead-dark">

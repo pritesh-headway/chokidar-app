@@ -17,7 +17,10 @@
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('societies.index') }}" class="btn btn-primary">Back to All Societies</a>
-                    <a href="{{ route('houses.index') }}" class="btn btn-secondary">View Houses</a>
+                    <a href="{{ route('houses.index', ['society_id' => session('society_id')]) }}"
+                        class="btn btn-secondary">View
+                        Houses</a>
+                    {{-- <a href="{{ route('houses.show', ['house' => $house->id, 'society_id' => $society->id]) }}" class="btn btn-info">View Society Houses</a> --}}
                 </div>
             </div>
         </div>

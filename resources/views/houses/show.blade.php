@@ -17,7 +17,9 @@
                 <p><strong>Updated At:</strong> {{ $house->updated_at->format('Y-m-d') }}</p>
             </div>
         </div>
-        <a href="{{ route('houses.index') }}" class="btn btn-primary mt-3 small-text">Back to House List</a>
+        <a href="{{ route('houses.index', [($society_id = session('society_id'))]) }}"
+            class="btn btn-primary mt-3 small-text">Back to
+            House List</a>
     </div>
 @endsection
 

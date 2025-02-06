@@ -39,7 +39,7 @@ Route::middleware([WebMiddleware::class])->group(function () {
         'destroy' => 'contactus.destroy',
     ]);
 
-    Route::resource('houses', HouseController::class)->names([
+    Route::resource('houses', App\Http\Controllers\backend\HouseController::class)->names([
         'index' => 'houses.index',
         'create' => 'houses.create',
         'store' => 'houses.store',
@@ -48,4 +48,5 @@ Route::middleware([WebMiddleware::class])->group(function () {
         'update' => 'houses.update',
         'destroy' => 'houses.destroy',
     ]);
+    // Route::get('/houses/{society_id?}', [HouseController::class, 'index'])->name('houses.index');
 });

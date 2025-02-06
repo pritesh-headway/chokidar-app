@@ -16,30 +16,22 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
-    <li class="nav-item {{ request()->is('addform/list') ? 'active' : '' }}">
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-plus-circle"></i>
-            <span>Add Data</span></a>
-    </li>
 
-    <li class="nav-item {{ request()->is('calculate/list') ? 'active' : '' }}">
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-calculator"></i>
-            <span>Create Quatation</span></a>
-    </li>
+    <hr class="sidebar-divider my-0">
 
     <li class="nav-item {{ request()->is('societies/index') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('societies.index') }}">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Societies</span></a>
     </li>
+    <hr class="sidebar-divider my-0">
 
     <li class="nav-item {{ request()->is('contactus') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('contactus.index') }}">
             <i class="fas fa-fw fa-calculator"></i>
             <span>Contact_us requests</span></a>
     </li>
-    <li class="nav-item {{ request()->is('viewdata/list') ? 'active' : '' }}">
+    {{-- <li class="nav-item {{ request()->is('viewdata/list') ? 'active' : '' }}">
         <a class="nav-link" href="#">
             <i class="fas fa-fw fa-eye"></i>
             <span>View Data</span></a>
@@ -51,7 +43,7 @@
         <a class="nav-link" href="#">
             <i class="fas fa-fw fa-plus-circle"></i>
             <span>Add Product Data</span></a>
-    </li>
+    </li> --}}
     {{-- <li class="nav-item {{ request()->is('dashboard') ? 'active' : ''}}">
         <a class="nav-link" href="dashboard">
             <i class="fas fa-fw fa-box"></i>
@@ -68,12 +60,12 @@
             <span>Sub-Category Data</span></a>
     </li> --}}
 
-    <hr class="sidebar-divider my-0">
+    {{-- <hr class="sidebar-divider my-0">
     <li class="nav-item {{ request()->is('settax/list') ? 'active' : '' }}">
         <a class="nav-link" href="#">
             <i class="fas fa-fw fa-file-invoice-dollar"></i>
             <span>Set Taxes</span></a>
-    </li>
+    </li> --}}
     <hr class="sidebar-divider my-0">
     <li class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('backend.logout') }}">

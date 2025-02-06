@@ -93,6 +93,8 @@ class AllSocietyController extends Controller
     }
     public function show($id)
     {
+        // dd(33);
+        session(['society_id' => $id]);
         $society = Society::with('houses')->findOrFail($id);
         return view('societies.show', compact('society'));
     }
