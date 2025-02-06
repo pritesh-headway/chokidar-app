@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('../dom/event-handler.js'), require('./index.js'), require('./config.js')) :
-  typeof define === 'function' && define.amd ? define(['../dom/event-handler', './index', './config'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Backdrop = factory(global.EventHandler, global.Index, global.Config));
-})(this, (function (EventHandler, index_js, Config) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['../dom/event-handler', './index', './config'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Backdrop = factory(global.EventHandler, global.Index, global.Config));
+})(this, (function (EventHandler, index_js, Config) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -29,8 +30,8 @@
     clickCallback: null,
     isAnimated: false,
     isVisible: true,
-    // if false, we use the backdrop helper without adding any element to the dom
-    rootElement: 'body' // give the choice to place backdrop under different elements
+
+    rootElement: 'body'
   };
 
   const DefaultType = {
@@ -52,8 +53,6 @@
       this._isAppended = false;
       this._element = null;
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -63,8 +62,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     show(callback) {
       if (!this._config.isVisible) {
         index_js.execute(callback);
@@ -99,8 +96,6 @@
       this._element.remove();
       this._isAppended = false;
     }
-
-    // Private
     _getElement() {
       if (!this._element) {
         const backdrop = document.createElement('div');
@@ -113,7 +108,7 @@
       return this._element;
     }
     _configAfterMerge(config) {
-      // use getElement() with the default "body" to get a fresh Element on each instantiation
+
       config.rootElement = index_js.getElement(config.rootElement);
       return config;
     }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SocietyController extends Controller
 {
-    // Create a new society
+
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -49,8 +49,6 @@ class SocietyController extends Controller
             'data' => $society,
         ], 201);
     }
-
-    // Get a list of all societies
     public function index(Request $request)
     {
         $societies = Society::all();
@@ -61,8 +59,6 @@ class SocietyController extends Controller
             'data' => $societies,
         ]);
     }
-
-    // Get a specific society by ID
     public function show(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -118,8 +114,6 @@ class SocietyController extends Controller
                 'data' => null,
             ], 404);
         }
-
-        // Update only provided fields, keeping others as they are
         if ($request->has('user_id') && !empty($request->user_id)) {
             $society->user_id = $request->user_id;
         }
@@ -156,9 +150,6 @@ class SocietyController extends Controller
             'data' => $society,
         ]);
     }
-
-
-    // Delete a society by ID
     public function destroy(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Validator;
 
 class ServiceRequestController extends Controller
 {
-    // Fetch all service requests
+
     public function index(Request $request)
     {
         $serviceRequests = ServiceRequest::all();
-
-        // Add 'no' to each service request
         $serviceRequests->transform(function ($item, $key) {
-            $item->no = $key + 1;  // Incremental 'no' starting from 1
+            $item->no = $key + 1;
             return $item;
         });
 
@@ -25,9 +23,6 @@ class ServiceRequestController extends Controller
             'data' => $serviceRequests,
         ]);
     }
-
-
-    // Create a new service request
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -99,9 +94,6 @@ class ServiceRequestController extends Controller
             'data' => $serviceRequests,
         ]);
     }
-
-
-    // Flexible fetching based on query parameters
     public function show(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -119,8 +111,6 @@ class ServiceRequestController extends Controller
                 'data' => $validator->errors(),
             ]);
         }
-
-        // Build the query dynamically based on the input
         $query = ServiceRequest::query();
 
         if ($request->filled('id')) {
@@ -138,24 +128,18 @@ class ServiceRequestController extends Controller
         if ($request->filled('request_status')) {
             $query->where('request_status', $request->request_status);
         }
-
-        // Get the filtered results
         $serviceRequests = $query->get();
 
         $serviceRequests->transform(function ($item, $key) {
-            $item->no = $key + 1;  // Incremental 'no' starting from 1
+            $item->no = $key + 1;
             return $item;
         });
-
-
         return response()->json([
             'status' => true,
             'message' => 'Service requests retrieved successfully.',
             'data' => $serviceRequests,
         ]);
     }
-
-    // Delete a service request
     public function destroy(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -181,7 +165,7 @@ class ServiceRequestController extends Controller
 
     public function update(Request $request)
     {
-        // Validate the request input
+
         $validated = $request->validate([
             'id' => 'required|integer|exists:service_requests,id',
             'member_id' => 'nullable|integer|exists:users,id',
@@ -192,7 +176,7 @@ class ServiceRequestController extends Controller
         ]);
 
         try {
-            // Find the service request by ID
+
             $serviceRequest = ServiceRequest::find($validated['id']);
 
             if (!$serviceRequest) {
@@ -201,8 +185,6 @@ class ServiceRequestController extends Controller
                     'message' => 'Service request not found.',
                 ], 404);
             }
-
-            // Check for missing parameters
             $missingParams = [];
             foreach ($validated as $key => $value) {
                 if ($value === null) {
@@ -216,8 +198,6 @@ class ServiceRequestController extends Controller
                     'message' => 'Missing parameters: ' . implode(', ', $missingParams),
                 ], 200);
             }
-
-            // Update only the fields that are provided
             $serviceRequest->update($validated);
 
             return response()->json([

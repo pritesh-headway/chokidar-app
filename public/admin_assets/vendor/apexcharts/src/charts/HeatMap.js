@@ -36,8 +36,6 @@ export default class HeatMap {
     })
 
     ret.attr('clip-path', `url(#gridRectMask${w.globals.cuid})`)
-
-    // width divided into equal parts
     let xDivision = w.globals.gridWidth / w.globals.dataPoints
     let yDivision = w.globals.gridHeight / w.globals.series.length
 
@@ -57,7 +55,7 @@ export default class HeatMap {
       rev ? i < heatSeries.length : i >= 0;
       rev ? i++ : i--
     ) {
-      // el to which series will be drawn
+
       let elSeries = graphics.group({
         class: `apexcharts-series apexcharts-heatmap-series`,
         seriesName: Utils.escapeString(w.globals.seriesNames[i]),
@@ -191,8 +189,6 @@ export default class HeatMap {
 
       ret.add(elSeries)
     }
-
-    // adjust yaxis labels for heatmap
     let yAxisScale = w.globals.yAxisScale[0].result.slice()
     if (w.config.yaxis[0].reversed) {
       yAxisScale.unshift('')

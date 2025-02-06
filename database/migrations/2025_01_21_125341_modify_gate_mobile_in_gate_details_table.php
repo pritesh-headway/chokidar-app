@@ -14,7 +14,7 @@ class ModifyGateMobileInGateDetailsTable extends Migration
     public function up()
     {
         Schema::table('gate_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('gate_mobile')->change(); // Change gate_mobile to INT
+            $table->unsignedBigInteger('gate_mobile')->change();
         });
     }
 
@@ -26,7 +26,7 @@ class ModifyGateMobileInGateDetailsTable extends Migration
     public function down()
     {
         Schema::table('gate_details', function (Blueprint $table) {
-            $table->string('gate_mobile')->change(); // Revert back to VARCHAR if needed
+            $table->string('gate_mobile')->change();
         });
     }
 }

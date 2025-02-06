@@ -10,14 +10,14 @@ class SuperAdminController extends Controller
 {
     public function login(Request $request)
     {
-        // Validate the incoming request
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
         if (Auth::attempt($credentials, $request->remember)) {
-            // Authentication passed...
+
             return redirect()->intended('admin/dashboard');
         }
 
@@ -36,13 +36,10 @@ class SuperAdminController extends Controller
 
     public function index()
     {
-        // dd(auth()->user()->can('create post'));
-        // dd(auth()->user()->id);
-
         return response()->json([
             'status' => true,
             'message' => 'this is super admin dashboard response.',
-            // 'user' => $user,
+
         ], 201);
     }
 }

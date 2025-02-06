@@ -1,6 +1,4 @@
 (function (Prism) {
-
-	// Allow only one line break
 	var inner = /(?:\\.|[^\\\n\r]|(?:\n|\r\n?)(?![\r\n]))/.source;
 
 	/**
@@ -17,13 +15,9 @@
 		pattern = pattern.replace(/<inner>/g, function () { return inner; });
 		return RegExp(/((?:^|[^\\])(?:\\{2})*)/.source + '(?:' + pattern + ')');
 	}
-
-
 	var tableCell = /(?:\\.|``(?:[^`\r\n]|`(?!`))+``|`[^`\r\n]+`|[^\\|\r\n`])+/.source;
 	var tableRow = /\|?__(?:\|__)+\|?(?:(?:\n|\r\n?)|(?![\s\S]))/.source.replace(/__/g, function () { return tableCell; });
 	var tableLine = /\|?[ \t]*:?-{3,}:?[ \t]*(?:\|[ \t]*:?-{3,}:?[ \t]*)+\|?(?:\n|\r\n?)/.source;
-
-
 	Prism.languages.markdown = Prism.languages.extend('markup', {});
 	Prism.languages.insertBefore('markdown', 'prolog', {
 		'front-matter-block': {
@@ -40,7 +34,7 @@
 			}
 		},
 		'blockquote': {
-			// > ...
+
 			pattern: /^>(?:[\t ]*>)*/m,
 			alias: 'punctuation'
 		},
@@ -80,15 +74,12 @@
 		},
 		'code': [
 			{
-				// Prefixed by 4 spaces or 1 tab and preceded by an empty line
+
 				pattern: /((?:^|\n)[ \t]*\n|(?:^|\r\n?)[ \t]*\r\n?)(?: {4}|\t).+(?:(?:\n|\r\n?)(?: {4}|\t).+)*/,
 				lookbehind: true,
 				alias: 'keyword'
 			},
 			{
-				// ```optional language
-				// code block
-				// ```
 				pattern: /^```[\s\S]*?^```$/m,
 				greedy: true,
 				inside: {
@@ -106,11 +97,6 @@
 		],
 		'title': [
 			{
-				// title 1
-				// =======
-
-				// title 2
-				// -------
 				pattern: /\S.*(?:\n|\r\n?)(?:==+|--+)(?=[ \t]*$)/m,
 				alias: 'important',
 				inside: {
@@ -118,8 +104,6 @@
 				}
 			},
 			{
-				// # title 1
-				// ###### title 6
 				pattern: /(^\s*)#.+/m,
 				lookbehind: true,
 				alias: 'important',
@@ -129,28 +113,16 @@
 			}
 		],
 		'hr': {
-			// ***
-			// ---
-			// * * *
-			// -----------
 			pattern: /(^\s*)([*-])(?:[\t ]*\2){2,}(?=\s*$)/m,
 			lookbehind: true,
 			alias: 'punctuation'
 		},
 		'list': {
-			// * item
-			// + item
-			// - item
-			// 1. item
 			pattern: /(^\s*)(?:[*+-]|\d+\.)(?=[\t ].)/m,
 			lookbehind: true,
 			alias: 'punctuation'
 		},
 		'url-reference': {
-			// [id]: http://example.com "Optional title"
-			// [id]: http://example.com 'Optional title'
-			// [id]: http://example.com (Optional title)
-			// [id]: <http://example.com> "Optional title"
 			pattern: /!?\[[^\]]+\]:[\t ]+(?:\S+|<(?:\\.|[^>\\])+>)(?:[\t ]+(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\)))?/,
 			inside: {
 				'variable': {
@@ -163,10 +135,6 @@
 			alias: 'url'
 		},
 		'bold': {
-			// **strong**
-			// __strong__
-
-			// allow one nested instance of italic text using the same delimiter
 			pattern: createInline(/\b__(?:(?!_)<inner>|_(?:(?!_)<inner>)+_)+__\b|\*\*(?:(?!\*)<inner>|\*(?:(?!\*)<inner>)+\*)+\*\*/.source),
 			lookbehind: true,
 			greedy: true,
@@ -174,16 +142,12 @@
 				'content': {
 					pattern: /(^..)[\s\S]+(?=..$)/,
 					lookbehind: true,
-					inside: {} // see below
+					inside: {}
 				},
 				'punctuation': /\*\*|__/
 			}
 		},
 		'italic': {
-			// *em*
-			// _em_
-
-			// allow one nested instance of bold text using the same delimiter
 			pattern: createInline(/\b_(?:(?!_)<inner>|__(?:(?!_)<inner>)+__)+_\b|\*(?:(?!\*)<inner>|\*\*(?:(?!\*)<inner>)+\*\*)+\*/.source),
 			lookbehind: true,
 			greedy: true,
@@ -191,15 +155,12 @@
 				'content': {
 					pattern: /(^.)[\s\S]+(?=.$)/,
 					lookbehind: true,
-					inside: {} // see below
+					inside: {}
 				},
 				'punctuation': /[*_]/
 			}
 		},
 		'strike': {
-			// ~~strike through~~
-			// ~strike~
-			// eslint-disable-next-line regexp/strict
 			pattern: createInline(/(~~?)(?:(?!~)<inner>)+\2/.source),
 			lookbehind: true,
 			greedy: true,
@@ -207,23 +168,18 @@
 				'content': {
 					pattern: /(^~~?)[\s\S]+(?=\1$)/,
 					lookbehind: true,
-					inside: {} // see below
+					inside: {}
 				},
 				'punctuation': /~~?/
 			}
 		},
 		'code-snippet': {
-			// `code`
-			// ``code``
 			pattern: /(^|[^\\`])(?:``[^`\r\n]+(?:`[^`\r\n]+)*``(?!`)|`[^`\r\n]+`(?!`))/,
 			lookbehind: true,
 			greedy: true,
 			alias: ['code', 'keyword']
 		},
 		'url': {
-			// [example](http://example.com "Optional title")
-			// [example][id]
-			// [example] [id]
 			pattern: createInline(/!?\[(?:(?!\])<inner>)+\](?:\([^\s)]+(?:[\t ]+"(?:\\.|[^"\\])*")?\)|[ \t]?\[(?:(?!\])<inner>)+\])/.source),
 			lookbehind: true,
 			greedy: true,
@@ -232,7 +188,7 @@
 				'content': {
 					pattern: /(^\[)[^\]]+(?=\])/,
 					lookbehind: true,
-					inside: {} // see below
+					inside: {}
 				},
 				'variable': {
 					pattern: /(^\][ \t]?\[)[^\]]+(?=\]$)/,
@@ -283,9 +239,9 @@
 				 * token.content = [
 				 *     <span class="punctuation">```</span>,
 				 *     <span class="code-language">xxxx</span>,
-				 *     '\n', // exactly one new lines (\r or \n or \r\n)
+				 *     '\n',
 				 *     <span class="code-block">...</span>,
-				 *     '\n', // exactly one new lines again
+				 *     '\n',
 				 *     <span class="punctuation">```</span>
 				 * ];
 				 */
@@ -296,16 +252,10 @@
 				if (codeLang && codeBlock &&
 					codeLang.type === 'code-language' && codeBlock.type === 'code-block' &&
 					typeof codeLang.content === 'string') {
-
-					// this might be a language that Prism does not support
-
-					// do some replacements to support C++, C#, and F#
 					var lang = codeLang.content.replace(/\b#/g, 'sharp').replace(/\b\+\+/g, 'pp');
-					// only use the first word
+
 					lang = (/[a-z][\w-]*/i.exec(lang) || [''])[0].toLowerCase();
 					var alias = 'language-' + lang;
-
-					// add alias
 					if (!codeBlock.alias) {
 						codeBlock.alias = [alias];
 					} else if (typeof codeBlock.alias === 'string') {
@@ -369,8 +319,6 @@
 		'gt': '>',
 		'quot': '"',
 	};
-
-	// IE 11 doesn't support `String.fromCodePoint`
 	var fromCodePoint = String.fromCodePoint || String.fromCharCode;
 
 	/**
@@ -380,10 +328,8 @@
 	 * @returns {string}
 	 */
 	function textContent(html) {
-		// remove all tags
-		var text = html.replace(tagPattern, '');
 
-		// decode known entities
+		var text = html.replace(tagPattern, '');
 		text = text.replace(/&(\w{1,8}|#x?[\da-f]{1,8});/gi, function (m, code) {
 			code = code.toLowerCase();
 
@@ -401,8 +347,6 @@
 				if (known) {
 					return known;
 				}
-
-				// unable to decode
 				return m;
 			}
 		});

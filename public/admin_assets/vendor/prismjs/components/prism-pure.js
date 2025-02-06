@@ -1,6 +1,4 @@
 (function (Prism) {
-	// https://agraef.github.io/pure-docs/pure.html#lexical-matters
-
 	Prism.languages.pure = {
 		'comment': [
 			{
@@ -33,7 +31,7 @@
 			greedy: true
 		},
 		'number': {
-			// The look-behind prevents wrong highlighting of the .. operator
+
 			pattern: /((?:\.\.)?)(?:\b(?:inf|nan)\b|\b0x[\da-f]+|(?:\b(?:0b)?\d+(?:\.\d+)?|\B\.\d+)(?:e[+-]?\d+)?L?)/i,
 			lookbehind: true
 		},
@@ -43,10 +41,8 @@
 			pattern: /\b__[a-z]+__\b/i,
 			alias: 'builtin'
 		},
-		// Any combination of operator chars can be an operator
-		// eslint-disable-next-line no-misleading-character-class
 		'operator': /(?:[!"#$%&'*+,\-.\/:<=>?@\\^`|~\u00a1-\u00bf\u00d7-\u00f7\u20d0-\u2bff]|\b_+\b)+|\b(?:and|div|mod|not|or)\b/,
-		// FIXME: How can we prevent | and , to be highlighted as operator when they are used alone?
+
 		'punctuation': /[(){}\[\];,|]/
 	};
 
@@ -73,8 +69,6 @@
 			Prism.languages.insertBefore('pure', 'inline-lang', o);
 		}
 	});
-
-	// C is the default inline language
 	if (Prism.languages.c) {
 		Prism.languages.pure['inline-lang'].inside.rest = Prism.util.clone(Prism.languages.c);
 	}

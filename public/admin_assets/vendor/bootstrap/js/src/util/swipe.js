@@ -55,8 +55,6 @@ class Swipe extends Config {
     this._supportPointerEvents = Boolean(window.PointerEvent)
     this._initEvents()
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -68,13 +66,9 @@ class Swipe extends Config {
   static get NAME() {
     return NAME
   }
-
-  // Public
   dispose() {
     EventHandler.off(this._element, EVENT_KEY)
   }
-
-  // Private
   _start(event) {
     if (!this._supportPointerEvents) {
       this._deltaX = event.touches[0].clientX
@@ -136,8 +130,6 @@ class Swipe extends Config {
   _eventIsPointerPenTouch(event) {
     return this._supportPointerEvents && (event.pointerType === POINTER_TYPE_PEN || event.pointerType === POINTER_TYPE_TOUCH)
   }
-
-  // Static
   static isSupported() {
     return 'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0
   }

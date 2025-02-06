@@ -19,13 +19,11 @@
 	Prism.languages.insertBefore('javascript', 'constant', {
 		'known-class-name': [
 			{
-				// standard built-ins
-				// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 				pattern: /\b(?:(?:Float(?:32|64)|(?:Int|Uint)(?:8|16|32)|Uint8Clamped)?Array|ArrayBuffer|BigInt|Boolean|DataView|Date|Error|Function|Intl|JSON|(?:Weak)?(?:Map|Set)|Math|Number|Object|Promise|Proxy|Reflect|RegExp|String|Symbol|WebAssembly)\b/,
 				alias: 'class-name'
 			},
 			{
-				// errors
+
 				pattern: /\b(?:[A-Z]\w*)Error\b/,
 				alias: 'class-name'
 			}
@@ -46,13 +44,13 @@
 	}
 	Prism.languages.insertBefore('javascript', 'keyword', {
 		'imports': {
-			// https://tc39.es/ecma262/#sec-imports
+
 			pattern: withId(/(\bimport\b\s*)(?:<ID>(?:\s*,\s*(?:\*\s*as\s+<ID>|\{[^{}]*\}))?|\*\s*as\s+<ID>|\{[^{}]*\})(?=\s*\bfrom\b)/.source),
 			lookbehind: true,
 			inside: Prism.languages.javascript
 		},
 		'exports': {
-			// https://tc39.es/ecma262/#sec-exports
+
 			pattern: withId(/(\bexport\b\s*)(?:\*(?:\s*as\s+<ID>)?(?=\s*\bfrom\b)|\{[^{}]*\})/.source),
 			lookbehind: true,
 			inside: Prism.languages.javascript
@@ -99,7 +97,7 @@
 			lookbehind: true
 		},
 		'dom': {
-			// this contains only a few commonly used DOM variables
+
 			pattern: /\b(?:document|(?:local|session)Storage|location|navigator|performance|window)\b/,
 			alias: 'variable'
 		},
@@ -108,24 +106,16 @@
 			alias: 'class-name'
 		}
 	});
-
-
-	// add 'maybe-class-name' to tokens which might be a class name
 	var maybeClassNameTokens = ['function', 'function-variable', 'method', 'method-variable', 'property-access'];
 
 	for (var i = 0; i < maybeClassNameTokens.length; i++) {
 		var token = maybeClassNameTokens[i];
 		var value = Prism.languages.javascript[token];
-
-		// convert regex to object
 		if (Prism.util.type(value) === 'RegExp') {
 			value = Prism.languages.javascript[token] = {
 				pattern: value
 			};
 		}
-
-		// keep in mind that we don't support arrays
-
 		var inside = value.inside || {};
 		value.inside = inside;
 

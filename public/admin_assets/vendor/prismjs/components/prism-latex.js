@@ -9,7 +9,7 @@
 
 	Prism.languages.latex = {
 		'comment': /%.*/,
-		// the verbatim environment prints whitespace to the document
+
 		'cdata': {
 			pattern: /(\\begin\{((?:lstlisting|verbatim)\*?)\})[\s\S]*?(?=\\end\{\2\})/,
 			lookbehind: true

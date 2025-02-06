@@ -24,7 +24,7 @@ Prism.languages.insertBefore('firestore-security-rules', 'keyword', {
 		}
 	},
 	'method': {
-		// to make the pattern shorter, the actual method names are omitted
+
 		pattern: /(\ballow\s+)[a-z]+(?:\s*,\s*[a-z]+)*(?=\s*[:;])/,
 		lookbehind: true,
 		alias: 'builtin',

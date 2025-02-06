@@ -24,8 +24,6 @@ Quickstart
 <img alt="Dropzone Screenshot" width="568" src="https://github.com/dropzone/dropzone/raw/a19faf6c3aef5d3d7f912ca988cc62af1967d5d9/dropzone-preview.png" />
 
 &nbsp;
-
-
 Community
 ---------
 
@@ -38,12 +36,8 @@ If you have a feature request or want to discuss something, please use the
 
 [discussions]: https://github.com/dropzone/dropzone/discussions
 [so]: https://stackoverflow.com/questions/tagged/dropzone.js
-
-
 > ⚠️ **Please read the [contributing guidelines](CONTRIBUTING.md) before you start
 > working on Dropzone!**
-
-
 Main features
 -------------
 

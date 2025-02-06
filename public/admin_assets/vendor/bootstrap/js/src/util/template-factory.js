@@ -18,7 +18,7 @@ const NAME = 'TemplateFactory'
 
 const Default = {
   allowList: DefaultAllowlist,
-  content: {}, // { selector : text ,  selector2 : text2 , }
+  content: {},
   extraClass: '',
   html: false,
   sanitize: true,
@@ -50,8 +50,6 @@ class TemplateFactory extends Config {
     super()
     this._config = this._getConfig(config)
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -63,8 +61,6 @@ class TemplateFactory extends Config {
   static get NAME() {
     return NAME
   }
-
-  // Public
   getContent() {
     return Object.values(this._config.content)
       .map(config => this._resolvePossibleFunction(config))
@@ -98,8 +94,6 @@ class TemplateFactory extends Config {
 
     return template
   }
-
-  // Private
   _typeCheckConfig(config) {
     super._typeCheckConfig(config)
     this._checkContent(config.content)

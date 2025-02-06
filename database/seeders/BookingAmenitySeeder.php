@@ -9,7 +9,7 @@ class BookingAmenitySeeder extends Seeder
 {
     public function run()
     {
-        BookingAmenity::factory()->count(10)->create(); // Creating 10 booking entries
-        // BookingAmenity::truncate();
+        BookingAmenity::factory()->count(10)->create();
+
     }
 }

@@ -15,9 +15,6 @@ Prism.languages.rest = {
 			}
 		}
 	],
-
-	// Directive-like patterns
-
 	'substitution-def': {
 		pattern: /(^[\t ]*\.\. )\|(?:[^|\s](?:[^|]*[^|\s])?)\| [^:]+::/m,
 		lookbehind: true,
@@ -66,13 +63,13 @@ Prism.languages.rest = {
 		}
 	},
 	'comment': {
-		// The two alternatives try to prevent highlighting of blank comments
+
 		pattern: /(^[\t ]*\.\.)(?:(?: .+)?(?:(?:\r?\n|\r).+)+| .+)(?=(?:\r?\n|\r){2}|$)/m,
 		lookbehind: true
 	},
 
 	'title': [
-		// Overlined and underlined
+
 		{
 			pattern: /^(([!"#$%&'()*+,\-.\/:;<=>?@\[\\\]^_`{|}~])\2+)(?:\r?\n|\r).+(?:\r?\n|\r)\1$/m,
 			inside: {
@@ -80,8 +77,6 @@ Prism.languages.rest = {
 				'important': /.+/
 			}
 		},
-
-		// Underlined only
 		{
 			pattern: /(^|(?:\r?\n|\r){2}).+(?:\r?\n|\r)([!"#$%&'()*+,\-.\/:;<=>?@\[\\\]^_`{|}~])\2+(?=\r?\n|\r|$)/,
 			lookbehind: true,
@@ -193,11 +188,6 @@ Prism.languages.rest = {
 			}
 		}
 	],
-
-	// Line block start,
-	// quote attribution,
-	// explicit markup start,
-	// and anonymous hyperlink target shortcut (__)
 	'punctuation': {
 		pattern: /(^[\t ]*)(?:\|(?= |$)|(?:---?|—|\.\.|__)(?= )|\.\.$)/m,
 		lookbehind: true

@@ -40,8 +40,6 @@ export default class Theme {
       w.globals.colors = this.predefined()
     } else {
       w.globals.colors = w.config.colors
-
-      // if user provided a function in colors, we need to eval here
       if (
         Array.isArray(w.config.colors) &&
         w.config.colors.length > 0 &&
@@ -67,8 +65,6 @@ export default class Theme {
         })
       }
     }
-
-    // user defined colors in series array
     w.globals.seriesColors.map((c, i) => {
       if (c) {
         w.globals.colors[i] = c
@@ -103,8 +99,6 @@ export default class Theme {
       w.globals.colors = monoArr.slice()
     }
     const defaultColors = w.globals.colors.slice()
-
-    // if user specified fewer colors than no. of series, push the same colors again
     this.pushExtraColors(w.globals.colors)
 
     const colorTypes = ['fill', 'stroke']
@@ -132,8 +126,6 @@ export default class Theme {
       w.globals.radarPolygons.fill.colors = w.config.plotOptions.radar.polygons.fill.colors.slice()
     }
     this.pushExtraColors(w.globals.radarPolygons.fill.colors, 20)
-
-    // The point colors
     if (w.config.markers.colors === undefined) {
       w.globals.markers.colors = defaultColors
     } else {
@@ -141,11 +133,6 @@ export default class Theme {
     }
     this.pushExtraColors(w.globals.markers.colors)
   }
-
-  // When the number of colors provided is less than the number of series, this method
-  // will push same colors to the list
-  // params:
-  // distributed is only valid for distributed column/bar charts
   pushExtraColors(colorSeries, length, distributed = null) {
     let w = this.w
 
@@ -180,13 +167,13 @@ export default class Theme {
     const palette = options.theme.palette
       ? options.theme.palette
       : mode === 'dark'
-      ? 'palette4'
-      : 'palette1'
+        ? 'palette4'
+        : 'palette1'
     const foreColor = options.chart.foreColor
       ? options.chart.foreColor
       : mode === 'dark'
-      ? '#f6f7f8'
-      : '#373d3f'
+        ? '#f6f7f8'
+        : '#373d3f'
 
     options.tooltip.theme = mode
     options.chart.foreColor = foreColor
@@ -197,8 +184,6 @@ export default class Theme {
 
   predefined() {
     let palette = this.w.config.theme.palette
-
-    // D6E3F8, FCEFEF, DCE0D9, A5978B, EDDDD4, D6E3F8, FEF5EF
     switch (palette) {
       case 'palette1':
         this.colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0']

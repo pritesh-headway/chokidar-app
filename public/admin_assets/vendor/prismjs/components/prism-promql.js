@@ -1,9 +1,4 @@
-// Thanks to: https://github.com/prometheus-community/monaco-promql/blob/master/src/promql/promql.ts
-// As well as: https://kausal.co/blog/slate-prism-add-new-syntax-promql/
-
 (function (Prism) {
-	// PromQL Aggregation Operators
-	// (https://prometheus.io/docs/prometheus/latest/querying/operators/#aggregation-operators)
 	var aggregations = [
 		'sum',
 		'min',
@@ -18,9 +13,6 @@
 		'topk',
 		'quantile'
 	];
-
-	// PromQL vector matching + the by and without clauses
-	// (https://prometheus.io/docs/prometheus/latest/querying/operators/#vector-matching)
 	var vectorMatching = [
 		'on',
 		'ignoring',
@@ -29,9 +21,6 @@
 		'by',
 		'without',
 	];
-
-	// PromQL offset modifier
-	// (https://prometheus.io/docs/prometheus/latest/querying/basics/#offset-modifier)
 	var offsetModifier = ['offset'];
 
 	var keywords = aggregations.concat(vectorMatching, offsetModifier);
@@ -42,7 +31,7 @@
 			lookbehind: true
 		},
 		'vector-match': {
-			// Match the comma-separated label lists inside vector matching:
+
 			pattern: new RegExp('((?:' + vectorMatching.join('|') + ')\\s*)\\([^)]*\\)'),
 			lookbehind: true,
 			inside: {
@@ -70,7 +59,7 @@
 		},
 		'context-range': [
 			{
-				pattern: /\[[\w\s:]+\]/, // [1m]
+				pattern: /\[[\w\s:]+\]/,
 				inside: {
 					'punctuation': /\[|\]|:/,
 					'range-duration': {
@@ -80,7 +69,7 @@
 				},
 			},
 			{
-				pattern: /(\boffset\s+)\w+/, // offset 1m
+				pattern: /(\boffset\s+)\w+/,
 				lookbehind: true,
 				inside: {
 					'range-duration': {

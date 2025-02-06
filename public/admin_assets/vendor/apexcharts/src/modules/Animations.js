@@ -67,7 +67,7 @@ export default class Animations {
           if (pos === !!pos) return pos
           return (
             Math.pow(2, -10 * pos) *
-              Math.sin(((pos - 0.075) * (2 * Math.PI)) / 0.3) +
+            Math.sin(((pos - 0.075) * (2 * Math.PI)) / 0.3) +
             1
           )
         }
@@ -154,7 +154,7 @@ export default class Animations {
       w.globals.dataChanged &&
       w.config.chart.type !== 'bar'
     ) {
-      // disabled due to this bug - https://github.com/apexcharts/vue-apexcharts/issues/75
+
       delayFactor = 0
     }
     me.morphSVG(
@@ -189,8 +189,6 @@ export default class Animations {
       w.config.chart.events.animationEnd(this.ctx, { el, w })
     }
   }
-
-  // SVG.js animation for morphing one path to another
   morphSVG(el, realIndex, j, fill, pathFrom, pathTo, speed, delay) {
     let w = this.w
 
@@ -204,8 +202,6 @@ export default class Animations {
 
     const disableAnimationForCorrupPath = (path) => {
       if (w.config.chart.type === 'radar') {
-        // radar chart drops the path to bottom and hence a corrup path looks ugly
-        // therefore, disable animation for such a case
         speed = 1
       }
       return `M 0 ${w.globals.gridHeight}`
@@ -236,8 +232,6 @@ export default class Animations {
       .animate(speed, w.globals.easing, delay)
       .plot(pathTo)
       .afterAll(() => {
-        // a flag to indicate that the original mount function can return true now as animation finished here
-
         if (Utils.isNumber(j)) {
           if (
             j === w.globals.series[w.globals.maxValsInArrayIndex].length - 2 &&

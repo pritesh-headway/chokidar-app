@@ -13,12 +13,12 @@ class SecurityFactory extends Factory
     {
         return [
             'guard_name' => $this->faker->name,
-            'mobile' => $this->faker->numerify('##########'),  // Generate a 10-digit numeric value
+            'mobile' => $this->faker->numerify('##########'),
             'address' => $this->faker->address,
-            'gate_no' => $this->faker->numberBetween(1, 10),  // Gate number between 1 and 20
+            'gate_no' => $this->faker->numberBetween(1, 10),
             'details' => $this->faker->text,
-            'guard_image' => 'guard_images/guard.webp',  // Set a fixed image path
-            'documents' => json_encode(['guard_documents/guard_document1.pdf', 'guard_documents/guard_document2.pdf']),  // Set a fixed document path
+            'guard_image' => 'guard_images/guard.webp',
+            'documents' => json_encode(['guard_documents/guard_document1.pdf', 'guard_documents/guard_document2.pdf']),
             'status' => $this->faker->randomElement(['active', 'deactive']),
         ];
     }

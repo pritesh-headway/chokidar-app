@@ -22,8 +22,8 @@ const Default = {
   className: 'modal-backdrop',
   clickCallback: null,
   isAnimated: false,
-  isVisible: true, // if false, we use the backdrop helper without adding any element to the dom
-  rootElement: 'body' // give the choice to place backdrop under different elements
+  isVisible: true,
+  rootElement: 'body'
 }
 
 const DefaultType = {
@@ -45,8 +45,6 @@ class Backdrop extends Config {
     this._isAppended = false
     this._element = null
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -58,8 +56,6 @@ class Backdrop extends Config {
   static get NAME() {
     return NAME
   }
-
-  // Public
   show(callback) {
     if (!this._config.isVisible) {
       execute(callback)
@@ -104,8 +100,6 @@ class Backdrop extends Config {
     this._element.remove()
     this._isAppended = false
   }
-
-  // Private
   _getElement() {
     if (!this._element) {
       const backdrop = document.createElement('div')
@@ -121,7 +115,7 @@ class Backdrop extends Config {
   }
 
   _configAfterMerge(config) {
-    // use getElement() with the default "body" to get a fresh Element on each instantiation
+
     config.rootElement = getElement(config.rootElement)
     return config
   }

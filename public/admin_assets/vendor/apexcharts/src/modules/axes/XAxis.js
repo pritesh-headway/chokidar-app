@@ -18,7 +18,7 @@ export default class XAxis {
 
     this.xaxisLabels = w.globals.labels.slice()
     if (w.globals.timescaleLabels.length > 0 && !w.globals.isBarHorizontal) {
-      //  timeline labels are there and chart is not rangeabr timeline
+
       this.xaxisLabels = w.globals.timescaleLabels.slice()
     }
 
@@ -52,9 +52,6 @@ export default class XAxis {
       this.xaxisBorderWidth = parseInt(this.xaxisBorderWidth, 10)
     }
     this.xaxisBorderHeight = w.config.xaxis.axisBorder.height
-
-    // For bars, we will only consider single y xais,
-    // as we are not providing multiple yaxis for bar charts
     this.yaxis = w.config.yaxis[0]
   }
 
@@ -192,8 +189,6 @@ export default class XAxis {
       overwriteStyles.cssClass || w.config.xaxis.labels.style.cssClass
 
     let colWidth
-
-    // initial x Position (keep adding column width in the loop)
     let xPos = w.globals.padHorizontal
 
     let labelsLen = labels.length
@@ -205,8 +200,6 @@ export default class XAxis {
      */
     let dataPoints =
       w.config.xaxis.type === 'category' ? w.globals.dataPoints : labelsLen
-
-    // when all series are collapsed, fixes #3381
     if (dataPoints === 0 && labelsLen > dataPoints) dataPoints = labelsLen
 
     if (isXNumeric) {
@@ -227,7 +220,7 @@ export default class XAxis {
         colWidth / 2 === xPos &&
         dataPoints === 1
       ) {
-        // single datapoint
+
         x = w.globals.gridWidth / 2
       }
       let label = this.axesUtils.getLabel(
@@ -336,8 +329,6 @@ export default class XAxis {
       }
     }
   }
-
-  // this actually becomes the vertical axis (for bar charts)
   drawXaxisInversed(realIndex) {
     let w = this.w
     let graphics = new Graphics(this.ctx)
@@ -359,8 +350,6 @@ export default class XAxis {
     elYaxis.add(elYaxisTexts)
 
     let colHeight
-
-    // initial x Position (keep adding column width in the loop)
     let yPos
     let labels = []
 
@@ -542,8 +531,6 @@ export default class XAxis {
         y2 + w.config.xaxis.offsetY,
         w.config.xaxis.axisTicks.color
       )
-
-      // we are not returning anything, but appending directly to the element passed in param
       appendToElement.add(line)
       line.node.classList.add('apexcharts-xaxis-tick')
     }
@@ -575,8 +562,6 @@ export default class XAxis {
 
     return xAxisTicksPositions
   }
-
-  // to rotate x-axis labels or to put ... for longer text in xaxis
   xAxisLabelCorrections() {
     let w = this.w
 
@@ -597,7 +582,7 @@ export default class XAxis {
     if (w.globals.rotateXLabels || w.config.xaxis.labels.rotateAlways) {
       for (let xat = 0; xat < xAxisTexts.length; xat++) {
         let textRotatingCenter = graphics.rotateAroundCenter(xAxisTexts[xat])
-        textRotatingCenter.y = textRotatingCenter.y - 1 // + tickWidth/4;
+        textRotatingCenter.y = textRotatingCenter.y - 1
         textRotatingCenter.x = textRotatingCenter.x + 1
 
         xAxisTexts[xat].setAttribute(
@@ -619,7 +604,7 @@ export default class XAxis {
               ts,
               ts.textContent,
               w.globals.xAxisLabelsHeight -
-                (w.config.legend.position === 'bottom' ? 20 : 10)
+              (w.config.legend.position === 'bottom' ? 20 : 10)
             )
           })
         }
@@ -639,7 +624,7 @@ export default class XAxis {
     }
 
     if (yAxisTextsInversed.length > 0) {
-      // truncate rotated y axis in bar chart (x axis)
+
       let firstLabelPosX = yAxisTextsInversed[
         yAxisTextsInversed.length - 1
       ].getBBox()
@@ -659,26 +644,17 @@ export default class XAxis {
       ) {
         yAxisTextsInversed[0].parentNode.removeChild(yAxisTextsInversed[0])
       }
-
-      // truncate rotated x axis in bar chart (y axis)
       for (let xat = 0; xat < xAxisTextsInversed.length; xat++) {
         graphics.placeTextWithEllipsis(
           xAxisTextsInversed[xat],
           xAxisTextsInversed[xat].textContent,
           w.config.yaxis[0].labels.maxWidth -
-            (w.config.yaxis[0].title.text
-              ? parseFloat(w.config.yaxis[0].title.style.fontSize) * 2
-              : 0) -
-            15
+          (w.config.yaxis[0].title.text
+            ? parseFloat(w.config.yaxis[0].title.style.fontSize) * 2
+            : 0) -
+          15
         )
       }
     }
   }
-
-  // renderXAxisBands() {
-  //   let w = this.w;
-
-  //   let plotBand = document.createElementNS(w.globals.SVGNS, 'rect')
-  //   w.globals.dom.elGraphical.add(plotBand)
-  // }
 }

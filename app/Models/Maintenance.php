@@ -10,8 +10,6 @@ class Maintenance extends Model
     use HasFactory;
 
     protected $table = 'maintenance';
-
-
     protected $fillable = [
         'block_number',
         'owner_name',
@@ -24,13 +22,9 @@ class Maintenance extends Model
         'description',
         'status'
     ];
-
-    // Add to the model
     protected $casts = [
         'date' => 'datetime',
     ];
-
-    // Relationship with User
     public function user()
     {
         return $this->belongsTo(User::class);

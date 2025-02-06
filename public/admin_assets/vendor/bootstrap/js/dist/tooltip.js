@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@popperjs/core'), require('./util/index.js'), require('./util/sanitizer.js'), require('./dom/event-handler.js'), require('./dom/manipulator.js'), require('./base-component.js'), require('./util/template-factory.js')) :
-  typeof define === 'function' && define.amd ? define(['@popperjs/core', './util/index', './util/sanitizer', './dom/event-handler', './dom/manipulator', './base-component', './util/template-factory'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Tooltip = factory(global["@popperjs/core"], global.Index, global.Sanitizer, global.EventHandler, global.Manipulator, global.BaseComponent, global.TemplateFactory));
-})(this, (function (Popper, index_js, sanitizer_js, EventHandler, Manipulator, BaseComponent, TemplateFactory) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['@popperjs/core', './util/index', './util/sanitizer', './dom/event-handler', './dom/manipulator', './base-component', './util/template-factory'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Tooltip = factory(global["@popperjs/core"], global.Index, global.Sanitizer, global.EventHandler, global.Manipulator, global.BaseComponent, global.TemplateFactory));
+})(this, (function (Popper, index_js, sanitizer_js, EventHandler, Manipulator, BaseComponent, TemplateFactory) {
+  'use strict';
 
   function _interopNamespaceDefault(e) {
     const n = Object.create(null, { [Symbol.toStringTag]: { value: 'Module' } });
@@ -117,8 +118,6 @@
         throw new TypeError('Bootstrap\'s tooltips require Popper (https://popper.js.org)');
       }
       super(element, config);
-
-      // Private
       this._isEnabled = true;
       this._timeout = 0;
       this._isHovered = null;
@@ -126,16 +125,12 @@
       this._popper = null;
       this._templateFactory = null;
       this._newContent = null;
-
-      // Protected
       this.tip = null;
       this._setListeners();
       if (!this._config.selector) {
         this._fixTitle();
       }
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -145,8 +140,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     enable() {
       this._isEnabled = true;
     }
@@ -189,8 +182,6 @@
       if (showEvent.defaultPrevented || !isInTheDom) {
         return;
       }
-
-      // todo v6 remove this OR make it optional
       this._disposePopper();
       const tip = this._getTipElement();
       this._element.setAttribute('aria-describedby', tip.getAttribute('id'));
@@ -203,11 +194,6 @@
       }
       this._popper = this._createPopper(tip);
       tip.classList.add(CLASS_NAME_SHOW);
-
-      // If this is a touch-enabled device we add extra
-      // empty mouseover listeners to the body's immediate children;
-      // only needed because of broken event delegation on iOS
-      // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
       if ('ontouchstart' in document.documentElement) {
         for (const element of [].concat(...document.body.children)) {
           EventHandler.on(element, 'mouseover', index_js.noop);
@@ -232,9 +218,6 @@
       }
       const tip = this._getTipElement();
       tip.classList.remove(CLASS_NAME_SHOW);
-
-      // If this is a touch-enabled device we remove the extra
-      // empty mouseover listeners we added for iOS support
       if ('ontouchstart' in document.documentElement) {
         for (const element of [].concat(...document.body.children)) {
           EventHandler.off(element, 'mouseover', index_js.noop);
@@ -243,7 +226,7 @@
       this._activeTrigger[TRIGGER_CLICK] = false;
       this._activeTrigger[TRIGGER_FOCUS] = false;
       this._activeTrigger[TRIGGER_HOVER] = false;
-      this._isHovered = null; // it is a trick to support manual triggering
+      this._isHovered = null;
 
       const complete = () => {
         if (this._isWithActiveTrigger()) {
@@ -262,8 +245,6 @@
         this._popper.update();
       }
     }
-
-    // Protected
     _isWithContent() {
       return Boolean(this._getTitle());
     }
@@ -275,13 +256,11 @@
     }
     _createTipElement(content) {
       const tip = this._getTemplateFactory(content).toHtml();
-
-      // todo: remove this check on v6
       if (!tip) {
         return null;
       }
       tip.classList.remove(CLASS_NAME_FADE, CLASS_NAME_SHOW);
-      // todo: on v6 the following can be achieved with CSS only
+
       tip.classList.add(`bs-${this.constructor.NAME}-auto`);
       const tipId = index_js.getUID(this.constructor.NAME).toString();
       tip.setAttribute('id', tipId);
@@ -303,8 +282,6 @@
       } else {
         this._templateFactory = new TemplateFactory({
           ...this._config,
-          // the `content` var has to be after `this._config`
-          // to override config.content in case of popover
           content,
           extraClass: this._resolvePossibleFunction(this._config.customClass)
         });
@@ -319,8 +296,6 @@
     _getTitle() {
       return this._resolvePossibleFunction(this._config.title) || this._element.getAttribute('data-bs-original-title');
     }
-
-    // Private
     _initializeOnDelegatedTarget(event) {
       return this.constructor.getOrCreateInstance(event.delegateTarget, this._getDelegateConfig());
     }
@@ -378,8 +353,6 @@
           enabled: true,
           phase: 'beforeMain',
           fn: data => {
-            // Pre-set Popper's placement attribute in order to read the arrow sizes properly.
-            // Otherwise, Popper mixes up the width and height dimensions since the initial arrow style is for top placement
             this._getTipElement().setAttribute('data-popper-placement', data.state.placement);
           }
         }]
@@ -427,7 +400,7 @@
       if (!this._element.getAttribute('aria-label') && !this._element.textContent.trim()) {
         this._element.setAttribute('aria-label', title);
       }
-      this._element.setAttribute('data-bs-original-title', title); // DO NOT USE IT. Is only for backwards compatibility
+      this._element.setAttribute('data-bs-original-title', title);
       this._element.removeAttribute('title');
     }
     _enter() {
@@ -501,10 +474,6 @@
       }
       config.selector = false;
       config.trigger = 'manual';
-
-      // In the future can be replaced with:
-      // const keysWithDifferentValues = Object.entries(this._config).filter(entry => this.constructor.Default[entry[0]] !== this._config[entry[0]])
-      // `Object.fromEntries(keysWithDifferentValues)`
       return config;
     }
     _disposePopper() {
@@ -517,8 +486,6 @@
         this.tip = null;
       }
     }
-
-    // Static
     static jQueryInterface(config) {
       return this.each(function () {
         const data = Tooltip.getOrCreateInstance(this, config);

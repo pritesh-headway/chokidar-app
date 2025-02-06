@@ -29,8 +29,6 @@ import 'svg.pathmorphing.js'
 import 'svg.draggable.js'
 import 'svg.select.js'
 import 'svg.resize.js'
-
-// global Apex object which user can use to override chart's defaults globally
 if (typeof window.Apex === 'undefined') {
   window.Apex = {}
 }

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
@@ -18,9 +16,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-// use App\Http\Controllers\Controller;
-use Illuminate\Routing\Controller;
 
+use Illuminate\Routing\Controller;
 
 class AuthController extends Controller
 {
@@ -39,7 +36,7 @@ class AuthController extends Controller
             'role_id' => 'required|in:1,2,3,4',
             'mobile' => 'required|string|max:10|unique:users',
             'block' => 'required|string|max:50',
-            'profile_photo' => 'nullable|image', // Ensure it's an image and within size limits |max:2048
+            'profile_photo' => 'nullable|image',
             'status' => 'nullable|in:active,inactive',
             'email' => 'nullable|email|unique:users',
             'password' => 'required|string|min:6',
@@ -53,23 +50,15 @@ class AuthController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
-        // Handle the file upload for profile photo (if provided)
         $profilePhotoPath = null;
         if ($request->hasFile('profile_photo')) {
-            // Get the file and define the destination path
+
             $file = $request->file('profile_photo');
-            $fileName = time() . '_' . $file->getClientOriginalName(); // Create a unique filename
-            $destinationPath = public_path('storage/profile_photos'); // Define the directory in public/storage
-
-            // Move the file to the desired directory
-            $file->move($destinationPath, $fileName); // Move the file to the directory
-
-            // Store the relative path in the database (relative to public/storage)
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $destinationPath = public_path('storage/profile_photos');
+            $file->move($destinationPath, $fileName);
             $profilePhotoPath = 'profile_photos/' . $fileName;
         }
-
-        // Create the user with the uploaded profile photo
         $user = User::create([
             'block_number' => $request->block_number,
             'first_name' => $request->first_name,
@@ -77,8 +66,8 @@ class AuthController extends Controller
             'role_id' => $request->role_id,
             'mobile' => $request->mobile,
             'block' => $request->block,
-            'profile_photo' => $profilePhotoPath, // Save the relative path to the uploaded image
-            'status' => 'inactive', // Default status to inactive
+            'profile_photo' => $profilePhotoPath,
+            'status' => 'inactive',
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'society_id' => $request->society_id,
@@ -90,28 +79,21 @@ class AuthController extends Controller
             'user' => $user,
         ], 201);
     }
-
-
-
-
-
     public function login(Request $request)
     {
-        // Validate the incoming request
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
         try {
-            // Attempt to authenticate and generate a token
+
             if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['message' => 'Invalid email or password'], 401);
             }
-
-            // Retrieve the currently authenticated user using JWTAuth
             $user = JWTAuth::user();
-            // Build the user details to return in the response
+
             $userDetails = [
 
                 'first_name' => $user->first_name,
@@ -130,7 +112,7 @@ class AuthController extends Controller
                 ]
             ], 200);
         } catch (JWTException $e) {
-            // Handle token generation errors
+
             return response()->json(['error' => 'Could not create token'], 500);
         }
     }
@@ -138,18 +120,14 @@ class AuthController extends Controller
     /*
     public function logout(Request $request)
     {
-
-        // Get the authenticated user
         $user = Auth::user();
 
         if (!$user) {
             return response()->json([
                 'status' => false,
                 'message' => 'User not authenticated'
-            ], 401); // Return error if user is not authenticated
+            ], 401);
         }
-
-        // Log out the user
         Auth::logout();
 
         return response()->json([
@@ -164,32 +142,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    // public function logout()
-    // {
-    //     try {
-    //         // Invalidate the token
-    //         JWTAuth::invalidate(JWTAuth::getToken());
-    //         // auth()->logout();
-
-    //         return response()->json([
-    //             'status' => true,
-    //             'message' => 'Logged out successfully'
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['error' => 'Failed to logout, please try again'], 500);
-    //     }
-    // }
-
     public function logout()
     {
         try {
-            // Invalidate the token
+
             $token = JWTAuth::getToken();
             if ($token) {
                 JWTAuth::invalidate($token);
             }
-
-            // Log out the user
             auth()->logout();
 
             return response()->json([
@@ -200,26 +160,20 @@ class AuthController extends Controller
             return response()->json(['error' => 'Failed to logout, please try again'], 500);
         }
     }
-
-
-
-    // Step 1: Generate and send OTP to the user's mobile number
     public function otpLogin(Request $request)
     {
-        // Validate the mobile number
+
         $request->validate([
-            'mobile' => 'required|regex:/^([0-9]{10})$/', // Validate 10-digit mobile number
-            'otp' => 'required|string|size:4', // Validate OTP (4 digits)
+            'mobile' => 'required|regex:/^([0-9]{10})$/',
+            'otp' => 'required|string|size:4',
         ]);
 
         $mobile = $request->input('mobile');
         $otp = $request->input('otp');
-
-        // Find the user by mobile number
         $user = User::where('mobile', $mobile)->first();
 
         if ($user && $user->otp === $otp) {
-            // OTP matches, log the user in
+
             Auth::login($user);
 
             return response()->json(['message' => 'Login successful'], 200);
@@ -230,103 +184,39 @@ class AuthController extends Controller
 
     public function sendOtp(Request $request)
     {
-        // Validate the incoming mobile number
-        $request->validate([
-            'mobile' => 'required|regex:/^([0-9]{10})$/', // 10 digits mobile number
-        ]);
 
-        // Check if the user exists
+        $request->validate([
+            'mobile' => 'required|regex:/^([0-9]{10})$/',
+        ]);
         $user = User::where('mobile', $request->mobile)->first();
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-
-        // Generate OTP and set expiry time (e.g., 5 minutes)
         $otp = rand(1000, 9999);
         $expiry = Carbon::now()->addMinutes(60);
-
-        // Store OTP and expiry in the user table
         $user->otp = $otp;
         $user->otp_expiry = $expiry;
         $user->save();
-
-        // Send OTP to the user's mobile (using an SMS service like Twilio)
-        // For now, let's simulate sending OTP with a success message
-        // sendOtpToMobile($user->mobile, $otp); // Add your SMS sending logic
-
         return response()->json(['message' => 'OTP sent to your mobile number']);
     }
-
-
-    // Step 2: Verify OTP
-    // public function verifyOtp(Request $request)
-    // {
-    //     $request->validate([
-    //         'mobile' => 'required|regex:/^([0-9]{10})$/',
-    //         'otp' => 'required|numeric|digits:4', // OTP should be 4 digits
-    //     ]);
-
-    //     $mobile = $request->input('mobile');
-    //     $otp = $request->input('otp');
-
-    //     // Retrieve the user from the database
-    //     $user = User::where('mobile', $mobile)->first();
-
-    //     if (!$user) {
-    //         return response()->json(['error' => 'User not found.'], 404);
-    //     }
-
-    //     // Check if OTP exists and if it has expired
-    //     if ($user->otp !== $otp) {
-    //         return response()->json(['error' => 'Invalid OTP.'], 400);
-    //     }
-
-    //     // Check if OTP has expired
-    //     if (Carbon::now()->greaterThan($user->otp_expiry)) {
-    //         return response()->json(['error' => 'OTP has expired.'], 400);
-    //     }
-
-    //     // OTP is valid, log the user in (or create a user if necessary)
-    //     // Assuming you are using Passport, Sanctum, or JWT for authentication
-    //     // You can use your desired method to issue the token, here I am using JWT
-    //     $token = auth()->login($user);
-
-    //     // Clear OTP after successful login (optional)
-    //     $user->otp = null;
-    //     $user->otp_expiry = null;
-    //     $user->save();
-
-    //     return response()->json(['message' => 'Login successful', 'token' => $token]);
-    // }
-
     public function verifyOtp(Request $request)
     {
         $request->validate([
             'mobile' => 'required|regex:/^([0-9]{10})$/',
             'otp' => 'required|numeric|digits:4',
         ]);
-
-        // Retrieve the user
         $user = User::where('mobile', $request->mobile)->first();
 
         if (!$user) {
             return response()->json(['error' => 'User not found.'], 404);
         }
-
-        // Check if OTP exists and verify it
         if ($user->otp !== $request->otp) {
             return response()->json(['error' => 'Invalid OTP.'], 400);
         }
-
-        // Check if OTP has expired
         if (Carbon::now()->greaterThan($user->otp_expiry)) {
             return response()->json(['error' => 'OTP has expired.'], 400);
         }
-
-        // OTP is valid, log the user in
         $token = auth()->login($user);
-
-        // Clear OTP after successful login for security
         $user->otp = null;
         $user->otp_expiry = null;
         $user->save();

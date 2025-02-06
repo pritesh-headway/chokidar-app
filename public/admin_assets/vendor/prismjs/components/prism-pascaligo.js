@@ -1,7 +1,4 @@
 (function (Prism) {
-
-	// Pascaligo is a layer 2 smart contract language for the tezos blockchain
-
 	var braces = /\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\)/.source;
 	var type = /(?:\b\w+(?:<braces>)?|<braces>)/.source.replace(/<braces>/g, function () { return braces; });
 
@@ -15,16 +12,16 @@
 			{
 				pattern: RegExp(/(\btype\s+\w+\s+is\s+)<type>/.source.replace(/<type>/g, function () { return type; }), 'i'),
 				lookbehind: true,
-				inside: null // see below
+				inside: null
 			},
 			{
 				pattern: RegExp(/<type>(?=\s+is\b)/.source.replace(/<type>/g, function () { return type; }), 'i'),
-				inside: null // see below
+				inside: null
 			},
 			{
 				pattern: RegExp(/(:\s*)<type>/.source.replace(/<type>/g, function () { return type; })),
 				lookbehind: true,
-				inside: null // see below
+				inside: null
 			}
 		],
 		'keyword': {
@@ -41,9 +38,9 @@
 		},
 		'function': /\b\w+(?=\s*\()/,
 		'number': [
-			// Hexadecimal, octal and binary
+
 			/%[01]+|&[0-7]+|\$[a-f\d]+/i,
-			// Decimal
+
 			/\b\d+(?:\.\d+)?(?:e[+-]?\d+)?(?:mtz|n)?/i
 		],
 		'operator': /->|=\/=|\.\.|\*\*|:=|<[<=>]?|>[>=]?|[+\-*\/]=?|[@^=|]|\b(?:and|mod|or)\b/,

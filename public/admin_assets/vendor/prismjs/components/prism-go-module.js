@@ -1,5 +1,3 @@
-// https://go.dev/ref/mod#go-mod-file-module
-
 Prism.languages['go-mod'] = Prism.languages['go-module'] = {
 	'comment': {
 		pattern: /\/\/.*/,

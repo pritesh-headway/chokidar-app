@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('booking_amenities', function (Blueprint $table) {
-            $table->text('reason')->nullable()->after('booking_status'); // Adding reason column as nullable
+            $table->text('reason')->nullable()->after('booking_status');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('booking_amenities', function (Blueprint $table) {
-            $table->dropColumn('reason'); // Rollback step
+            $table->dropColumn('reason');
         });
     }
 };

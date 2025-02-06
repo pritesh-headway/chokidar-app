@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./util/scrollbar.js'), require('./dom/event-handler.js'), require('./base-component.js'), require('./dom/selector-engine.js'), require('./util/backdrop.js'), require('./util/focustrap.js'), require('./util/component-functions.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './util/scrollbar', './dom/event-handler', './base-component', './dom/selector-engine', './util/backdrop', './util/focustrap', './util/component-functions'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Offcanvas = factory(global.Index, global.Scrollbar, global.EventHandler, global.BaseComponent, global.SelectorEngine, global.Backdrop, global.Focustrap, global.ComponentFunctions));
-})(this, (function (index_js, ScrollBarHelper, EventHandler, BaseComponent, SelectorEngine, Backdrop, FocusTrap, componentFunctions_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './util/scrollbar', './dom/event-handler', './base-component', './dom/selector-engine', './util/backdrop', './util/focustrap', './util/component-functions'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Offcanvas = factory(global.Index, global.Scrollbar, global.EventHandler, global.BaseComponent, global.SelectorEngine, global.Backdrop, global.Focustrap, global.ComponentFunctions));
+})(this, (function (index_js, ScrollBarHelper, EventHandler, BaseComponent, SelectorEngine, Backdrop, FocusTrap, componentFunctions_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -63,8 +64,6 @@
       this._focustrap = this._initializeFocusTrap();
       this._addEventListeners();
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -74,8 +73,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     toggle(relatedTarget) {
       return this._isShown ? this.hide() : this.show(relatedTarget);
     }
@@ -138,8 +135,6 @@
       this._focustrap.deactivate();
       super.dispose();
     }
-
-    // Private
     _initializeBackDrop() {
       const clickCallback = () => {
         if (this._config.backdrop === 'static') {
@@ -148,8 +143,6 @@
         }
         this.hide();
       };
-
-      // 'static' option will be translated to true, and booleans will keep their value
       const isVisible = Boolean(this._config.backdrop);
       return new Backdrop({
         className: CLASS_NAME_BACKDROP,
@@ -176,8 +169,6 @@
         this.hide();
       });
     }
-
-    // Static
     static jQueryInterface(config) {
       return this.each(function () {
         const data = Offcanvas.getOrCreateInstance(this, config);
@@ -205,13 +196,11 @@
       return;
     }
     EventHandler.one(target, EVENT_HIDDEN, () => {
-      // focus on trigger when it is closed
+
       if (index_js.isVisible(this)) {
         this.focus();
       }
     });
-
-    // avoid conflict when clicking a toggler of an offcanvas, while another is open
     const alreadyOpen = SelectorEngine.findOne(OPEN_SELECTOR);
     if (alreadyOpen && alreadyOpen !== target) {
       Offcanvas.getInstance(alreadyOpen).hide();

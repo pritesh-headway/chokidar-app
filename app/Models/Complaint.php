@@ -22,8 +22,6 @@ class Complaint extends Model
         'image',
         'reason',
     ];
-
-    // Accessor to format the date as d-m-Y
     public function getDateAttribute($value)
     {
         return \Carbon\Carbon::parse($value)->format('d-m-Y');

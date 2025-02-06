@@ -1,4 +1,3 @@
-// Avatar
 .avatar {
     position: relative;
     display: inline-block;
@@ -6,7 +5,6 @@
     height: 3rem;
 }
 
-// Avatar Size
 .avatar-xs {
     width: $avatar-size-xs;
     height: $avatar-size-xs;
@@ -37,7 +35,6 @@
     height: $avatar-size-xxl;
 }
 
-// Avatar img
 .avatar img {
     width: 100%;
     height: 100%;
@@ -68,7 +65,6 @@
     height: 16%;
 }
 
-// Avatar indicators
 .avatar-offline:before {
     background-color: $gray-400;
 }
@@ -89,56 +85,59 @@
     background-color: $info;
 }
 
-// Avatar intials
 .avatar-initials {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -ms-flex-align: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  text-transform: uppercase;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    text-transform: uppercase;
 }
-// Color varient
 
 .avatar-primary .avatar-initials {
-  color: $white;
-  background-color: $primary;
+    color: $white;
+    background-color: $primary;
 }
+
 .avatar-secondary .avatar-initials {
-  color: $white;
-  background-color: $secondary;
+    color: $white;
+    background-color: $secondary;
 }
+
 .avatar-success .avatar-initials {
-  color: $white;
-  background-color: $success;
+    color: $white;
+    background-color: $success;
 }
+
 .avatar-warning .avatar-initials {
-  color: $white;
-  background-color: $warning;
+    color: $white;
+    background-color: $warning;
 }
+
 .avatar-info .avatar-initials {
-  color: $white;
-  background-color: $info;
+    color: $white;
+    background-color: $info;
 }
+
 .avatar-danger .avatar-initials {
-  color: $white;
-  background-color: $danger;
+    color: $white;
+    background-color: $danger;
 }
+
 .avatar-light .avatar-initials {
-  color: $white;
-  background-color: $light;
+    color: $white;
+    background-color: $light;
 }
+
 .avatar-dark .avatar-initials {
-  color: $white;
-  background-color: $dark;
+    color: $white;
+    background-color: $dark;
 }
 
-
-// Avatar Group
 .avatar-group .avatar+.avatar {
     margin-left: -1.2rem;
 }
@@ -147,28 +146,7 @@
     z-index: 2;
 }
 
-// Avatar border
 .avatar-group img,
 .avatar-group .avatar .avatar-initials {
     border: 2px solid $white;
 }
-
-// Image aspect ratio 4:3
-// .img-4by3-xxl {
-//   width: $img-4by3-xxl;
-// }
-// .img-4by3-xl {
-//   width: $img-4by3-xl;
-// }
-// .img-4by3-lg {
-//   width: $img-4by3-lg;
-// }
-// .img-4by3-md {
-//   width: $img-4by3-md;
-// }
-// .img-4by3-sm {
-//   width: $img-4by3-sm;
-// }
-// .img-4by3-xs {
-//   width: $img-4by3-xs;
-// }

@@ -1,5 +1,5 @@
 .popover {
-  // scss-docs-start popover-css-vars
+
   --#{$prefix}popover-zindex: #{$zindex-popover};
   --#{$prefix}popover-max-width: #{$popover-max-width};
   @include rfs($popover-font-size, --#{$prefix}popover-font-size);
@@ -20,16 +20,12 @@
   --#{$prefix}popover-arrow-width: #{$popover-arrow-width};
   --#{$prefix}popover-arrow-height: #{$popover-arrow-height};
   --#{$prefix}popover-arrow-border: var(--#{$prefix}popover-border-color);
-  // scss-docs-end popover-css-vars
-
   z-index: var(--#{$prefix}popover-zindex);
   display: block;
   max-width: var(--#{$prefix}popover-max-width);
-  // Our parent element can be arbitrary since tooltips are by default inserted as a sibling of their target element.
-  // So reset our font and text properties to avoid inheriting weird values.
   @include reset-text();
   @include font-size(var(--#{$prefix}popover-font-size));
-  // Allow breaking very long words so they don't overflow the popover's bounds
+
   word-wrap: break-word;
   background-color: var(--#{$prefix}popover-bg);
   background-clip: padding-box;
@@ -55,12 +51,12 @@
 }
 
 .bs-popover-top {
-  > .popover-arrow {
-    bottom: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width)); // stylelint-disable-line function-disallowed-list
+  >.popover-arrow {
+    bottom: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width));
 
     &::before,
     &::after {
-      border-width: var(--#{$prefix}popover-arrow-height) calc(var(--#{$prefix}popover-arrow-width) * .5) 0; // stylelint-disable-line function-disallowed-list
+      border-width: var(--#{$prefix}popover-arrow-height) calc(var(--#{$prefix}popover-arrow-width) * .5) 0;
     }
 
     &::before {
@@ -77,14 +73,14 @@
 
 /* rtl:begin:ignore */
 .bs-popover-end {
-  > .popover-arrow {
-    left: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width)); // stylelint-disable-line function-disallowed-list
+  >.popover-arrow {
+    left: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width));
     width: var(--#{$prefix}popover-arrow-height);
     height: var(--#{$prefix}popover-arrow-width);
 
     &::before,
     &::after {
-      border-width: calc(var(--#{$prefix}popover-arrow-width) * .5) var(--#{$prefix}popover-arrow-height) calc(var(--#{$prefix}popover-arrow-width) * .5) 0; // stylelint-disable-line function-disallowed-list
+      border-width: calc(var(--#{$prefix}popover-arrow-width) * .5) var(--#{$prefix}popover-arrow-height) calc(var(--#{$prefix}popover-arrow-width) * .5) 0;
     }
 
     &::before {
@@ -102,12 +98,12 @@
 /* rtl:end:ignore */
 
 .bs-popover-bottom {
-  > .popover-arrow {
-    top: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width)); // stylelint-disable-line function-disallowed-list
+  >.popover-arrow {
+    top: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width));
 
     &::before,
     &::after {
-      border-width: 0 calc(var(--#{$prefix}popover-arrow-width) * .5) var(--#{$prefix}popover-arrow-height); // stylelint-disable-line function-disallowed-list
+      border-width: 0 calc(var(--#{$prefix}popover-arrow-width) * .5) var(--#{$prefix}popover-arrow-height);
     }
 
     &::before {
@@ -121,14 +117,13 @@
     }
   }
 
-  // This will remove the popover-header's border just below the arrow
   .popover-header::before {
     position: absolute;
     top: 0;
     left: 50%;
     display: block;
     width: var(--#{$prefix}popover-arrow-width);
-    margin-left: calc(-.5 * var(--#{$prefix}popover-arrow-width)); // stylelint-disable-line function-disallowed-list
+    margin-left: calc(-.5 * var(--#{$prefix}popover-arrow-width));
     content: "";
     border-bottom: var(--#{$prefix}popover-border-width) solid var(--#{$prefix}popover-header-bg);
   }
@@ -136,14 +131,14 @@
 
 /* rtl:begin:ignore */
 .bs-popover-start {
-  > .popover-arrow {
-    right: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width)); // stylelint-disable-line function-disallowed-list
+  >.popover-arrow {
+    right: calc(-1 * (var(--#{$prefix}popover-arrow-height)) - var(--#{$prefix}popover-border-width));
     width: var(--#{$prefix}popover-arrow-height);
     height: var(--#{$prefix}popover-arrow-width);
 
     &::before,
     &::after {
-      border-width: calc(var(--#{$prefix}popover-arrow-width) * .5) 0 calc(var(--#{$prefix}popover-arrow-width) * .5) var(--#{$prefix}popover-arrow-height); // stylelint-disable-line function-disallowed-list
+      border-width: calc(var(--#{$prefix}popover-arrow-width) * .5) 0 calc(var(--#{$prefix}popover-arrow-width) * .5) var(--#{$prefix}popover-arrow-height);
     }
 
     &::before {
@@ -164,21 +159,23 @@
   &[data-popper-placement^="top"] {
     @extend .bs-popover-top;
   }
+
   &[data-popper-placement^="right"] {
     @extend .bs-popover-end;
   }
+
   &[data-popper-placement^="bottom"] {
     @extend .bs-popover-bottom;
   }
+
   &[data-popper-placement^="left"] {
     @extend .bs-popover-start;
   }
 }
 
-// Offset the popover to account for the popover arrow
 .popover-header {
   padding: var(--#{$prefix}popover-header-padding-y) var(--#{$prefix}popover-header-padding-x);
-  margin-bottom: 0; // Reset the default from Reboot
+  margin-bottom: 0;
   @include font-size(var(--#{$prefix}popover-header-font-size));
   color: var(--#{$prefix}popover-header-color);
   background-color: var(--#{$prefix}popover-header-bg);

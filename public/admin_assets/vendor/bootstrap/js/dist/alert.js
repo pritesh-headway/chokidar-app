@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./dom/event-handler.js'), require('./base-component.js'), require('./util/component-functions.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './base-component', './util/component-functions'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Alert = factory(global.Index, global.EventHandler, global.BaseComponent, global.ComponentFunctions));
-})(this, (function (index_js, EventHandler, BaseComponent, componentFunctions_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './base-component', './util/component-functions'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Alert = factory(global.Index, global.EventHandler, global.BaseComponent, global.ComponentFunctions));
+})(this, (function (index_js, EventHandler, BaseComponent, componentFunctions_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -33,12 +34,10 @@
    */
 
   class Alert extends BaseComponent {
-    // Getters
+
     static get NAME() {
       return NAME;
     }
-
-    // Public
     close() {
       const closeEvent = EventHandler.trigger(this._element, EVENT_CLOSE);
       if (closeEvent.defaultPrevented) {
@@ -48,15 +47,11 @@
       const isAnimated = this._element.classList.contains(CLASS_NAME_FADE);
       this._queueCallback(() => this._destroyElement(), this._element, isAnimated);
     }
-
-    // Private
     _destroyElement() {
       this._element.remove();
       EventHandler.trigger(this._element, EVENT_CLOSED);
       this.dispose();
     }
-
-    // Static
     static jQueryInterface(config) {
       return this.each(function () {
         const data = Alert.getOrCreateInstance(this);

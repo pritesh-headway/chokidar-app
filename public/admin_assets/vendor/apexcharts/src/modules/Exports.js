@@ -10,23 +10,21 @@ class Exports {
   }
 
   scaleSvgNode(svg, scale) {
-    // get current both width and height of the svg
+
     let svgWidth = parseFloat(svg.getAttributeNS(null, 'width'))
     let svgHeight = parseFloat(svg.getAttributeNS(null, 'height'))
-    // set new width and height based on the scale
+
     svg.setAttributeNS(null, 'width', svgWidth * scale)
     svg.setAttributeNS(null, 'height', svgHeight * scale)
     svg.setAttributeNS(null, 'viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
   }
 
   fixSvgStringForIe11(svgData) {
-    // IE11 generates broken SVG that we have to fix by using regex
+
     if (!Utils.isIE11()) {
-      // not IE11 - noop
+
       return svgData.replace(/&nbsp;/g, '&#160;')
     }
-
-    // replace second occurrence of "xmlns" attribute with "xmlns:xlink" with correct url + add xmlns:svgjs
     let nXmlnsSeen = 0
     let result = svgData.replace(
       /xmlns="http:\/\/www.w3.org\/2000\/svg"/g,
@@ -37,10 +35,8 @@ class Exports {
           : match
       }
     )
-
-    // remove the invalid empty namespace declarations
     result = result.replace(/xmlns:NS\d+=""/g, '')
-    // remove these broken namespaces from attributes
+
     result = result.replace(/NS\d+:(\w+:\w+=")/g, '$1')
 
     return result
@@ -48,16 +44,16 @@ class Exports {
 
   getSvgString(scale) {
     if (scale == undefined) {
-      scale = 1 // if no scale is specified, don't scale...
+      scale = 1
     }
     let svgString = this.w.globals.dom.Paper.svg()
-    // in case the scale is different than 1, the svg needs to be rescaled
+
     if (scale !== 1) {
-      // clone the svg node so it remains intact in the UI
+
       const svgNode = this.w.globals.dom.Paper.node.cloneNode(true)
-      // scale the image
+
       this.scaleSvgNode(svgNode, scale)
-      // get the string representation of the svgNode
+
       svgString = new XMLSerializer().serializeToString(svgNode)
     }
     return this.fixSvgStringForIe11(svgString)
@@ -65,8 +61,6 @@ class Exports {
 
   cleanup() {
     const w = this.w
-
-    // hide some elements to avoid printing them on exported svg
     const xcrosshairs = w.globals.dom.baseEl.getElementsByClassName(
       'apexcharts-xcrosshairs'
     )
@@ -110,7 +104,7 @@ class Exports {
       this.cleanup()
       const canvas = document.createElement('canvas')
       canvas.width = w.globals.svgWidth * scale
-      canvas.height = parseInt(w.globals.dom.elWrap.style.height, 10) * scale // because of resizeNonAxisCharts
+      canvas.height = parseInt(w.globals.dom.elWrap.style.height, 10) * scale
 
       const canvasBg =
         w.config.chart.background === 'transparent'
@@ -124,17 +118,15 @@ class Exports {
       const svgData = this.getSvgString(scale)
 
       if (window.canvg && Utils.isIE11()) {
-        // use canvg as a polyfill to workaround ie11 considering a canvas with loaded svg 'unsafe'
-        // without ignoreClear we lose our background color; without ignoreDimensions some grid lines become invisible
         let v = window.canvg.Canvg.fromString(ctx, svgData, {
           ignoreClear: true,
           ignoreDimensions: true
         })
-        // render the svg to canvas
+
         v.start()
 
         let blob = canvas.msToBlob()
-        // dispose - missing this will cause a memory leak
+
         v.stop()
 
         resolve({ blob })
@@ -147,7 +139,7 @@ class Exports {
           ctx.drawImage(img, 0, 0)
 
           if (canvas.msToBlob) {
-            // IE and Edge can't navigate to data urls, so we return the blob instead
+
             let blob = canvas.msToBlob()
             resolve({ blob })
           } else {
@@ -214,14 +206,9 @@ class Exports {
     const axesUtils = new AxesUtils(this.ctx)
     const getCat = (i) => {
       let cat = ''
-
-      // pie / donut/ radial
       if (!w.globals.axisCharts) {
         cat = w.config.labels[i]
       } else {
-        // xy charts
-
-        // non datetime
         if (
           w.config.xaxis.type === 'category' ||
           w.config.xaxis.convertedCatToNumeric
@@ -245,8 +232,6 @@ class Exports {
             ).text
           }
         }
-
-        // datetime, but labels specified in categories or labels
         if (w.config.xaxis.type === 'datetime') {
           if (w.config.xaxis.categories.length) {
             cat = w.config.xaxis.categories[i]
@@ -262,23 +247,21 @@ class Exports {
 
       return Utils.isNumber(cat) ? cat : cat.split(columnDelimiter).join('')
     }
-
-    // Fix https://github.com/apexcharts/apexcharts.js/issues/3365
     const getEmptyDataForCsvColumn = () => {
       return [...Array(seriesMaxDataLength)].map(() => '')
     }
 
     const handleAxisRowsColumns = (s, sI) => {
       if (columns.length && sI === 0) {
-        // It's the first series.  Go ahead and create the first row with header information.
+
         rows.push(columns.join(columnDelimiter))
       }
 
       if (s.data) {
-        // Use the data we have, or generate a properly sized empty array with empty data if some data is missing.
+
         s.data = (s.data.length && s.data) || getEmptyDataForCsvColumn()
         for (let i = 0; i < s.data.length; i++) {
-          // Reset the columns array so that we can start building columns for this row.
+
           columns = []
 
           let cat = getCat(i)
@@ -291,13 +274,13 @@ class Exports {
           }
 
           if (sI === 0) {
-            // It's the first series.  Also handle the category.
+
             columns.push(
               isTimeStamp(cat)
                 ? w.config.chart.toolbar.export.csv.dateFormatter(cat)
                 : Utils.isNumber(cat)
-                ? cat
-                : cat.split(columnDelimiter).join('')
+                  ? cat
+                  : cat.split(columnDelimiter).join('')
             )
 
             for (let ci = 0; ci < w.globals.series.length; ci++) {
@@ -394,7 +377,7 @@ class Exports {
 
     this.triggerDownload(
       'data:text/csv; charset=utf-8,' +
-        encodeURIComponent(universalBOM + result),
+      encodeURIComponent(universalBOM + result),
       fileName ? fileName : w.config.chart.toolbar.export.csv.filename,
       '.csv'
     )

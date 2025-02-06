@@ -5,12 +5,9 @@ export default class Range {
     this.ctx = ctx
     this.w = ctx.w
   }
-
-  // http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axiss
-  // This routine creates the Y axis values for a graph.
   niceScale(yMin, yMax, ticks = 10, index = 0, NO_MIN_MAX_PROVIDED) {
     const w = this.w
-    // Determine Range
+
     let range = Math.abs(yMax - yMin)
 
     ticks = this._adjustTicksForSmallRange(ticks, index, range)
@@ -24,7 +21,7 @@ export default class Range {
       (!Utils.isNumber(yMin) && !Utils.isNumber(yMax)) ||
       (yMin === Number.MIN_VALUE && yMax === -Number.MAX_VALUE)
     ) {
-      // when all values are 0
+
       yMin = 0
       yMax = ticks
       let linearScale = this.linearScale(yMin, yMax, ticks)
@@ -32,26 +29,13 @@ export default class Range {
     }
 
     if (yMin > yMax) {
-      // if somehow due to some wrong config, user sent max less than min,
-      // adjust the min/max again
       console.warn('axis.min cannot be greater than axis.max')
       yMax = yMin + 0.1
     } else if (yMin === yMax) {
-      // If yMin and yMax are identical, then
-      // adjust the yMin and yMax values to actually
-      // make a graph. Also avoids division by zero errors.
-      yMin = yMin === 0 ? 0 : yMin - 0.5 // some small value
-      yMax = yMax === 0 ? 2 : yMax + 0.5 // some small value
+      yMin = yMin === 0 ? 0 : yMin - 0.5
+      yMax = yMax === 0 ? 2 : yMax + 0.5
     }
-
-    // Calculate Min amd Max graphical labels and graph
-    // increments.  The number of ticks defaults to
-    // 10 which is the SUGGESTED value.  Any tick value
-    // entered is used as a suggested value which is
-    // adjusted to be a 'pretty' value.
     //
-    // Output will be an array of the Y axis values that
-    // encompass the Y values.
     let result = []
 
     if (
@@ -68,17 +52,13 @@ export default class Range {
     }
 
     let tiks = ticks + 1
-    // Adjust ticks if needed
+
     if (tiks < 2) {
       tiks = 2
     } else if (tiks > 2) {
       tiks -= 2
     }
-
-    // Get raw step value
     let tempStep = range / tiks
-    // Calculate pretty step value
-
     let mag = Math.floor(Utils.log10(tempStep))
     let magPow = Math.pow(10, mag)
     let magMsd = Math.round(tempStep / magPow)
@@ -86,12 +66,9 @@ export default class Range {
       magMsd = 1
     }
     let stepSize = magMsd * magPow
-
-    // build Y label array.
-    // Lower and upper bounds calculations
     let lb = stepSize * Math.floor(yMin / stepSize)
     let ub = stepSize * Math.ceil(yMax / stepSize)
-    // Build array
+
     let val = lb
 
     if (NO_MIN_MAX_PROVIDED && range > 2) {
@@ -162,13 +139,13 @@ export default class Range {
   }
 
   logarithmicScaleNice(yMin, yMax, base) {
-    // Basic validation to avoid for loop starting at -inf.
+
     if (yMax <= 0) yMax = Math.max(yMin, base)
     if (yMin <= 0) yMin = Math.min(yMax, base)
 
     const logs = []
 
-    const logMax = Math.ceil(Math.log(yMax) / Math.log(base) + 1) // Get powers of base for our max and min
+    const logMax = Math.ceil(Math.log(yMax) / Math.log(base) + 1)
     const logMin = Math.floor(Math.log(yMin) / Math.log(base))
 
     for (let i = logMin; i < logMax; i++) {
@@ -183,29 +160,16 @@ export default class Range {
   }
 
   logarithmicScale(yMin, yMax, base) {
-    // Basic validation to avoid for loop starting at -inf.
+
     if (yMax <= 0) yMax = Math.max(yMin, base)
     if (yMin <= 0) yMin = Math.min(yMax, base)
 
     const logs = []
-
-    // Get the logarithmic range.
     const logMax = Math.log(yMax) / Math.log(base)
     const logMin = Math.log(yMin) / Math.log(base)
-
-    // Get the exact logarithmic range.
-    // (This is the exact number of multiples of the base there are between yMin and yMax).
     const logRange = logMax - logMin
-
-    // Round the logarithmic range to get the number of ticks we will create.
-    // If the chosen min/max values are multiples of each other WRT the base, this will be neat.
-    // If the chosen min/max aren't, we will at least still provide USEFUL ticks.
     const ticks = Math.round(logRange)
-
-    // Get the logarithmic spacing between ticks.
     const logTickSpacing = logRange / ticks
-
-    // Create as many ticks as there is range in the logs.
     for (
       let i = 0, logTick = logMin;
       i < ticks;
@@ -213,8 +177,6 @@ export default class Range {
     ) {
       logs.push(Math.pow(base, logTick))
     }
-
-    // Add a final tick at the yMax.
     logs.push(Math.pow(base, logMax))
 
     return {
@@ -265,14 +227,14 @@ export default class Range {
         : this.logarithmicScale(minY, maxY, y.logBase)
     } else {
       if (maxY === -Number.MAX_VALUE || !Utils.isNumber(maxY)) {
-        // no data in the chart. Either all series collapsed or user passed a blank array
+
         gl.yAxisScale[index] = this.linearScale(0, 5, 5)
       } else {
-        // there is some data. Turn off the allSeriesCollapsed flag
+
         gl.allSeriesCollapsed = false
 
         if ((y.min !== undefined || y.max !== undefined) && !y.forceNiceScale) {
-          // fix https://github.com/apexcharts/apexcharts.js/issues/492
+
           gl.yAxisScale[index] = this.linearScale(
             minY,
             maxY,
@@ -289,7 +251,7 @@ export default class Range {
             maxY,
             y.tickAmount ? y.tickAmount : diff < 5 && diff > 1 ? diff + 1 : 5,
             index,
-            // fix https://github.com/apexcharts/apexcharts.js/issues/397
+
             noMinMaxProvided
           )
         }
@@ -303,7 +265,7 @@ export default class Range {
     const x = w.config.xaxis
     let diff = Math.abs(maxX - minX)
     if (maxX === -Number.MAX_VALUE || !Utils.isNumber(maxX)) {
-      // no data in the chart. Either all series collapsed or user passed a blank array
+
       gl.xAxisScale = this.linearScale(0, 5, 5)
     } else {
       gl.xAxisScale = this.linearScale(
@@ -324,13 +286,10 @@ export default class Range {
     const maxYArr = gl.maxYArr.concat([])
 
     let scalesIndices = []
-    // here, we loop through the yaxis array and find the item which has "seriesName" property
+
     cnf.yaxis.forEach((yaxe, i) => {
       let index = i
       cnf.series.forEach((s, si) => {
-        // if seriesName matches and that series is not collapsed, we use that scale
-        // fix issue #1215
-        // proceed even if si is in gl.collapsedSeriesIndices
         if (s.name === yaxe.seriesName) {
           index = si
 
@@ -360,8 +319,6 @@ export default class Range {
   sameScaleInMultipleAxes(minYArr, maxYArr, scalesIndices) {
     const cnf = this.w.config
     const gl = this.w.globals
-
-    // we got the scalesIndices array in the above code, but we need to filter out the items which doesn't have same scales
     let similarIndices = []
     scalesIndices.forEach((scale) => {
       if (scale.alreadyExists) {
@@ -388,16 +345,10 @@ export default class Range {
         }
       })
     })
-
-    // then, we remove duplicates from the similarScale array
     let uniqueSimilarIndices = similarIndices.map((item) => {
       return item.filter((i, pos) => item.indexOf(i) === pos)
     })
-
-    // sort further to remove whole duplicate arrays later
     let sortedIndices = uniqueSimilarIndices.map((s) => s.sort())
-
-    // remove undefined items
     similarIndices = similarIndices.filter((s) => !!s)
 
     let indices = sortedIndices.slice()
@@ -410,7 +361,7 @@ export default class Range {
     let sameScaleMaxYArr = []
     minYArr.forEach((minYValue, yi) => {
       indices.forEach((scale, i) => {
-        // we compare only the yIndex which exists in the indices array
+
         if (scale.indexOf(yi) > -1) {
           if (typeof sameScaleMinYArr[i] === 'undefined') {
             sameScaleMinYArr[i] = []
@@ -455,11 +406,11 @@ export default class Range {
         let maxY = sameScaleMax[si]
 
         if (cnf.chart.stacked) {
-          // for stacked charts, we need to add the values
+
           maxY = 0
 
           s.forEach((ind, k) => {
-            // fix incorrectly adjust y scale issue #1215
+
             if (ind.value !== -Number.MAX_VALUE) {
               maxY += ind.value
             }
@@ -492,8 +443,6 @@ export default class Range {
       })
     })
   }
-
-  // experimental feature which scales the y-axis to a min/max based on x-axis range
   autoScaleY(ctx, yaxis, e) {
     if (!ctx) {
       ctx = this
@@ -502,8 +451,6 @@ export default class Range {
     const w = ctx.w
 
     if (w.globals.isMultipleYAxis || w.globals.collapsedSeries.length) {
-      // The autoScale option for multiple y-axis is turned off as it leads to buggy behavior.
-      // Also, when a series is collapsed, it results in incorrect behavior. Hence turned it off for that too - fixes apexcharts.js#795
       console.warn('autoScaleYaxis is not supported in a multi-yaxis chart.')
       return yaxis
     }

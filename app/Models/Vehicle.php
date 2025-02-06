@@ -9,14 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Vehicle extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
-
     protected $fillable = [
         'block_number',
         'vehicle_number',
         'vehicle_type',
         'user_id',
-        // 'vehicle_image',
+
         'status',
         'vehicle_brand',
         'vehicle_model',

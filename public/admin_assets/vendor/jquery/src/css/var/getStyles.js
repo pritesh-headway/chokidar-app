@@ -1,17 +1,13 @@
-define( function() {
+define(function () {
 	"use strict";
 
-	return function( elem ) {
-
-		// Support: IE <=11 only, Firefox <=30 (trac-15098, trac-14150)
-		// IE throws on elements created in popups
-		// FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
+	return function (elem) {
 		var view = elem.ownerDocument.defaultView;
 
-		if ( !view || !view.opener ) {
+		if (!view || !view.opener) {
 			view = window;
 		}
 
-		return view.getComputedStyle( elem );
+		return view.getComputedStyle(elem);
 	};
-} );
+});

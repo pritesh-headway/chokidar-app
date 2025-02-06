@@ -24,14 +24,14 @@ class Radial extends Pie {
 
     this.totalAngle = Math.abs(
       w.config.plotOptions.radialBar.endAngle -
-        w.config.plotOptions.radialBar.startAngle
+      w.config.plotOptions.radialBar.startAngle
     )
 
     this.trackStartAngle = w.config.plotOptions.radialBar.track.startAngle
     this.trackEndAngle = w.config.plotOptions.radialBar.track.endAngle
 
     this.donutDataLabels = this.w.config.plotOptions.radialBar.dataLabels
-    this.radialDataLabels = this.donutDataLabels // make a copy for easy reference
+    this.radialDataLabels = this.donutDataLabels
 
     if (!this.trackStartAngle) this.trackStartAngle = this.startAngle
     if (!this.trackEndAngle) this.trackEndAngle = this.endAngle
@@ -194,8 +194,6 @@ class Radial extends Pie {
 
   drawArcs(opts) {
     let w = this.w
-    // size, donutSize, centerX, centerY, colorArr, lineColorArr, sectorAngleArr, series
-
     let graphics = new Graphics(this.ctx)
     let fill = new Fill(this.ctx)
     let filters = new Filters(this.ctx)
@@ -211,8 +209,8 @@ class Radial extends Pie {
       this.margin * opts.series.length -
       (strokeWidth *
         parseInt(w.config.plotOptions.radialBar.track.strokeWidth, 10)) /
-        100 /
-        2
+      100 /
+      2
 
     let hollowRadius = hollowSize - w.config.plotOptions.radialBar.hollow.margin
 
@@ -288,8 +286,6 @@ class Radial extends Pie {
 
       let startAngle = this.startAngle
       let prevStartAngle
-
-      // if data exceeds 100, make it 100
       const dataValue =
         Utils.negToZero(opts.series[i] > 100 ? 100 : opts.series[i]) / 100
 
@@ -301,7 +297,7 @@ class Radial extends Pie {
         prevEndAngle =
           Math.round(
             (this.totalAngle * Utils.negToZero(w.globals.previousPaths[i])) /
-              100
+            100
           ) + prevStartAngle
       }
 
@@ -421,30 +417,30 @@ class Radial extends Pie {
       const imgWidth = w.config.plotOptions.radialBar.hollow.imageWidth
       const imgHeight = w.config.plotOptions.radialBar.hollow.imageHeight
       if (imgWidth === undefined && imgHeight === undefined) {
-        let image = w.globals.dom.Paper.image(hollowFillImg).loaded(function(
+        let image = w.globals.dom.Paper.image(hollowFillImg).loaded(function (
           loader
         ) {
           this.move(
             opts.centerX -
-              loader.width / 2 +
-              w.config.plotOptions.radialBar.hollow.imageOffsetX,
+            loader.width / 2 +
+            w.config.plotOptions.radialBar.hollow.imageOffsetX,
             opts.centerY -
-              loader.height / 2 +
-              w.config.plotOptions.radialBar.hollow.imageOffsetY
+            loader.height / 2 +
+            w.config.plotOptions.radialBar.hollow.imageOffsetY
           )
         })
         g.add(image)
       } else {
-        let image = w.globals.dom.Paper.image(hollowFillImg).loaded(function(
+        let image = w.globals.dom.Paper.image(hollowFillImg).loaded(function (
           loader
         ) {
           this.move(
             opts.centerX -
-              imgWidth / 2 +
-              w.config.plotOptions.radialBar.hollow.imageOffsetX,
+            imgWidth / 2 +
+            w.config.plotOptions.radialBar.hollow.imageOffsetX,
             opts.centerY -
-              imgHeight / 2 +
-              w.config.plotOptions.radialBar.hollow.imageOffsetY
+            imgHeight / 2 +
+            w.config.plotOptions.radialBar.hollow.imageOffsetY
           )
           this.size(imgWidth, imgHeight)
         })
@@ -459,8 +455,8 @@ class Radial extends Pie {
     return (
       (opts.size *
         (100 - parseInt(w.config.plotOptions.radialBar.hollow.size, 10))) /
-        100 /
-        (opts.series.length + 1) -
+      100 /
+      (opts.series.length + 1) -
       this.margin
     )
   }

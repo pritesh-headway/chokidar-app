@@ -17,8 +17,6 @@
 	 * @type {RegExp}
 	 */
 	var NEW_LINE_EXP = /\n(?!$)/g;
-
-
 	/**
 	 * Global exports
 	 */
@@ -201,25 +199,17 @@
 
 		var code = /** @type {Element} */ (env.element);
 		var pre = /** @type {HTMLElement} */ (code.parentNode);
-
-		// works only for <code> wrapped inside <pre> (not inline)
 		if (!pre || !/pre/i.test(pre.nodeName)) {
 			return;
 		}
-
-		// Abort if line numbers already exists
 		if (code.querySelector('.line-numbers-rows')) {
 			return;
 		}
-
-		// only add line numbers if <code> or one of its ancestors has the `line-numbers` class
 		if (!Prism.util.isActive(code, PLUGIN_NAME)) {
 			return;
 		}
-
-		// Remove the class 'line-numbers' from the <code>
 		code.classList.remove(PLUGIN_NAME);
-		// Add the class 'line-numbers' to the <pre>
+
 		pre.classList.add(PLUGIN_NAME);
 
 		var match = env.code.match(NEW_LINE_EXP);

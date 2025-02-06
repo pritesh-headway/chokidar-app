@@ -14,7 +14,7 @@ import { getjQuery } from '../util/index.js'
 const namespaceRegex = /[^.]*(?=\..*)\.|.*/
 const stripNameRegex = /\..*/
 const stripUidRegex = /::\d+$/
-const eventRegistry = {} // Events storage
+const eventRegistry = {}
 let uidEvent = 1
 const customEvents = {
   mouseenter: 'mouseover',
@@ -128,7 +128,7 @@ function findHandler(events, callable, delegationSelector = null) {
 
 function normalizeParameters(originalTypeEvent, handler, delegationFunction) {
   const isDelegated = typeof handler === 'string'
-  // todo: tooltip passes `false` instead of selector, so we need to check
+
   const callable = isDelegated ? delegationFunction : (handler || delegationFunction)
   let typeEvent = getTypeEvent(originalTypeEvent)
 
@@ -145,9 +145,6 @@ function addHandler(element, originalTypeEvent, handler, delegationFunction, one
   }
 
   let [isDelegated, callable, typeEvent] = normalizeParameters(originalTypeEvent, handler, delegationFunction)
-
-  // in case of mouseenter or mouseleave wrap the handler within a function that checks for its DOM position
-  // this prevents the handler from being dispatched the same way as mouseover or mouseout does
   if (originalTypeEvent in customEvents) {
     const wrapFunction = fn => {
       return function (event) {
@@ -206,7 +203,7 @@ function removeNamespacedHandlers(element, events, typeEvent, namespace) {
 }
 
 function getTypeEvent(event) {
-  // allow to get the native events from namespaced events ('click.bs.button' --> 'click')
+
   event = event.replace(stripNameRegex, '')
   return customEvents[event] || event
 }
@@ -232,7 +229,7 @@ const EventHandler = {
     const isNamespace = originalTypeEvent.startsWith('.')
 
     if (typeof callable !== 'undefined') {
-      // Simplest case: handler is passed, remove that listener ONLY.
+
       if (!Object.keys(storeElementEvent).length) {
         return
       }

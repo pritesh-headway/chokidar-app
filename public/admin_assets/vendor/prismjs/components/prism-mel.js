@@ -14,7 +14,7 @@ Prism.languages.mel = {
 			},
 			'statement': {
 				pattern: /[\s\S]+/,
-				inside: null // see below
+				inside: null
 			}
 		}
 	},

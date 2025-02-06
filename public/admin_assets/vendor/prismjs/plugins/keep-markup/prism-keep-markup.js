@@ -33,13 +33,13 @@
 		var data = [];
 		function processElement(element) {
 			if (!shouldKeep(element)) {
-				// don't keep this element and just process its children
+
 				processChildren(element);
 				return;
 			}
 
 			var o = {
-				// Store original element so we can restore it after highlighting
+
 				element: element,
 				posOpen: pos
 			};
@@ -52,9 +52,9 @@
 		function processChildren(element) {
 			for (var i = 0, l = element.childNodes.length; i < l; i++) {
 				var child = element.childNodes[i];
-				if (child.nodeType === 1) { // element
+				if (child.nodeType === 1) {
 					processElement(child);
-				} else if (child.nodeType === 3) { // text
+				} else if (child.nodeType === 3) {
 					pos += child.data.length;
 				}
 			}
@@ -62,7 +62,7 @@
 		processChildren(env.element);
 
 		if (data.length) {
-			// data is an array of all existing tags
+
 			env.keepMarkup = data;
 		}
 	});
@@ -75,19 +75,19 @@
 
 					var child = elt.childNodes[i];
 
-					if (child.nodeType === 1) { // element
+					if (child.nodeType === 1) {
 						if (!walk(child, nodeState)) {
 							return false;
 						}
 
-					} else if (child.nodeType === 3) { // text
+					} else if (child.nodeType === 3) {
 						if (!nodeState.nodeStart && nodeState.pos + child.data.length > nodeState.node.posOpen) {
-							// We found the start position
+
 							nodeState.nodeStart = child;
 							nodeState.nodeStartPos = nodeState.node.posOpen - nodeState.pos;
 						}
 						if (nodeState.nodeStart && nodeState.pos + child.data.length >= nodeState.node.posClose) {
-							// We found the end position
+
 							nodeState.nodeEnd = child;
 							nodeState.nodeEndPos = nodeState.node.posClose - nodeState.pos;
 						}
@@ -96,7 +96,7 @@
 					}
 
 					if (nodeState.nodeStart && nodeState.nodeEnd) {
-						// Select the range and wrap it with the element
+
 						var range = document.createRange();
 						range.setStart(nodeState.nodeStart, nodeState.nodeStartPos);
 						range.setEnd(nodeState.nodeEnd, nodeState.nodeEndPos);
@@ -104,22 +104,18 @@
 						nodeState.node.element.appendChild(range.extractContents());
 						range.insertNode(nodeState.node.element);
 						range.detach();
-
-						// Process is over
 						return false;
 					}
 				}
 				return true;
 			};
-
-			// For each tag, we walk the DOM to reinsert it
 			env.keepMarkup.forEach(function (node) {
 				walk(env.element, {
 					node: node,
 					pos: 0
 				});
 			});
-			// Store new highlightedCode for later hooks calls
+
 			env.highlightedCode = env.element.innerHTML;
 		}
 	});

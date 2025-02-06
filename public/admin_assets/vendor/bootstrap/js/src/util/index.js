@@ -16,14 +16,12 @@ const TRANSITION_END = 'transitionend'
  */
 const parseSelector = selector => {
   if (selector && window.CSS && window.CSS.escape) {
-    // document.querySelector needs escaping to handle IDs (html5+) containing for instance /
+
     selector = selector.replace(/#([^\s"#']+)/g, (match, id) => `#${CSS.escape(id)}`)
   }
 
   return selector
 }
-
-// Shout-out Angus Croll (https://goo.gl/pxwQGp)
 const toType = object => {
   if (object === null || object === undefined) {
     return `${object}`
@@ -48,19 +46,13 @@ const getTransitionDurationFromElement = element => {
   if (!element) {
     return 0
   }
-
-  // Get transition-duration of the element
   let { transitionDuration, transitionDelay } = window.getComputedStyle(element)
 
   const floatTransitionDuration = Number.parseFloat(transitionDuration)
   const floatTransitionDelay = Number.parseFloat(transitionDelay)
-
-  // Return 0 if element or transition duration is not found
   if (!floatTransitionDuration && !floatTransitionDelay) {
     return 0
   }
-
-  // If multiple durations are defined, take the first
   transitionDuration = transitionDuration.split(',')[0]
   transitionDelay = transitionDelay.split(',')[0]
 
@@ -84,7 +76,7 @@ const isElement = object => {
 }
 
 const getElement = object => {
-  // it's a jQuery object or a node element
+
   if (isElement(object)) {
     return object.jquery ? object[0] : object
   }
@@ -102,7 +94,7 @@ const isVisible = element => {
   }
 
   const elementIsVisible = getComputedStyle(element).getPropertyValue('visibility') === 'visible'
-  // Handle `details` element as its content may falsie appear visible when it is closed
+
   const closedDetails = element.closest('details:not([open])')
 
   if (!closedDetails) {
@@ -143,8 +135,6 @@ const findShadowRoot = element => {
   if (!document.documentElement.attachShadow) {
     return null
   }
-
-  // Can find the shadow root otherwise it'll return the document
   if (typeof element.getRootNode === 'function') {
     const root = element.getRootNode()
     return root instanceof ShadowRoot ? root : null
@@ -153,8 +143,6 @@ const findShadowRoot = element => {
   if (element instanceof ShadowRoot) {
     return element
   }
-
-  // when we don't find a shadow root
   if (!element.parentNode) {
     return null
   }
@@ -162,7 +150,7 @@ const findShadowRoot = element => {
   return findShadowRoot(element.parentNode)
 }
 
-const noop = () => {}
+const noop = () => { }
 
 /**
  * Trick to restart an element's animation
@@ -173,7 +161,7 @@ const noop = () => {}
  * @see https://www.charistheo.io/blog/2021/02/restart-a-css-animation-with-javascript/#restarting-a-css-animation
  */
 const reflow = element => {
-  element.offsetHeight // eslint-disable-line no-unused-expressions
+  element.offsetHeight
 }
 
 const getjQuery = () => {
@@ -188,7 +176,7 @@ const DOMContentLoadedCallbacks = []
 
 const onDOMContentLoaded = callback => {
   if (document.readyState === 'loading') {
-    // add listener on the first call when the document is in loading state
+
     if (!DOMContentLoadedCallbacks.length) {
       document.addEventListener('DOMContentLoaded', () => {
         for (const callback of DOMContentLoadedCallbacks) {
@@ -267,9 +255,6 @@ const executeAfterTransition = (callback, transitionElement, waitForTransition =
 const getNextActiveElement = (list, activeElement, shouldGetNext, isCycleAllowed) => {
   const listLength = list.length
   let index = list.indexOf(activeElement)
-
-  // if the element does not exist in the list return an element
-  // depending on the direction and if cycle is allowed
   if (index === -1) {
     return !shouldGetNext && isCycleAllowed ? list[listLength - 1] : list[0]
   }

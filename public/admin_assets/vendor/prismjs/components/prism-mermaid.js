@@ -36,32 +36,25 @@ Prism.languages.mermaid = {
 	},
 
 	'arrow': [
-		// This might look complex but it really isn't.
-		// There are many possible arrows (see tests) and it's impossible to fit all of them into one pattern. The
-		// problem is that we only have one lookbehind per pattern. However, we cannot disallow too many arrow
-		// characters in the one lookbehind because that would create too many false negatives. So we have to split the
-		// arrows into different patterns.
 		{
-			// ER diagram
+
 			pattern: /(^|[^{}|o.-])[|}][|o](?:--|\.\.)[|o][|{](?![{}|o.-])/,
 			lookbehind: true,
 			alias: 'operator'
 		},
 		{
-			// flow chart
-			// (?:==+|--+|-\.*-)
 			pattern: /(^|[^<>ox.=-])(?:[<ox](?:==+|--+|-\.*-)[>ox]?|(?:==+|--+|-\.*-)[>ox]|===+|---+|-\.+-)(?![<>ox.=-])/,
 			lookbehind: true,
 			alias: 'operator'
 		},
 		{
-			// sequence diagram
+
 			pattern: /(^|[^<>()x-])(?:--?(?:>>|[x>)])(?![<>()x])|(?:<<|[x<(])--?(?!-))/,
 			lookbehind: true,
 			alias: 'operator'
 		},
 		{
-			// class diagram
+
 			pattern: /(^|[^<>|*o.-])(?:[*o]--|--[*o]|<\|?(?:--|\.\.)|(?:--|\.\.)\|?>|--|\.\.)(?![<>|*o.-])/,
 			lookbehind: true,
 			alias: 'operator'
@@ -90,7 +83,7 @@ Prism.languages.mermaid = {
 	},
 
 	'keyword': [
-		// This language has both case-sensitive and case-insensitive keywords
+
 		{
 			pattern: /(^[ \t]*)(?:action|callback|class|classDef|classDiagram|click|direction|erDiagram|flowchart|gantt|gitGraph|graph|journey|link|linkStyle|pie|requirementDiagram|sequenceDiagram|stateDiagram|stateDiagram-v2|style|subgraph)(?![\w$-])/m,
 			lookbehind: true,

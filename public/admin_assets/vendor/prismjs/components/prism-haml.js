@@ -1,6 +1,6 @@
 /* TODO
 	Handle multiline code after tag
-	    %foo= some |
+		%foo= some |
 			multiline |
 			code |
 */
@@ -8,8 +8,6 @@
 (function (Prism) {
 
 	Prism.languages.haml = {
-		// Multiline stuff should appear before the rest
-
 		'multiline-comment': {
 			pattern: /((?:^|\r?\n|\r)([\t ]*))(?:\/|-#).*(?:(?:\r?\n|\r)\2[\t ].+)*/,
 			lookbehind: true,
@@ -28,8 +26,6 @@
 				inside: Prism.languages.ruby
 			}
 		],
-
-		// See at the end of the file for known filters
 		'filter': {
 			pattern: /((?:^|\r?\n|\r)([\t ]*)):[\w-]+(?:(?:\r?\n|\r)(?:\2[\t ].+|\s*?(?=\r?\n|\r)))+/,
 			lookbehind: true,
@@ -51,14 +47,12 @@
 			lookbehind: true
 		},
 		'tag': {
-			// Allows for one nested group of braces
+
 			pattern: /((?:^|\r?\n|\r)[\t ]*)[%.#][\w\-#.]*[\w\-](?:\([^)]+\)|\{(?:\{[^}]+\}|[^{}])+\}|\[[^\]]+\])*[\/<>]*/,
 			lookbehind: true,
 			inside: {
 				'attributes': [
 					{
-						// Lookbehind tries to prevent interpolations from breaking it all
-						// Allows for one nested group of braces
 						pattern: /(^|[^#])\{(?:\{[^}]+\}|[^{}])+\}/,
 						lookbehind: true,
 						inside: Prism.languages.ruby
@@ -87,7 +81,7 @@
 			lookbehind: true,
 			inside: Prism.languages.ruby
 		},
-		// Interpolations in plain text
+
 		'interpolation': {
 			pattern: /#\{[^}]+\}/,
 			inside: {
@@ -108,8 +102,6 @@
 	};
 
 	var filter_pattern = '((?:^|\\r?\\n|\\r)([\\t ]*)):{{filter_name}}(?:(?:\\r?\\n|\\r)(?:\\2[\\t ].+|\\s*?(?=\\r?\\n|\\r)))+';
-
-	// Non exhaustive list of available filters and associated languages
 	var filters = [
 		'css',
 		{ filter: 'coffee', language: 'coffeescript' },

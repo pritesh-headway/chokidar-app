@@ -17,14 +17,10 @@ class House extends Model
         'user_id',
         'status'
     ];
-
-    // Define the relationship with society
     public function society()
     {
         return $this->belongsTo(Society::class);
     }
-
-    // Define the relationship with user (optional)
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -31,13 +31,11 @@
 	};
 
 	Prism.languages.naniscript = {
-		// ; ...
+
 		'comment': {
 			pattern: /^([\t ]*);.*/m,
 			lookbehind: true,
 		},
-		// > ...
-		// Define is a control line starting with '>' followed by a word, a space and a text.
 		'define': {
 			pattern: /^>.+/m,
 			alias: 'tag',
@@ -53,7 +51,7 @@
 				}
 			}
 		},
-		// # ...
+
 		'label': {
 			pattern: /^([\t ]*)#[\t ]*\w+[\t ]*$/m,
 			lookbehind: true,
@@ -76,13 +74,13 @@
 				},
 			}
 		},
-		// Generic is any line that doesn't start with operators: ;>#@
+
 		'generic-text': {
 			pattern: /(^[ \t]*)[^#@>;\s].*/m,
 			lookbehind: true,
 			alias: 'punctuation',
 			inside: {
-				// \{ ... \} ... \[ ... \] ... \"
+
 				'escaped-char': /\\[{}\[\]"]/,
 				'expression': {
 					pattern: expressionDef,

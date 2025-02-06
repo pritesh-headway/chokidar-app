@@ -5,7 +5,7 @@
 		'variable': {
 			pattern: /(^|[^\\](?:\\\\)*)\$!?(?:[a-z][\w-]*(?:\([^)]*\))?(?:\.[a-z][\w-]*(?:\([^)]*\))?|\[[^\]]+\])*|\{[^}]+\})/i,
 			lookbehind: true,
-			inside: {} // See below
+			inside: {}
 		},
 		'string': {
 			pattern: /"[^"]*"|'[^']*'/,

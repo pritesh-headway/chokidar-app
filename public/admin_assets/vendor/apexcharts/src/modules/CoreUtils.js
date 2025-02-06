@@ -12,8 +12,6 @@ class CoreUtils {
     let comboCharts = false
     let comboBarCount = 0
     let comboCount = 0
-
-    // if user specified a type in series too, turn on comboCharts flag
     if (series.length && typeof series[0].type !== 'undefined') {
       series.forEach((s) => {
         if (
@@ -69,14 +67,12 @@ class CoreUtils {
     }
     return total
   }
-
-  // get total of the all values inside all series
   getSeriesTotalByIndex(index = null) {
     if (index === null) {
-      // non-plot chart types - pie / donut / circle
+
       return this.w.config.series.reduce((acc, cur) => acc + cur, 0)
     } else {
-      // axis charts - supporting multiple series
+
       return this.w.globals.series[index].reduce((acc, cur) => acc + cur, 0)
     }
   }
@@ -84,10 +80,10 @@ class CoreUtils {
   isSeriesNull(index = null) {
     let r = []
     if (index === null) {
-      // non-plot chart types - pie / donut / circle
+
       r = this.w.config.series.filter((d) => d !== null)
     } else {
-      // axis charts - supporting multiple series
+
       r = this.w.config.series[index].data.filter((d) => d !== null)
     }
 
@@ -108,7 +104,7 @@ class CoreUtils {
     }
     return catLabels
   }
-  // maxValsInArrayIndex is the index of series[] which has the largest number of items
+
   getLargestSeries() {
     const w = this.w
     w.globals.maxValsInArrayIndex = w.globals.series
@@ -161,7 +157,7 @@ class CoreUtils {
           total += ser[j]
         }
       } else {
-        // for pie/donuts/gauges
+
         total += ser
       }
 
@@ -244,8 +240,6 @@ class CoreUtils {
     }
     gl.xRange = Math.abs(gl.maxX - gl.minX)
     gl.zRange = Math.abs(gl.maxZ - gl.minZ)
-
-    // multiple y axis
     for (let i = 0; i < gl.yRange.length; i++) {
       yRatio.push(gl.yRange[i] / gl.gridHeight)
     }
@@ -263,14 +257,12 @@ class CoreUtils {
     }
 
     if (gl.minY !== Number.MIN_VALUE && Math.abs(gl.minY) !== 0) {
-      // Negative numbers present in series
+
       gl.hasNegs = true
     }
 
     if (gl.isMultipleYAxis) {
       baseLineY = []
-
-      // baseline variables is the 0 of the yaxis which will be needed when there are negatives
       for (let i = 0; i < yRatio.length; i++) {
         baseLineY.push(-gl.minYArr[i] / yRatio[i])
       }
@@ -278,7 +270,7 @@ class CoreUtils {
       baseLineY.push(-gl.minY / yRatio[0])
 
       if (gl.minY !== Number.MIN_VALUE && Math.abs(gl.minY) !== 0) {
-        baseLineInvertedY = -gl.minY / invertedYRatio // this is for bar chart
+        baseLineInvertedY = -gl.minY / invertedYRatio
         baseLineX = gl.minX / xRatio
       }
     }
@@ -322,11 +314,11 @@ class CoreUtils {
     const w = this.w
     const min_log_val =
       w.globals.minYArr[yIndex] === 0
-        ? -1 // make sure we dont calculate log of 0
+        ? -1
         : this.getBaseLog(b, w.globals.minYArr[yIndex])
     const max_log_val =
       w.globals.maxYArr[yIndex] === 0
-        ? 0 // make sure we dont calculate log of 0
+        ? 0
         : this.getBaseLog(b, w.globals.maxYArr[yIndex])
     const number_of_height_levels = max_log_val - min_log_val
     if (d < 1) return d / number_of_height_levels
@@ -363,8 +355,6 @@ class CoreUtils {
 
     return gl.invalidLogScale ? yRatio.slice() : gl.yLogRatio
   }
-
-  // Some config objects can be array - and we need to extend them correctly
   static extendArrayProps(configInstance, options, w) {
     if (options.yaxis) {
       options = configInstance.extendYAxis(options, w)

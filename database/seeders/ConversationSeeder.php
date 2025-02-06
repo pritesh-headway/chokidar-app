@@ -1,5 +1,4 @@
 <?php
-// database/seeders/ConversationSeeder.php
 
 namespace Database\Seeders;
 
@@ -10,6 +9,6 @@ class ConversationSeeder extends Seeder
 {
     public function run()
     {
-        Conversation::factory(10)->create();  // Create 10 sample conversations
+        Conversation::factory(10)->create();
     }
 }

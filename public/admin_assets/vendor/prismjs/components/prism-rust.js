@@ -2,12 +2,10 @@
 
 	var multilineComment = /\/\*(?:[^*/]|\*(?!\/)|\/(?!\*)|<self>)*\*\//.source;
 	for (var i = 0; i < 2; i++) {
-		// support 4 levels of nested comments
+
 		multilineComment = multilineComment.replace(/<self>/g, function () { return multilineComment; });
 	}
 	multilineComment = multilineComment.replace(/<self>/g, function () { return /[^\s\S]/.source; });
-
-
 	Prism.languages.rust = {
 		'comment': [
 			{
@@ -34,11 +32,9 @@
 			greedy: true,
 			alias: 'attr-name',
 			inside: {
-				'string': null // see below
+				'string': null
 			}
 		},
-
-		// Closure params should not be confused with bitwise OR |
 		'closure-params': {
 			pattern: /([=(,:]\s*|\bmove\s*)\|[^|]*\||\|[^|]*\|(?=\s*(?:\{|->))/,
 			lookbehind: true,
@@ -48,7 +44,7 @@
 					pattern: /^\||\|$/,
 					alias: 'punctuation'
 				},
-				rest: null // see below
+				rest: null
 			}
 		},
 
@@ -90,16 +86,10 @@
 			}
 		],
 		'keyword': [
-			// https://github.com/rust-lang/reference/blob/master/src/keywords.md
+
 			/\b(?:Self|abstract|as|async|await|become|box|break|const|continue|crate|do|dyn|else|enum|extern|final|fn|for|if|impl|in|let|loop|macro|match|mod|move|mut|override|priv|pub|ref|return|self|static|struct|super|trait|try|type|typeof|union|unsafe|unsized|use|virtual|where|while|yield)\b/,
-			// primitives and str
-			// https://doc.rust-lang.org/stable/rust-by-example/primitives.html
 			/\b(?:bool|char|f(?:32|64)|[ui](?:8|16|32|64|128|size)|str)\b/
 		],
-
-		// functions can technically start with an upper-case letter, but this will introduce a lot of false positives
-		// and Rust's naming conventions recommend snake_case anyway.
-		// https://doc.rust-lang.org/1.0.0/style/style/naming/README.html
 		'function': /\b[a-z_]\w*(?=\s*(?:::\s*<|\())/,
 		'macro': {
 			pattern: /\b\w+!/,
@@ -114,8 +104,6 @@
 				'punctuation': /::/
 			}
 		},
-
-		// Hex, oct, bin, dec numbers with visual separators and type suffix
 		'number': /\b(?:0x[\dA-Fa-f](?:_?[\dA-Fa-f])*|0o[0-7](?:_?[0-7])*|0b[01](?:_?[01])*|(?:(?:\d(?:_?\d)*)?\.)?\d(?:_?\d)*(?:[Ee][+-]?\d+)?)(?:_?(?:f32|f64|[iu](?:8|16|32|64|size)?))?\b/,
 		'boolean': /\b(?:false|true)\b/,
 		'punctuation': /->|\.\.=|\.{1,3}|::|[{}[\];(),:]/,

@@ -8,7 +8,7 @@ Prism.languages.markup = {
 		greedy: true
 	},
 	'doctype': {
-		// https://www.w3.org/TR/xml/#NT-doctypedecl
+
 		pattern: /<!DOCTYPE(?:[^>"'[\]]|"[^"]*"|'[^']*')+(?:\[(?:[^<"'\]]|"[^"]*"|'[^']*'|<(?!!--)|<!--(?:[^-]|-(?!->))*-->)*\]\s*)?>/i,
 		greedy: true,
 		inside: {
@@ -16,7 +16,7 @@ Prism.languages.markup = {
 				pattern: /(^[^\[]*\[)[\s\S]+(?=\]>$)/,
 				lookbehind: true,
 				greedy: true,
-				inside: null // see below
+				inside: null
 			},
 			'string': {
 				pattern: /"[^"]*"|'[^']*'/,
@@ -80,8 +80,6 @@ Prism.languages.markup = {
 Prism.languages.markup['tag'].inside['attr-value'].inside['entity'] =
 	Prism.languages.markup['entity'];
 Prism.languages.markup['doctype'].inside['internal-subset'].inside = Prism.languages.markup;
-
-// Plugin to make entity title show the real entity, idea by Roman Komarov
 Prism.hooks.add('wrap', function (env) {
 
 	if (env.type === 'entity') {

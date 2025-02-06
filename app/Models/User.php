@@ -9,15 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Tymon\JWTAuth\Contracts\JWTSubject; // Import the JWTSubject interface
-use Illuminate\Foundation\Auth\User as Authenticatable; // Import Authenticatable
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements JWTSubject, FilamentUser // Implement JWTSubject
+class User extends Authenticatable implements JWTSubject, FilamentUser
 {
     use HasFactory;
     use Notifiable;
-    // use HasRoles;
-
     protected $guard_name = 'api';
     protected $attributes = [
         'first_name' => 'Super',
@@ -26,9 +24,7 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
         'status' => 'active',
 
     ];
-
-
-    protected $table = 'users'; // Specify the table associated with the model
+    protected $table = 'users';
 
     protected $fillable = [
         'block_number',
@@ -39,35 +35,29 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
         'block',
         'profile_photo',
         'status',
-        'email', // Add email here
-        'password', // Add password here
+        'email',
+        'password',
         'otp',
         'society_id',
         'deleted_at',
     ];
 
     protected $casts = [
-        // Cast mobile to string to preserve leading zeros
+
         'mobile' => 'string',
-        // Cast status to string (optional)
+
         'status' => 'string',
     ];
-
-    // Define the many-to-many relationship with roles
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
-
-    // Define setRole method to set role_id
     public function setRole($role)
     {
-        // Check if the $role is a string (role name) and retrieve the Role model instance
-        if (is_string($role)) {
-            $role = Role::where('name', $role)->first(); // Get Role by name
-        }
 
-        // Ensure the role is an instance of the Role model before accessing its properties
+        if (is_string($role)) {
+            $role = Role::where('name', $role)->first();
+        }
         if ($role instanceof Role) {
             $this->role_id = $role->id;
             $this->save();
@@ -75,9 +65,6 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
             throw new \Exception("Role not found or invalid.");
         }
     }
-
-
-    // Check if the user has a specific role
     public function hasRole($role)
     {
         return $this->roles()->where('role', $role)->exists();
@@ -89,17 +76,17 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
      */
     public function getJWTIdentifier()
     {
-        return $this->getKey(); // Return the primary key of the user
+        return $this->getKey();
     }
 
     public function familyMembers()
     {
-        return $this->hasMany(FamilyMemberDetail::class); // Correct relationship
+        return $this->hasMany(FamilyMemberDetail::class);
     }
 
     public function vehicles()
     {
-        return $this->hasMany(Vehicle::class); // Correct relationship
+        return $this->hasMany(Vehicle::class);
     }
     public function visitors()
     {
@@ -113,16 +100,12 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
      */
     public function getJWTCustomClaims()
     {
-        return []; // Return any custom claims if needed (empty for now)
+        return [];
     }
-
-    // Relationship with ServiceRequest
     public function serviceRequests()
     {
         return $this->hasMany(ServiceRequest::class, 'member_id');
     }
-
-    // Relationships
     public function sentConversations()
     {
         return $this->hasMany(Conversation::class, 'sender_id');
@@ -147,8 +130,6 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
     {
         return "hello";
     }
-
-    // Define the relationship: A user belongs to a society
     public function society()
     {
         return $this->belongsTo(Society::class);
@@ -164,8 +145,8 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
      */
     public function canAccessFilament(): bool
     {
-        // Only Super Admin and Admin can access Filament
-        return in_array($this->role_id, [1, 2]);  // Adjust IDs based on your role table
+
+        return in_array($this->role_id, [1, 2]);
     }
 
     /**
@@ -174,7 +155,7 @@ class User extends Authenticatable implements JWTSubject, FilamentUser // Implem
      */
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        // Only allow users who can access Filament
+
         return $this->canAccessFilament();
     }
 }

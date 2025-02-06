@@ -41,7 +41,7 @@
 
 	Prism.languages.insertBefore('v', 'string', {
 		'char': {
-			pattern: /`(?:\\`|\\?[^`]{1,2})`/, // using {1,2} instead of `u` flag for compatibility
+			pattern: /`(?:\\`|\\?[^`]{1,2})`/,
 			alias: 'rune'
 		}
 	});
@@ -67,7 +67,7 @@
 
 	Prism.languages.insertBefore('v', 'function', {
 		'generic-function': {
-			// e.g. foo<T>( ...
+
 			pattern: /\b\w+\s*<\w+>(?=\()/,
 			inside: {
 				'function': /^\w+/,

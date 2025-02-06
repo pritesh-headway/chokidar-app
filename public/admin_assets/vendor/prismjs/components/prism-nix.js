@@ -8,10 +8,10 @@ Prism.languages.nix = {
 		greedy: true,
 		inside: {
 			'interpolation': {
-				// The lookbehind ensures the ${} is not preceded by \ or ''
+
 				pattern: /(^|(?:^|(?!'').)[^\\])\$\{(?:[^{}]|\{[^}]*\})*\}/,
 				lookbehind: true,
-				inside: null // see below
+				inside: null
 			}
 		}
 	},

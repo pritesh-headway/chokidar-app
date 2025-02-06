@@ -14,9 +14,9 @@ class BookingAmenity extends Model
         'block_name',
         'first_name',
         'last_name',
-        'from',           // Renamed from 'start_date' to 'from'
-        'to',             // Renamed from 'end_date' to 'to'
-        'day',            // New column 'day'
+        'from',
+        'to',
+        'day',
         'amenity_id',
         'user_id',
         'mobile',
@@ -24,12 +24,10 @@ class BookingAmenity extends Model
         'status',
     ];
 
-    protected $dates = ['day'];  // Ensure 'day' is treated as a date without time
-
-    // Optional: Cast the 'from' and 'to' as time (if you need them to be treated as time)
+    protected $dates = ['day'];
     protected $casts = [
-        'from' => 'datetime:H:i:s', // Treat as time
-        'to' => 'datetime:H:i:s',   // Treat as time
+        'from' => 'datetime:H:i:s',
+        'to' => 'datetime:H:i:s',
     ];
 
     public function amenity()

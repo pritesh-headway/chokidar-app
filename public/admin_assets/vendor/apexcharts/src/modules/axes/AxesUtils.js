@@ -8,8 +8,6 @@ export default class AxesUtils {
     this.ctx = ctx
     this.w = ctx.w
   }
-
-  // Based on the formatter function, get the label text and position
   getLabel(
     labels,
     timescaleLabels,
@@ -140,14 +138,14 @@ export default class AxesUtils {
     const w = this.w
 
     if (i === 0) {
-      // check if first label is being truncated
+
       if (w.globals.skipFirstTimelinelabel) {
         label.text = ''
       }
     }
 
     if (i === labelsLen - 1) {
-      // check if last label is being truncated
+
       if (w.globals.skipLastTimelinelabel) {
         label.text = ''
       }
@@ -158,10 +156,10 @@ export default class AxesUtils {
       if (
         label.x <
         prev.textRect.width /
-          (w.globals.rotateXLabels
-            ? Math.abs(w.config.xaxis.labels.rotate) / 12
-            : 1.01) +
-          prev.x
+        (w.globals.rotateXLabels
+          ? Math.abs(w.config.xaxis.labels.rotate) / 12
+          : 1.01) +
+        prev.x
       ) {
         label.text = ''
       }
@@ -189,9 +187,6 @@ export default class AxesUtils {
         w.globals.collapsedSeriesIndices.indexOf(index) === -1)
     )
   }
-
-  // get the label color for y-axis
-  // realIndex is the actual series index, while i is the tick Index
   getYAxisForeColor(yColors, realIndex) {
     const w = this.w
     if (Array.isArray(yColors) && w.globals.yAxisScale[realIndex]) {
@@ -215,8 +210,6 @@ export default class AxesUtils {
   ) {
     let w = this.w
     let graphics = new Graphics(this.ctx)
-
-    // initial label position = 0;
     let t = w.globals.translateY
 
     if (axisTicks.show && tickAmount > 0) {

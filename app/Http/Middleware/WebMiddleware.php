@@ -15,10 +15,7 @@ class WebMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // dd('web');
-        // Add logic to handle requests from web.php
         if ($request->is('web.php')) {
-            // Perform specific actions for web.php requests
         }
 
         return $next($request);

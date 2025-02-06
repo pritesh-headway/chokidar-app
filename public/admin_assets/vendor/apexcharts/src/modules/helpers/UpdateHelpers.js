@@ -32,7 +32,7 @@ export default class UpdateHelpers {
       }
 
       if (this.ctx.w.globals.isExecCalled) {
-        // If the user called exec method, we don't want to get grouped charts as user specifically provided a chartID to update
+
         charts = [this.ctx]
         this.ctx.w.globals.isExecCalled = false
       }
@@ -54,30 +54,26 @@ export default class UpdateHelpers {
         if (options && typeof options === 'object') {
           ch.config = new Config(options)
           options = CoreUtils.extendArrayProps(ch.config, options, w)
-
-          // fixes #914, #623
           if (ch.w.globals.chartID !== this.ctx.w.globals.chartID) {
-            // don't overwrite series of synchronized charts
+
             delete options.series
           }
 
           w.config = Utils.extend(w.config, options)
 
           if (overwriteInitialConfig) {
-            // we need to forget the lastXAxis and lastYAxis as user forcefully overwriteInitialConfig. If we do not do this, and next time when user zooms the chart after setting yaxis.min/max or xaxis.min/max - the stored lastXAxis will never allow the chart to use the updated min/max by user.
+
             w.globals.lastXAxis = options.xaxis
               ? Utils.clone(options.xaxis)
               : []
             w.globals.lastYAxis = options.yaxis
               ? Utils.clone(options.yaxis)
               : []
-
-            // After forgetting lastAxes, we need to restore the new config in initialConfig/initialSeries
             w.globals.initialConfig = Utils.extend({}, w.config)
             w.globals.initialSeries = Utils.clone(w.config.series)
 
             if (options.series) {
-              // Replace the collapsed series data
+
               for (
                 let i = 0;
                 i < w.globals.collapsedSeriesIndices.length;
@@ -101,8 +97,6 @@ export default class UpdateHelpers {
                   ? series.data.slice()
                   : series
               }
-
-              // Ensure that auto-generated axes are scaled to the visible data
               ch.series.emptyCollapsedSeries(w.config.series)
             }
           }
@@ -135,8 +129,6 @@ export default class UpdateHelpers {
       }
 
       let existingSeries
-
-      // axis charts
       if (w.globals.axisCharts) {
         existingSeries = newSeries.map((s, i) => {
           return this._extendSeries(s, i)
@@ -147,7 +139,7 @@ export default class UpdateHelpers {
         }
         w.config.series = existingSeries
       } else {
-        // non-axis chart (pie/radialbar)
+
         w.config.series = newSeries.slice()
       }
 
@@ -184,7 +176,7 @@ export default class UpdateHelpers {
         `${parent} path[j='${dataPointIndex}'], ${parent} circle[j='${dataPointIndex}'], ${parent} rect[j='${dataPointIndex}']`
       ).members[0]
     } else {
-      // dataPointIndex will be undefined here, hence using seriesIndex
+
       if (typeof dataPointIndex === 'undefined') {
         elPath = w.globals.dom.Paper.select(
           `${parent} path[j='${seriesIndex}']`
@@ -282,14 +274,14 @@ export default class UpdateHelpers {
 
     w.config.yaxis.map((yaxe, index) => {
       if (w.globals.zoomed) {
-        // user has zoomed, check the last yaxis
+
         getLastYAxis(index)
       } else {
-        // user hasn't zoomed, check the last yaxis first
+
         if (typeof yaxis[index] !== 'undefined') {
           getLastYAxis(index)
         } else {
-          // if last y-axis don't exist, check the original yaxis
+
           if (typeof this.ctx.opts.yaxis[index] !== 'undefined') {
             yaxe.min = this.ctx.opts.yaxis[index].min
             yaxe.max = this.ctx.opts.yaxis[index].max

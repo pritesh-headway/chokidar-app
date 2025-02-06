@@ -1,7 +1,7 @@
 (function (Prism) {
 
 	var guid = {
-		// https://en.wikipedia.org/wiki/Universally_unique_identifier#Format
+
 		pattern: /\{[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}\}/i,
 		alias: 'constant',
 		inside: {
@@ -22,11 +22,6 @@
 			}
 		},
 		'object': {
-			// Foo
-			//   Bar("abs") = 9
-			//   EndBar
-			//   Prop = TRUE
-			// EndFoo
 			pattern: /^([ \t]*)(?:([A-Z]\w*)\b(?=.*(?:\r\n?|\n)(?:\1[ \t].*(?:\r\n?|\n))*\1End\2(?=[ \t]*$))|End[A-Z]\w*(?=[ \t]*$))/m,
 			lookbehind: true,
 			greedy: true,

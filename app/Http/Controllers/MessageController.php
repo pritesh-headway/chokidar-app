@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/MessageController.php
 
 namespace App\Http\Controllers;
 
@@ -10,7 +9,7 @@ class MessageController extends Controller
 {
     public function index(Request $request)
     {
-        // You can add validation or check for missing parameters here if needed
+
         $messages = Message::all();
         return response()->json([
             'status' => true,
@@ -20,10 +19,8 @@ class MessageController extends Controller
     }
     public function show(Request $request)
     {
-        // Start with the Message query
-        $query = Message::query();
 
-        // Check if any of the parameters are passed and apply filters
+        $query = Message::query();
         if ($request->has('id')) {
             $query->where('id', $request->id);
         }
@@ -39,11 +36,7 @@ class MessageController extends Controller
         if ($request->has('receiver_id')) {
             $query->where('receiver_id', $request->receiver_id);
         }
-
-        // Execute the query and fetch the results
         $messages = $query->get();
-
-        // Return the response with the fetched messages
         return response()->json([
             'status' => true,
             'message' => 'Messages retrieved successfully.',
@@ -67,8 +60,6 @@ class MessageController extends Controller
         if (!$request->has('message')  || is_null($request->message)) {
             $missingParams[] = 'message';
         }
-
-        // If there are any missing parameters, return them in the response
         if (count($missingParams) > 0) {
             return response()->json([
                 'status' => false,
@@ -96,13 +87,9 @@ class MessageController extends Controller
     public function update(Request $request)
     {
         $missingParams = [];
-
-        // Check for missing or null parameters
         if (!$request->has('id') || is_null($request->id)) {
             $missingParams[] = 'id';
         }
-
-        // If there are any missing parameters, return them in the response
         if (count($missingParams) > 0) {
             return response()->json([
                 'status' => false,
@@ -110,8 +97,6 @@ class MessageController extends Controller
                 'data' => $missingParams
             ], 200);
         }
-
-        // Validate incoming data
         $data = $request->validate([
             'id' => 'required|exists:messages,id',
             'conversation_id' => 'sometimes|exists:conversations,id',
@@ -120,12 +105,8 @@ class MessageController extends Controller
             'message' => 'sometimes|string',
             'is_read' => 'sometimes|boolean',
         ]);
-
-        // Find and update the message
         $message = Message::findOrFail($data['id']);
         $message->update($data);
-
-        // Return success response
         return response()->json([
             'status' => true,
             'message' => 'Message updated successfully.',
@@ -140,8 +121,6 @@ class MessageController extends Controller
         if (!$request->has('id')) {
             $missingParams[] = 'id';
         }
-
-        // If there are any missing parameters, return them in the response
         if (count($missingParams) > 0) {
             return response()->json([
                 'status' => false,

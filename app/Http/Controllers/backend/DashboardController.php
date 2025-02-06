@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-
 class DashboardController extends Controller
 {
     public function index(Request $request)
@@ -17,13 +16,13 @@ class DashboardController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role_id == 1) { // Check if user is an admin (role_id = 1)
-            // Retrieve all users and current user data directly
-            $data = User::all(); // Fetch all users
-            $currentUserData = User::find($user->id); // Fetch current user by ID
+        if ($user->role_id == 1) {
+
+            $data = User::all();
+            $currentUserData = User::find($user->id);
             return view('dashboard.dashboard', ['data' => $data, 'current' => $currentUserData]);
         } else {
-            abort(404); // Forbidden access for non-admin users
+            abort(404);
         }
     }
 

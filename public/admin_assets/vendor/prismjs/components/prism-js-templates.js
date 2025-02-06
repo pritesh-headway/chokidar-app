@@ -1,14 +1,10 @@
 (function (Prism) {
 
 	var templateString = Prism.languages.javascript['template-string'];
-
-	// see the pattern in prism-javascript.js
 	var templateLiteralPattern = templateString.pattern.source;
 	var interpolationObject = templateString.inside['interpolation'];
 	var interpolationPunctuationObject = interpolationObject.inside['interpolation-punctuation'];
 	var interpolationPattern = interpolationObject.pattern.source;
-
-
 	/**
 	 * Creates a new pattern to match a template string with a special tag.
 	 *
@@ -41,36 +37,15 @@
 			}
 		};
 	}
-
-
 	Prism.languages.javascript['template-string'] = [
-		// styled-jsx:
-		//   css`a { color: #25F; }`
-		// styled-components:
-		//   styled.h1`color: red;`
 		createTemplate('css', /\b(?:styled(?:\([^)]*\))?(?:\s*\.\s*\w+(?:\([^)]*\))*)*|css(?:\s*\.\s*(?:global|resolve))?|createGlobalStyle|keyframes)/.source),
-
-		// html`<p></p>`
-		// div.innerHTML = `<p></p>`
 		createTemplate('html', /\bhtml|\.\s*(?:inner|outer)HTML\s*\+?=/.source),
-
-		// svg`<path fill="#fff" d="M55.37 ..."/>`
 		createTemplate('svg', /\bsvg/.source),
-
-		// md`# h1`, markdown`## h2`
 		createTemplate('markdown', /\b(?:markdown|md)/.source),
-
-		// gql`...`, graphql`...`, graphql.experimental`...`
 		createTemplate('graphql', /\b(?:gql|graphql(?:\s*\.\s*experimental)?)/.source),
-
-		// sql`...`
 		createTemplate('sql', /\bsql/.source),
-
-		// vanilla template string
 		templateString
 	].filter(Boolean);
-
-
 	/**
 	 * Returns a specific placeholder literal for the given language.
 	 *
@@ -119,7 +94,7 @@
 			 * The token array will look like this
 			 * [
 			 *     ["interpolation-punctuation", "${"]
-			 *     "..." // JavaScript expression of the interpolation
+			 *     "..."
 			 *     ["interpolation-punctuation", "}"]
 			 * ]
 			 */
@@ -151,9 +126,6 @@
 	 * @returns {Token}
 	 */
 	function tokenizeEmbedded(code, grammar, language) {
-		// 1. First filter out all interpolations
-
-		// because they might be escaped, we need a lookbehind, so we use Prism
 		/** @type {(Token|string)[]} */
 		var _tokens = Prism.tokenize(code, {
 			'interpolation': {
@@ -161,8 +133,6 @@
 				lookbehind: true
 			}
 		});
-
-		// replace all interpolations with a placeholder which is not in the code already
 		var placeholderCounter = 0;
 		/** @type {Object<string, string>} */
 		var placeholderMap = {};
@@ -178,15 +148,7 @@
 				return placeholder;
 			}
 		}).join('');
-
-
-		// 2. Tokenize the embedded code
-
 		var embeddedTokens = tokenizeWithHooks(embeddedCode, grammar, language);
-
-
-		// 3. Re-insert the interpolation
-
 		var placeholders = Object.keys(placeholderMap);
 		placeholderCounter = 0;
 
@@ -306,7 +268,7 @@
 
 					var embedded = content[1];
 					if (content.length === 3 && typeof embedded !== 'string' && embedded.type === 'embedded-code') {
-						// get string content
+
 						var code = stringContent(embedded);
 
 						var alias = embedded.alias;
@@ -314,7 +276,7 @@
 
 						var grammar = Prism.languages[language];
 						if (!grammar) {
-							// the embedded language isn't registered.
+
 							continue;
 						}
 
@@ -328,8 +290,6 @@
 
 		findTemplateStrings(env.tokens);
 	});
-
-
 	/**
 	 * Returns the string content of a token or token stream.
 	 *

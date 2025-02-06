@@ -13,13 +13,9 @@ class Intersect {
     this.w = tooltipContext.w
     this.ttCtx = tooltipContext
   }
-
-  // a helper function to get an element's attribute value
   getAttr(e, attr) {
     return parseFloat(e.target.getAttribute(attr))
   }
-
-  // handle tooltip for heatmaps and treemaps
   handleHeatTreeTooltip({ e, opt, x, y, type }) {
     const ttCtx = this.ttCtx
     const w = this.w
@@ -172,12 +168,10 @@ class Intersect {
       bx = x
     } else {
       if (!w.globals.comboCharts && !w.config.tooltip.shared) {
-        // todo: re-check this condition as it's always 0
+
         bx = bx / 2
       }
     }
-
-    // y is NaN, make it touch the bottom of grid area
     if (isNaN(y)) {
       y = w.globals.svgHeight - ttCtx.tooltipRect.ttHeight
     }
@@ -202,8 +196,6 @@ class Intersect {
       const seriesBound = elGrid.getBoundingClientRect()
       y = ttCtx.e.clientY - seriesBound.top
     }
-
-    // if tooltip is still null, querySelector
     if (ttCtx.tooltip === null) {
       ttCtx.tooltip = w.globals.dom.baseEl.querySelector('.apexcharts-tooltip')
     }
@@ -215,8 +207,6 @@ class Intersect {
         ttCtx.tooltipPosition.moveXCrosshairs(bx)
       }
     }
-
-    // move tooltip here
     if (
       !ttCtx.fixedTooltip &&
       (!w.config.tooltip.shared ||
@@ -283,15 +273,6 @@ class Intersect {
       if (w.globals.comboCharts) {
         i = parseInt(bar.parentNode.getAttribute('data:realIndex'), 10)
       }
-
-      // if (w.config.tooltip.shared) {
-      // this check not needed  at the moment
-      //   const yDivisor = w.globals.gridHeight / (w.globals.series.length)
-      //   const hoverY = ttCtx.clientY - ttCtx.seriesBound.top
-
-      //   j = Math.ceil(hoverY / yDivisor)
-      // }
-
       ttCtx.tooltipLabels.drawSeriesTexts({
         ttItems: opt.ttItems,
         i,
@@ -331,14 +312,14 @@ class Intersect {
             bh / 2 -
             ttCtx.tooltipRect.ttHeight / 2
         } else {
-          // if columns
+
           if (w.globals.isXNumeric) {
             x = cx - bw / 2
           } else {
             x = cx - ttCtx.dataPointsDividedWidth + bw / 2
           }
 
-          y = cy // - ttCtx.tooltipRect.ttHeight / 2 + 10
+          y = cy
         }
       }
     }

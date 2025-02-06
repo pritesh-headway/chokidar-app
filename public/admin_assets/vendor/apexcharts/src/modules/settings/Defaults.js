@@ -595,7 +595,7 @@ export default class Defaults {
     if (isBar) {
       opts.dataLabels.formatter =
         existingDataLabelFormatter ||
-        function(val) {
+        function (val) {
           if (typeof val === 'number') {
             return val ? val.toFixed(0) + '%' : val
           }
@@ -619,8 +619,6 @@ export default class Defaults {
       }
     }
   }
-
-  // This function removes the left and right spacing in chart for line/area/scatter if xaxis type = category for those charts by converting xaxis = numeric. Numeric/Datetime xaxis prevents the unnecessary spacing in the left/right of the chart area
   convertCatToNumeric(opts) {
     opts.xaxis.convertedCatToNumeric = true
 
@@ -632,7 +630,7 @@ export default class Defaults {
     opts.xaxis.labels = opts.xaxis.labels || {}
     opts.xaxis.labels.formatter =
       opts.xaxis.labels.formatter ||
-      function(val) {
+      function (val) {
         return Utils.isNumber(val) ? Math.floor(val) : val
       }
 
@@ -649,7 +647,7 @@ export default class Defaults {
     }
 
     if (labels && labels.length) {
-      opts.xaxis.labels.formatter = function(val) {
+      opts.xaxis.labels.formatter = function (val) {
         return Utils.isNumber(val)
           ? defaultFormatter(labels[Math.floor(val) - 1])
           : defaultFormatter(val)
@@ -1025,11 +1023,10 @@ export default class Defaults {
       w.config.series[seriesIndex].type !== chartType
     ) {
       return `<div class="apexcharts-custom-tooltip">
-          ${
-            w.config.series[seriesIndex].name
-              ? w.config.series[seriesIndex].name
-              : 'series-' + (seriesIndex + 1)
-          }: <strong>${w.globals.series[seriesIndex][dataPointIndex]}</strong>
+          ${w.config.series[seriesIndex].name
+          ? w.config.series[seriesIndex].name
+          : 'series-' + (seriesIndex + 1)
+        }: <strong>${w.globals.series[seriesIndex][dataPointIndex]}</strong>
         </div>`
     } else {
       return (

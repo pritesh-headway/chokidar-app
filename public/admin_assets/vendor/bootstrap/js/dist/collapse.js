@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./dom/event-handler.js'), require('./dom/selector-engine.js'), require('./base-component.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/selector-engine', './base-component'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Collapse = factory(global.Index, global.EventHandler, global.SelectorEngine, global.BaseComponent));
-})(this, (function (index_js, EventHandler, SelectorEngine, BaseComponent) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/selector-engine', './base-component'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Collapse = factory(global.Index, global.EventHandler, global.SelectorEngine, global.BaseComponent));
+})(this, (function (index_js, EventHandler, SelectorEngine, BaseComponent) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -73,8 +74,6 @@
         this.toggle();
       }
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -84,8 +83,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     toggle() {
       if (this._isShown()) {
         this.hide();
@@ -98,8 +95,6 @@
         return;
       }
       let activeChildren = [];
-
-      // find active children
       if (this._config.parent) {
         activeChildren = this._getFirstLevelChildren(SELECTOR_ACTIVES).filter(element => element !== this._element).map(element => Collapse.getOrCreateInstance(element, {
           toggle: false
@@ -165,10 +160,8 @@
     _isShown(element = this._element) {
       return element.classList.contains(CLASS_NAME_SHOW);
     }
-
-    // Private
     _configAfterMerge(config) {
-      config.toggle = Boolean(config.toggle); // Coerce string values
+      config.toggle = Boolean(config.toggle);
       config.parent = index_js.getElement(config.parent);
       return config;
     }
@@ -189,7 +182,7 @@
     }
     _getFirstLevelChildren(selector) {
       const children = SelectorEngine.find(CLASS_NAME_DEEPER_CHILDREN, this._config.parent);
-      // remove children if greater depth
+
       return SelectorEngine.find(selector, this._config.parent).filter(element => !children.includes(element));
     }
     _addAriaAndCollapsedClass(triggerArray, isOpen) {
@@ -201,8 +194,6 @@
         element.setAttribute('aria-expanded', isOpen);
       }
     }
-
-    // Static
     static jQueryInterface(config) {
       const _config = {};
       if (typeof config === 'string' && /show|hide/.test(config)) {
@@ -225,7 +216,7 @@
    */
 
   EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
-    // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
+
     if (event.target.tagName === 'A' || event.delegateTarget && event.delegateTarget.tagName === 'A') {
       event.preventDefault();
     }

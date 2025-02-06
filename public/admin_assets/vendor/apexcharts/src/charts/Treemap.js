@@ -211,14 +211,8 @@ export default class TreemapChart {
 
     return ret
   }
-
-  // This calculates a font-size based upon
-  // average label length and the size of the box the label is
-  // going into. The maximum font size is set in chart config.
   getFontSize(coordinates) {
     const w = this.w
-
-    // total length of labels (i.e [["Italy"],["Spain", "Greece"]] -> 16)
     function totalLabelLength(arr) {
       let i,
         total = 0
@@ -233,8 +227,6 @@ export default class TreemapChart {
       }
       return total
     }
-
-    // count of labels (i.e [["Italy"],["Spain", "Greece"]] -> 3)
     function countLabels(arr) {
       let i,
         total = 0
@@ -253,10 +245,6 @@ export default class TreemapChart {
       totalLabelLength(this.labels) / countLabels(this.labels)
 
     function fontSize(width, height) {
-      // the font size should be proportional to the size of the box (and the value)
-      // otherwise you can end up creating a visual distortion where two boxes of identical
-      // size have different sized labels, and thus make it look as if the two boxes
-      // represent different sizes
       let area = width * height
       let arearoot = Math.pow(area, 0.5)
       return Math.min(

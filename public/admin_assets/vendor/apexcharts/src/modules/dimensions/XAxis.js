@@ -35,20 +35,16 @@ export default class DimXAxis {
       this.dCtx.lgWidthForSideLegends =
         (w.config.legend.position === 'left' ||
           w.config.legend.position === 'right') &&
-        !w.config.legend.floating
+          !w.config.legend.floating
           ? this.dCtx.lgRect.width
           : 0
-
-      // get the longest string from the labels array and also apply label formatter
       let xlbFormatter = w.globals.xLabelFormatter
-      // prevent changing xaxisLabels to avoid issues in multi-yaxes - fix #522
+
       let val = Utils.getLargestStringFromArr(xaxisLabels)
       let valArr = this.dCtx.dimHelpers.getLargestStringFromMultiArr(
         val,
         xaxisLabels
       )
-
-      // the labels gets changed for bar charts
       if (w.globals.isBarHorizontal) {
         val = w.globals.yAxisScale[0].result.reduce(
           (a, b) => (a.length > b.length ? a : b),
@@ -105,10 +101,10 @@ export default class DimXAxis {
       if (
         (rect.width * xaxisLabels.length >
           w.globals.svgWidth -
-            this.dCtx.lgWidthForSideLegends -
-            this.dCtx.yAxisWidth -
-            this.dCtx.gridPad.left -
-            this.dCtx.gridPad.right &&
+          this.dCtx.lgWidthForSideLegends -
+          this.dCtx.yAxisWidth -
+          this.dCtx.gridPad.left -
+          this.dCtx.gridPad.right &&
           w.config.xaxis.labels.rotate !== 0) ||
         w.config.xaxis.labels.rotateAlways
       ) {
@@ -174,8 +170,6 @@ export default class DimXAxis {
     let xaxisLabels = w.globals.groups.map((g) => g.title)
 
     let rect
-
-    // prevent changing xaxisLabels to avoid issues in multi-yaxes - fix #522
     let val = Utils.getLargestStringFromArr(xaxisLabels)
     let valArr = this.dCtx.dimHelpers.getLargestStringFromMultiArr(
       val,
@@ -248,10 +242,8 @@ export default class DimXAxis {
     this.dCtx.timescaleLabels = w.globals.timescaleLabels.slice()
 
     let labels = this.dCtx.timescaleLabels.map((label) => label.value)
-
-    //  get the longest string from the labels array and also apply label formatter to it
     let val = labels.reduce((a, b) => {
-      // if undefined, maybe user didn't pass the datetime(x) values
+
       if (typeof a === 'undefined') {
         console.error(
           'You have possibly supplied invalid Date format. Please supply a valid JavaScript Date'
@@ -276,9 +268,6 @@ export default class DimXAxis {
 
     return rect
   }
-
-  // In certain cases, the last labels gets cropped in xaxis.
-  // Hence, we add some additional padding based on the label length to avoid the last label being cropped or we don't draw it at all
   additionalPaddingXLabels(xaxisLabelCoords) {
     const w = this.w
     const gl = w.globals
@@ -296,7 +285,7 @@ export default class DimXAxis {
 
     const rightPad = (yaxe) => {
       if (this.dCtx.timescaleLabels && this.dCtx.timescaleLabels.length) {
-        // for timeline labels, we take the last label and check if it exceeds gridWidth
+
         const firstimescaleLabel = this.dCtx.timescaleLabels[0]
         const lastTimescaleLabel = this.dCtx.timescaleLabels[
           this.dCtx.timescaleLabels.length - 1
@@ -326,17 +315,17 @@ export default class DimXAxis {
         if (
           firstLabelPosition <
           -((!yaxe.show || yaxe.floating) &&
-          (cnf.chart.type === 'bar' ||
-            cnf.chart.type === 'candlestick' ||
-            cnf.chart.type === 'rangeBar' ||
-            cnf.chart.type === 'boxPlot')
+            (cnf.chart.type === 'bar' ||
+              cnf.chart.type === 'candlestick' ||
+              cnf.chart.type === 'rangeBar' ||
+              cnf.chart.type === 'boxPlot')
             ? lbWidth / 1.75
             : 10)
         ) {
           gl.skipFirstTimelinelabel = true
         }
       } else if (xtype === 'datetime') {
-        // If user has enabled DateTime, but uses own's formatter
+
         if (this.dCtx.gridPad.right < lbWidth && !gl.rotateXLabels) {
           gl.skipLastTimelinelabel = true
         }
@@ -355,19 +344,6 @@ export default class DimXAxis {
 
     const padYAxe = (yaxe, i) => {
       if (isCollapsed(i)) return
-
-      // the code below causes issue apexcharts.js#1989
-      // after testing with other use-cases, this has no actual value, hence commented
-      // if (xtype !== 'datetime') {
-      //   if (
-      //     this.dCtx.gridPad.left < lbWidth / 2 - this.dCtx.yAxisWidthLeft &&
-      //     !gl.rotateXLabels &&
-      //     !cnf.xaxis.labels.trim
-      //   ) {
-      //     this.dCtx.xPadLeft = lbWidth / 2 + 1
-      //   }
-      // }
-
       rightPad(yaxe)
     }
 

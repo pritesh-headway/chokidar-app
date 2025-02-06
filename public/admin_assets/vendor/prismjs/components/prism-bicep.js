@@ -1,14 +1,14 @@
-// based loosely upon: https://github.com/Azure/bicep/blob/main/src/textmate/bicep.tmlanguage
+
 Prism.languages.bicep = {
 	'comment': [
 		{
-			// multiline comments eg /* ASDF */
+
 			pattern: /(^|[^\\])\/\*[\s\S]*?(?:\*\/|$)/,
 			lookbehind: true,
 			greedy: true
 		},
 		{
-			// singleline comments eg // ASDF
+
 			pattern: /(^|[^\\:])\/\/.*/,
 			lookbehind: true,
 			greedy: true
@@ -63,7 +63,7 @@ Prism.languages.bicep = {
 	},
 
 	'boolean': /\b(?:false|true)\b/,
-	// https://github.com/Azure/bicep/blob/114a3251b4e6e30082a58729f19a8cc4e374ffa6/src/textmate/bicep.tmlanguage#L184
+
 	'keyword': /\b(?:existing|for|if|in|module|null|output|param|resource|targetScope|var)\b/,
 
 	'decorator': /@\w+\b/,

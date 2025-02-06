@@ -10,7 +10,7 @@
 				'content': {
 					pattern: /^(\\\()[\s\S]+(?=\)$)/,
 					lookbehind: true,
-					inside: null // see below
+					inside: null
 				},
 				'punctuation': /^\\\(|\)$/
 			}

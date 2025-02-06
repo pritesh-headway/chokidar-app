@@ -3,8 +3,6 @@
 	if (typeof Prism === 'undefined') {
 		return;
 	}
-
-
 	var LANGUAGE_REGEX = /^diff-([\w-]+)/i;
 	var HTML_TAG = /<\/?(?!\d)[^\s>\/=$<%]+(?:\s(?:\s*[^\s>\/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s'">=]+(?=[\s>]))|(?=[\s/>])))+)?\s*\/?>/g;
 	//this will match a line plus the line break while ignoring the line breaks HTML tags may contain.
@@ -37,7 +35,7 @@
 		if (env.language !== 'diff') {
 			var langMatch = LANGUAGE_REGEX.exec(env.language);
 			if (!langMatch) {
-				return; // not a language specific diff
+				return;
 			}
 
 			diffLanguage = langMatch[1];
@@ -45,38 +43,28 @@
 		}
 
 		var PREFIXES = Prism.languages.diff && Prism.languages.diff.PREFIXES;
-
-		// one of the diff tokens without any nested tokens
 		if (PREFIXES && env.type in PREFIXES) {
 			/** @type {string} */
-			var content = env.content.replace(HTML_TAG, ''); // remove all HTML tags
+			var content = env.content.replace(HTML_TAG, '');
 
 			/** @type {string} */
 			var decoded = content.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
-
-			// remove any one-character prefix
 			var code = decoded.replace(/(^|[\r\n])./g, '$1');
-
-			// highlight, if possible
 			var highlighted;
 			if (diffGrammar) {
 				highlighted = Prism.highlight(code, diffGrammar, diffLanguage);
 			} else {
 				highlighted = Prism.util.encode(code);
 			}
-
-			// get the HTML source of the prefix token
 			var prefixToken = new Prism.Token('prefix', PREFIXES[env.type], [/\w+/.exec(env.type)[0]]);
 			var prefix = Prism.Token.stringify(prefixToken, env.language);
-
-			// add prefix
 			var lines = []; var m;
 			HTML_LINE.lastIndex = 0;
 			while ((m = HTML_LINE.exec(highlighted))) {
 				lines.push(prefix + m[0]);
 			}
 			if (/(?:^|[\r\n]).$/.test(decoded)) {
-				// because both "+a\n+" and "+a\n" will map to "a\n" after the line prefixes are removed
+
 				lines.push(prefix);
 			}
 			env.content = lines.join('');

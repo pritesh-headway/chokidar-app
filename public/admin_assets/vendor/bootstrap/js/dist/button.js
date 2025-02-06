@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./dom/event-handler.js'), require('./base-component.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './base-component'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Button = factory(global.Index, global.EventHandler, global.BaseComponent));
-})(this, (function (index_js, EventHandler, BaseComponent) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './base-component'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Button = factory(global.Index, global.EventHandler, global.BaseComponent));
+})(this, (function (index_js, EventHandler, BaseComponent) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -33,18 +34,14 @@
    */
 
   class Button extends BaseComponent {
-    // Getters
+
     static get NAME() {
       return NAME;
     }
-
-    // Public
     toggle() {
-      // Toggle class and sync the `aria-pressed` attribute with the return value of the `.toggle()` method
+
       this._element.setAttribute('aria-pressed', this._element.classList.toggle(CLASS_NAME_ACTIVE));
     }
-
-    // Static
     static jQueryInterface(config) {
       return this.each(function () {
         const data = Button.getOrCreateInstance(this);

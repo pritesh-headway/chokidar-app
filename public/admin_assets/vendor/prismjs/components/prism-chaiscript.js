@@ -6,12 +6,12 @@ Prism.languages.chaiscript = Prism.languages.extend('clike', {
 	},
 	'class-name': [
 		{
-			// e.g. class Rectangle { ... }
+
 			pattern: /(\bclass\s+)\w+/,
 			lookbehind: true
 		},
 		{
-			// e.g. attr Rectangle::height, def Rectangle::area() { ... }
+
 			pattern: /(\b(?:attr|def)\s+)\w+(?=\s*::)/,
 			lookbehind: true
 		}
@@ -26,7 +26,7 @@ Prism.languages.chaiscript = Prism.languages.extend('clike', {
 
 Prism.languages.insertBefore('chaiscript', 'operator', {
 	'parameter-type': {
-		// e.g. def foo(int x, Vector y) {...}
+
 		pattern: /([,(]\s*)\w+(?=\s+\w)/,
 		lookbehind: true,
 		alias: 'class-name'

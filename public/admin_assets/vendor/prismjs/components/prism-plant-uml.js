@@ -48,7 +48,7 @@
 				'expression': {
 					pattern: /(\[)[^[\]]+(?=\])/,
 					lookbehind: true,
-					inside: null // see below
+					inside: null
 				},
 				'punctuation': /\[(?=$|\])|^\]/
 			}

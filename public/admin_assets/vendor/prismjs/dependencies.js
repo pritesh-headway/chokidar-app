@@ -114,8 +114,6 @@ var getLoader = (function () {
 			}
 
 			stack.push(id);
-
-			// check for circular dependencies
 			var firstIndex = stack.indexOf(id);
 			if (firstIndex < stack.length - 1) {
 				throw new Error('Circular dependency: ' + stack.slice(firstIndex).join(' -> '));
@@ -138,7 +136,7 @@ var getLoader = (function () {
 						throw new Error(id + ' depends on an unknown component ' + depId);
 					}
 					if (depId in dependencies) {
-						// if the given dependency is already in the set of deps, then so are its transitive deps
+
 						return;
 					}
 
@@ -183,7 +181,7 @@ var getLoader = (function () {
 			if (idOrAlias in entryMap) {
 				return idOrAlias;
 			} else {
-				// only create the alias map if necessary
+
 				if (!map) {
 					map = {};
 
@@ -247,12 +245,7 @@ var getLoader = (function () {
 			if (id in cache) {
 				return cache[id];
 			}
-
-			// assume that it's an end
-			// if it isn't, it will be removed later
 			ends[id] = true;
-
-			// all dependencies of the component in the given ids
 			var dependsOn = [];
 			for (var depId in dependencyResolver(id)) {
 				if (depId in ids) {
@@ -272,20 +265,18 @@ var getLoader = (function () {
 			} else {
 				var depsValue = parallel(dependsOn.map(function (depId) {
 					var value = handleId(depId);
-					// none of the dependencies can be ends
+
 					delete ends[depId];
 					return value;
 				}));
 				if (series) {
-					// the chainer will be responsibly for calling the function calling loadComponent
+
 					value = series(depsValue, function () { return loadComponent(id); });
 				} else {
-					// we don't have a chainer, so we call loadComponent ourselves
+
 					loadComponent(id);
 				}
 			}
-
-			// cache and return
 			return cache[id] = value;
 		}
 
@@ -344,10 +335,10 @@ var getLoader = (function () {
 	 * `Promise#then` and `Promise.all`.
 	 *
 	 * @example
-	 * load(id => { loadComponent(id); }); // returns undefined
+	 * load(id => { loadComponent(id); });
 	 *
 	 * await load(
-	 *     id => loadComponentAsync(id), // returns a Promise for each id
+	 *     id => loadComponentAsync(id),
 	 *     {
 	 *         series: async (before, after) => {
 	 *             await before;
@@ -368,9 +359,6 @@ var getLoader = (function () {
 
 		var loadSet = toSet(load);
 		var loadedSet = toSet(loaded);
-
-		// add requirements
-
 		load.forEach(addRequirements);
 		function addRequirements(id) {
 			var entry = entryMap[id];
@@ -381,14 +369,6 @@ var getLoader = (function () {
 				}
 			});
 		}
-
-		// add components to reload
-
-		// A component x in `loaded` has to be reloaded if
-		//  1) a component in `load` modifies x.
-		//  2) x depends on a component in `load`.
-		// The above two condition have to be applied until nothing changes anymore.
-
 		var dependencyResolver = createDependencyResolver(entryMap);
 
 		/** @type {StringSet} */
@@ -397,8 +377,6 @@ var getLoader = (function () {
 		var newIds;
 		while (hasKeys(loadAdditions)) {
 			newIds = {};
-
-			// condition 1)
 			for (var loadId in loadAdditions) {
 				var entry = entryMap[loadId];
 				forEach(entry && entry.modify, function (modId) {
@@ -407,8 +385,6 @@ var getLoader = (function () {
 					}
 				});
 			}
-
-			// condition 2)
 			for (var loadedId in loadedSet) {
 				if (!(loadedId in loadSet)) {
 					for (var depId in dependencyResolver(loadedId)) {

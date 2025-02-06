@@ -57,7 +57,7 @@ export default class DimGrid {
       xRatio = xRange / gridWidth
 
       let xDivision
-      // max barwidth should be equal to minXDiff to avoid overlap
+
       if (w.globals.minXDiff && w.globals.minXDiff / xRatio > 0) {
         xDivision = w.globals.minXDiff / xRatio
       }
@@ -140,8 +140,6 @@ export default class DimGrid {
             parseInt(w.config.yaxis[index].labels.style.fontSize, 10) / 1.2 -
             12
         }
-
-        // fixes apexcharts.js#1599
         if (w.globals.translateX < 2) {
           w.globals.translateX = 2
         }

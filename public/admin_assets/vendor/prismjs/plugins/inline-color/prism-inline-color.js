@@ -3,11 +3,7 @@
 	if (typeof Prism === 'undefined' || typeof document === 'undefined') {
 		return;
 	}
-
-	// Copied from the markup language definition
 	var HTML_TAG = /<\/?(?!\d)[^\s>\/=$<%]+(?:\s(?:\s*[^\s>\/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s'">=]+(?=[\s>]))|(?=[\s/>])))+)?\s*\/?>/g;
-
-	// a regex to validate hexadecimal colors
 	var HEX_COLOR = /^#?((?:[\da-f]){3,4}|(?:[\da-f]{2}){3,4})$/i;
 
 	/**
@@ -27,30 +23,22 @@
 		if (!match) {
 			return undefined;
 		}
-		hex = match[1]; // removes the leading "#"
-
-		// the width and number of channels
+		hex = match[1];
 		var channelWidth = hex.length >= 6 ? 2 : 1;
 		var channelCount = hex.length / channelWidth;
-
-		// the scale used to normalize 4bit and 8bit values
 		var scale = channelWidth == 1 ? 1 / 15 : 1 / 255;
-
-		// normalized RGBA channels
 		var channels = [];
 		for (var i = 0; i < channelCount; i++) {
 			var int = parseInt(hex.substr(i * channelWidth, channelWidth), 16);
 			channels.push(int * scale);
 		}
 		if (channelCount == 3) {
-			channels.push(1); // add alpha of 100%
+			channels.push(1);
 		}
-
-		// output
 		var rgb = channels.slice(0, 3).map(function (x) {
 			return String(Math.round(x * 255));
 		}).join(',');
-		var alpha = String(Number(channels[3].toFixed(3))); // easy way to round 3 decimal places
+		var alpha = String(Number(channels[3].toFixed(3)));
 
 		return 'rgba(' + rgb + ',' + alpha + ')';
 	}
@@ -79,13 +67,9 @@
 		parseHexColor,
 		validateColor
 	];
-
-
 	Prism.hooks.add('wrap', function (env) {
 		if (env.type === 'color' || env.classes.indexOf('color') >= 0) {
 			var content = env.content;
-
-			// remove all HTML tags inside
 			var rawText = content.split(HTML_TAG).join('');
 
 			var color;

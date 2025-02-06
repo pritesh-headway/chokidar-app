@@ -45,7 +45,7 @@ export default class Marker {
       )
 
       if (pointsMain !== null) {
-        // it can be null as we have tooltips in donut/bar charts
+
         let point
 
         let PointClasses = `apexcharts-marker w${(Math.random() + 1)
@@ -61,7 +61,7 @@ export default class Marker {
 
         let elPointOptions = marker.getMarkerConfig({
           cssClass: PointClasses,
-          seriesIndex: Number(pointsMain.getAttribute('data:realIndex')) // fixes apexcharts/apexcharts.js #1427
+          seriesIndex: Number(pointsMain.getAttribute('data:realIndex'))
         })
 
         point = graphics.drawMarker(0, 0, elPointOptions)

@@ -1,31 +1,14 @@
 (function (Prism) {
-	// TODO:
-	// - Add CSS highlighting inside <style> tags
-	// - Add support for multi-line code blocks
-	// - Add support for interpolation #{} and !{}
-	// - Add support for tag interpolation #[]
-	// - Add explicit support for plain text using |
-	// - Add support for markup embedded in plain text
-
 	Prism.languages.pug = {
-
-		// Multiline stuff should appear before the rest
-
-		// This handles both single-line and multi-line comments
 		'comment': {
 			pattern: /(^([\t ]*))\/\/.*(?:(?:\r?\n|\r)\2[\t ].+)*/m,
 			lookbehind: true
 		},
-
-		// All the tag-related part is in lookbehind
-		// so that it can be highlighted by the "tag" pattern
 		'multiline-script': {
 			pattern: /(^([\t ]*)script\b.*\.[\t ]*)(?:(?:\r?\n|\r(?!\n))(?:\2[\t ].+|\s*?(?=\r?\n|\r)))+/m,
 			lookbehind: true,
 			inside: Prism.languages.javascript
 		},
-
-		// See at the end of the file for known filters
 		'filter': {
 			pattern: /(^([\t ]*)):.+(?:(?:\r?\n|\r(?!\n))(?:\2[\t ].+|\s*?(?=\r?\n|\r)))+/m,
 			lookbehind: true,
@@ -51,8 +34,6 @@
 			pattern: /((?:^|\n)[\t ]*)doctype(?: .+)?/,
 			lookbehind: true
 		},
-
-		// This handle all conditional and loop keywords
 		'flow-control': {
 			pattern: /(^[\t ]*)(?:case|default|each|else|if|unless|when|while)\b(?: .+)?/m,
 			lookbehind: true,
@@ -76,7 +57,7 @@
 			lookbehind: true
 		},
 		'mixin': [
-			// Declaration
+
 			{
 				pattern: /(^[\t ]*)mixin .+/m,
 				lookbehind: true,
@@ -86,7 +67,7 @@
 					'punctuation': /[(),.]/
 				}
 			},
-			// Usage
+
 			{
 				pattern: /(^[\t ]*)\+.+/m,
 				lookbehind: true,
@@ -147,8 +128,6 @@
 	};
 
 	var filter_pattern = /(^([\t ]*)):<filter_name>(?:(?:\r?\n|\r(?!\n))(?:\2[\t ].+|\s*?(?=\r?\n|\r)))+/.source;
-
-	// Non exhaustive list of available filters and associated languages
 	var filters = [
 		{ filter: 'atpl', language: 'twig' },
 		{ filter: 'coffee', language: 'coffeescript' },

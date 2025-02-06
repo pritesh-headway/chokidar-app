@@ -175,7 +175,7 @@ export default class Position {
     let pointR = r !== null ? parseFloat(r) : 1
 
     let x = parseFloat(cx) + pointR + 5
-    let y = parseFloat(cy) + pointR / 2 // - tooltipRect.ttHeight / 2
+    let y = parseFloat(cy) + pointR / 2
 
     if (x > w.globals.gridWidth / 2) {
       x = x - tooltipRect.ttWidth - pointR - 10
@@ -232,9 +232,6 @@ export default class Position {
       this.moveDynamicPointOnHover(j, i)
     }
   }
-
-  // This function is used when you need to show markers/points only on hover -
-  // DIFFERENT X VALUES in multiple series
   moveDynamicPointOnHover(j, capturedSeries) {
     let w = this.w
     let ttCtx = this.ttCtx
@@ -252,7 +249,7 @@ export default class Position {
         serType === 'candlestick' ||
         serType === 'boxPlot')
     ) {
-      // fix error mentioned in #811
+
       return
     }
 
@@ -269,18 +266,12 @@ export default class Position {
       point.setAttribute('cx', cx)
       point.setAttribute('cy', cy)
     }
-
-    // point.style.opacity = w.config.markers.hover.opacity
-
     this.moveXCrosshairs(cx)
 
     if (!ttCtx.fixedTooltip) {
       this.moveTooltip(cx, cy, hoverSize)
     }
   }
-
-  // This function is used when you need to show markers/points only on hover -
-  // SAME X VALUES in multiple series
   moveDynamicPointsOnHover(j) {
     const ttCtx = this.ttCtx
     let w = ttCtx.w
@@ -312,9 +303,9 @@ export default class Position {
         let pointArr = pointsArr[p]
 
         if (w.globals.comboCharts) {
-          // in a combo chart, if column charts are present, markers will not match with the number of series, hence this patch to push a null value in points array
+
           if (typeof pointArr === 'undefined') {
-            // nodelist to array
+
             points.splice(p, 0, null)
           }
         }
@@ -374,7 +365,7 @@ export default class Position {
       `.apexcharts-bar-series .apexcharts-series[rel='${i}'] path[j='${j}'], .apexcharts-candlestick-series .apexcharts-series[rel='${i}'] path[j='${j}'], .apexcharts-boxPlot-series .apexcharts-series[rel='${i}'] path[j='${j}'], .apexcharts-rangebar-series .apexcharts-series[rel='${i}'] path[j='${j}']`
     )
     if (!jBar && typeof capturedSeries == 'number') {
-      // Try with captured series index
+
       jBar = w.globals.dom.baseEl.querySelector(
         `.apexcharts-bar-series .apexcharts-series[data\\:realIndex='${capturedSeries}'] path[j='${j}'],
         .apexcharts-candlestick-series .apexcharts-series[data\\:realIndex='${capturedSeries}'] path[j='${j}'],
@@ -399,7 +390,7 @@ export default class Position {
       }
 
       if (
-        jBar && // fixes apexcharts.js#2354
+        jBar &&
         isBoxOrCandle &&
         w.globals.comboCharts
       ) {

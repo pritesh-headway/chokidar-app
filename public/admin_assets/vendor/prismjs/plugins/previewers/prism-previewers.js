@@ -5,12 +5,9 @@
 	}
 
 	var previewers = {
-		// gradient must be defined before color and angle
+
 		'gradient': {
 			create: (function () {
-
-				// Stores already processed gradients so that we don't
-				// make the conversion every time the previewer is shown
 				var cache = {};
 
 				/**
@@ -21,14 +18,12 @@
 				 * @param {string[]} values Array of the gradient function parameters (["0deg", "red 0%", "blue 100%"])
 				 */
 				var convertToW3CLinearGradient = function (prefix, func, values) {
-					// Default value for angle
+
 					var angle = '180deg';
 
 					if (/^(?:-?(?:\d+(?:\.\d+)?|\.\d+)(?:deg|rad)|to\b|top|right|bottom|left)/.test(values[0])) {
 						angle = values.shift();
 						if (angle.indexOf('to ') < 0) {
-							// Angle uses old keywords
-							// W3C syntax uses "to" + opposite keywords
 							if (angle.indexOf('top') >= 0) {
 								if (angle.indexOf('left') >= 0) {
 									angle = 'to bottom right';
@@ -50,7 +45,7 @@
 							} else if (angle.indexOf('right') >= 0) {
 								angle = 'to left';
 							} else if (prefix) {
-								// Angle is shifted by 90deg in prefixed gradients
+
 								if (angle.indexOf('deg') >= 0) {
 									angle = (90 - parseFloat(angle)) + 'deg';
 								} else if (angle.indexOf('rad') >= 0) {
@@ -72,20 +67,15 @@
 				 */
 				var convertToW3CRadialGradient = function (prefix, func, values) {
 					if (values[0].indexOf('at') < 0) {
-						// Looks like old syntax
-
-						// Default values
 						var position = 'center';
 						var shape = 'ellipse';
 						var size = 'farthest-corner';
 
 						if (/\b(?:bottom|center|left|right|top)\b|^\d+/.test(values[0])) {
-							// Found a position
-							// Remove angle value, if any
 							position = values.shift().replace(/\s*-?\d+(?:deg|rad)\s*/, '');
 						}
 						if (/\b(?:circle|closest|contain|cover|ellipse|farthest)\b/.test(values[0])) {
-							// Found a shape and/or size
+
 							var shapeSizeParts = values.shift().split(/\s+/);
 							if (shapeSizeParts[0] && (shapeSizeParts[0] === 'circle' || shapeSizeParts[0] === 'ellipse')) {
 								shape = shapeSizeParts.shift();
@@ -93,8 +83,6 @@
 							if (shapeSizeParts[0]) {
 								size = shapeSizeParts.shift();
 							}
-
-							// Old keywords are converted to their synonyms
 							if (size === 'cover') {
 								size = 'farthest-corner';
 							} else if (size === 'contain') {
@@ -118,9 +106,9 @@
 						return cache[gradient];
 					}
 					var parts = gradient.match(/^(\b|\B-[a-z]{1,10}-)((?:repeating-)?(?:linear|radial)-gradient)/);
-					// "", "-moz-", etc.
+
 					var prefix = parts && parts[1];
-					// "linear-gradient", "radial-gradient", etc.
+
 					var func = parts && parts[2];
 
 					var values = gradient.replace(/^(?:\b|\B-[a-z]{1,10}-)(?:repeating-)?(?:linear|radial)-gradient\(|\)$/g, '').split(/\s*,\s*/);
@@ -277,7 +265,7 @@
 				'color': [Prism.languages.css['hexcode']].concat(Prism.languages.css['color'])
 			},
 			languages: {
-				// CSS extras is required, so css and scss are not necessary
+
 				'css': false,
 				'less': true,
 				'markup': {
@@ -697,8 +685,6 @@
 			}
 		}
 	});
-
-	// Initialize the previewers only when needed
 	Prism.hooks.add('after-highlight', function (env) {
 		if (Previewer.byLanguages['*'] || Previewer.byLanguages[env.language]) {
 			Previewer.initEvents(env.element, env.language);

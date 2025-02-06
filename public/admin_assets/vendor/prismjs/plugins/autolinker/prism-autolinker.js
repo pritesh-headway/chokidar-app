@@ -7,13 +7,11 @@
 	var url = /\b([a-z]{3,7}:\/\/|tel:)[\w\-+%~/.:=&!$'()*,;@]+(?:\?[\w\-+%~/.:=?&!$'()*,;@]*)?(?:#[\w\-+%~/.:#=?&!$'()*,;@]*)?/;
 	var email = /\b\S+@[\w.]+[a-z]{2}/;
 	var linkMd = /\[([^\]]+)\]\(([^)]+)\)/;
-
-	// Tokens that may contain URLs and emails
 	var candidates = ['comment', 'url', 'attr-value', 'string'];
 
 	Prism.plugins.autolinker = {
 		processGrammar: function (grammar) {
-			// Abort if grammar has already been processed
+
 			if (!grammar || grammar['url-link']) {
 				return;
 			}
@@ -57,7 +55,7 @@
 			if (env.type == 'email-link' && href.indexOf('mailto:') != 0) {
 				href = 'mailto:' + href;
 			} else if (env.type == 'md-link') {
-				// Markdown
+
 				var match = env.content.match(linkMd);
 
 				href = match[2];
@@ -65,8 +63,6 @@
 			}
 
 			env.attributes.href = href;
-
-			// Silently catch any error thrown by decodeURIComponent (#1186)
 			try {
 				env.content = decodeURIComponent(env.content);
 			} catch (e) { /* noop */ }

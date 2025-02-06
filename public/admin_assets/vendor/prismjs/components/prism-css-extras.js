@@ -57,11 +57,6 @@
 				}
 			],
 			'combinator': />|\+|~|\|\|/,
-
-			// the `tag` token has been existed and removed.
-			// because we can't find a perfect tokenize to match it.
-			// if you want to add it, please read https://github.com/PrismJS/prism/pull/2373 first.
-
 			'punctuation': /[(),]/,
 		}
 	};
@@ -79,7 +74,7 @@
 		pattern: /(\b\d+)(?:%|[a-z]+(?![\w-]))/,
 		lookbehind: true
 	};
-	// 123 -123 .123 -.123 12.3 -12.3
+
 	var number = {
 		pattern: /(^|[^\w.-])-?(?:\d+(?:\.\d+)?|\.\d+)/,
 		lookbehind: true
@@ -90,8 +85,6 @@
 			pattern: /(\s)[+\-*\/](?=\s)/,
 			lookbehind: true
 		},
-		// CAREFUL!
-		// Previewers and Inline color use hexcode and color.
 		'hexcode': {
 			pattern: /\B#[\da-f]{3,8}\b/i,
 			alias: 'color'
@@ -111,7 +104,7 @@
 				}
 			}
 		],
-		// it's important that there is no boundary assertion after the hex digits
+
 		'entity': /\\[\da-f]{1,8}/i,
 		'unit': unit,
 		'number': number

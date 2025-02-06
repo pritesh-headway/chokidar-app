@@ -15,7 +15,7 @@ Prism.languages.moonscript = {
 						'moonscript': {
 							pattern: /(^#\{)[\s\S]+(?=\})/,
 							lookbehind: true,
-							inside: null // see beow
+							inside: null
 						},
 						'interpolation-punctuation': {
 							pattern: /#\{|\}/,
@@ -31,7 +31,7 @@ Prism.languages.moonscript = {
 			pattern: /(\b(?:class|extends)[ \t]+)\w+/,
 			lookbehind: true
 		},
-		// class-like names start with a capital letter
+
 		/\b[A-Z]\w*/
 	],
 	'keyword': /\b(?:class|continue|do|else|elseif|export|extends|for|from|if|import|in|local|nil|return|self|super|switch|then|unless|using|when|while|with)\b/,

@@ -21,8 +21,6 @@ Prism.languages.makefile = {
 		}
 	},
 	'variable': /\$+(?:(?!\$)[^(){}:#=\s]+|\([@*%<^+?][DF]\)|(?=[({]))/,
-
-	// Directives
 	'keyword': /-include\b|\b(?:define|else|endef|endif|export|ifn?def|ifn?eq|include|override|private|sinclude|undefine|unexport|vpath)\b/,
 
 	'function': {

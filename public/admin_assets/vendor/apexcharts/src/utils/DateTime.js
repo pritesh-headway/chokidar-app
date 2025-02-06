@@ -49,14 +49,9 @@ class DateTime {
     output = this.getTimeStamp(output)
     return output
   }
-
-  // This fixes the difference of x-axis labels between chrome/safari
-  // Fixes #1726, #1544, #1485, #1255
   parseDateWithTimezone(dateStr) {
     return Date.parse(dateStr.replace(/-/g, '/').replace(/[a-z]+/gi, ' '))
   }
-
-  // http://stackoverflow.com/questions/14638018/current-time-formatting-with-javascript#answer-14638191
   formatDate(date, format) {
     const locale = this.w.globals.locale
 
@@ -186,8 +181,6 @@ class DateTime {
 
   calculcateLastDaysOfMonth(month, year, subtract) {
     const days = this.determineDaysOfMonths(month, year)
-
-    // whatever days we get, subtract the number of days asked
     return days - subtract
   }
 

@@ -1,6 +1,3 @@
-// https://www.gap-system.org/Manuals/doc/ref/chap4.html
-// https://www.gap-system.org/Manuals/doc/ref/chap27.html
-
 Prism.languages.gap = {
 	'shell': {
 		pattern: /^gap>[\s\S]*?(?=^gap>|$(?![\s\S]))/m,
@@ -9,7 +6,7 @@ Prism.languages.gap = {
 			'gap': {
 				pattern: /^(gap>).+(?:(?:\r(?:\n|(?!\n))|\n)>.*)*/,
 				lookbehind: true,
-				inside: null // see below
+				inside: null
 			},
 			'punctuation': /^gap>/
 		}

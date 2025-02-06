@@ -61,7 +61,7 @@ class Pie {
     this.sliceLabels = []
     this.sliceSizes = []
 
-    this.prevSectorAngleArr = [] // for dynamic animations
+    this.prevSectorAngleArr = []
   }
 
   draw(series) {
@@ -78,16 +78,12 @@ class Pie {
 
     let total = 0
     for (let k = 0; k < series.length; k++) {
-      // CALCULATE THE TOTAL
+
       total += Utils.negToZero(series[k])
     }
 
     let sectorAngleArr = []
-
-    // el to which series will be drawn
     let elSeries = graphics.group()
-
-    // prevent division by zero error if there is no data
     if (total === 0) {
       total = 0.00001
     }
@@ -95,8 +91,6 @@ class Pie {
     series.forEach((m) => {
       this.maxY = Math.max(this.maxY, m)
     })
-
-    // override maxY if user provided in config
     if (w.config.yaxis[0].max) {
       this.maxY = w.config.yaxis[0].max
     }
@@ -106,7 +100,7 @@ class Pie {
     }
 
     for (let i = 0; i < series.length; i++) {
-      // CALCULATE THE ANGLES
+
       let angle = (this.fullAngle * Utils.negToZero(series[i])) / total
       sectorAngleArr.push(angle)
 
@@ -121,22 +115,20 @@ class Pie {
     if (w.globals.dataChanged) {
       let prevTotal = 0
       for (let k = 0; k < w.globals.previousPaths.length; k++) {
-        // CALCULATE THE PREV TOTAL
+
         prevTotal += Utils.negToZero(w.globals.previousPaths[k])
       }
 
       let previousAngle
 
       for (let i = 0; i < w.globals.previousPaths.length; i++) {
-        // CALCULATE THE PREVIOUS ANGLES
+
         previousAngle =
           (this.fullAngle * Utils.negToZero(w.globals.previousPaths[i])) /
           prevTotal
         this.prevSectorAngleArr.push(previousAngle)
       }
     }
-
-    // on small chart size after few count of resizes browser window donutSize can be negative
     if (this.donutSize < 0) {
       this.donutSize = 0
     }
@@ -148,7 +140,7 @@ class Pie {
     let translateY = halfH - (w.globals.gridHeight / 2) * scaleSize
 
     if (this.chartType === 'donut') {
-      // draw the inner circle and add some text to it
+
       const circle = graphics.drawCircle(this.donutSize)
 
       circle.attr({
@@ -163,8 +155,6 @@ class Pie {
     }
 
     let elG = self.drawArcs(sectorAngleArr, series)
-
-    // add slice dataLabels at the end
     this.sliceLabels.forEach((s) => {
       elG.add(s)
     })
@@ -196,8 +186,6 @@ class Pie {
 
     return this.ret
   }
-
-  // core function for drawing pie arcs
   drawArcs(sectorAngleArr, series) {
     let w = this.w
     const filters = new Filters(this.ctx)
@@ -240,7 +228,7 @@ class Pie {
         seriesNumber: i,
         size: this.sliceSizes[i],
         value: series[i]
-      }) // additionally, pass size for gradient drawing in the fillPath function
+      })
 
       let path = this.getChangedPath(prevStartAngle, prevEndAngle)
 
@@ -286,7 +274,7 @@ class Pie {
           this.centerX,
           this.centerY,
           w.globals.radialSize / 1.25 +
-            w.config.plotOptions.pie.dataLabels.offset,
+          w.config.plotOptions.pie.dataLabels.offset,
           (startAngle + angle / 2) % this.fullAngle
         )
       } else if (this.chartType === 'donut') {
@@ -294,14 +282,12 @@ class Pie {
           this.centerX,
           this.centerY,
           (w.globals.radialSize + this.donutSize) / 2 +
-            w.config.plotOptions.pie.dataLabels.offset,
+          w.config.plotOptions.pie.dataLabels.offset,
           (startAngle + angle / 2) % this.fullAngle
         )
       }
 
       elPieArc.add(elPath)
-
-      // Animation code starts
       let dur = 0
       if (this.initialAnim && !w.globals.resized && !w.globals.dataChanged) {
         dur = (angle / this.fullAngle) * w.config.chart.animations.speed
@@ -337,8 +323,6 @@ class Pie {
           dur
         })
       }
-      // animation code ends
-
       if (
         w.config.plotOptions.pie.expandOnClick &&
         this.chartType !== 'polarArea'
@@ -361,7 +345,7 @@ class Pie {
         if (
           angle !== 0 &&
           w.config.plotOptions.pie.dataLabels.minAngleToShowLabel <
-            sectorAngleArr[i]
+          sectorAngleArr[i]
         ) {
           let formatter = w.config.dataLabels.formatter
           if (formatter !== undefined) {
@@ -412,7 +396,7 @@ class Pie {
 
   addListeners(elPath, dataLabels) {
     const graphics = new Graphics(this.ctx)
-    // append filters on mouseenter and mouseleave
+
     elPath.node.addEventListener(
       'mouseenter',
       graphics.pathMouseEnter.bind(this, elPath)
@@ -443,8 +427,6 @@ class Pie {
       )
     }
   }
-
-  // This function can be used for other circle charts too
   animatePaths(el, opts) {
     let w = this.w
     let me = this
@@ -466,7 +448,7 @@ class Pie {
           : opts.prevEndAngle - opts.prevStartAngle
     }
     if (opts.i === w.config.series.length - 1) {
-      // some adjustments for the last overlapping paths
+
       if (angle + toStartAngle > this.fullAngle) {
         opts.endAngle = opts.endAngle - (angle + toStartAngle)
       } else if (angle + toStartAngle < this.fullAngle) {
@@ -503,7 +485,7 @@ class Pie {
         : fromStartAngle - toStartAngle
 
     if (w.globals.dataChanged && opts.shouldSetPrevPaths) {
-      // to avoid flicker when updating, set prev path first and then animate from there
+
       if (opts.prevEndAngle) {
         path = me.getPiePath({
           me,
@@ -520,7 +502,7 @@ class Pie {
 
     if (opts.dur !== 0) {
       el.animate(opts.dur, w.globals.easing, opts.animBeginArr[opts.i])
-        .afterAll(function() {
+        .afterAll(function () {
           if (
             me.chartType === 'pie' ||
             me.chartType === 'donut' ||
@@ -603,7 +585,7 @@ class Pie {
       })
       return
     } else {
-      // reset all elems
+
       let allEls = w.globals.dom.baseEl.getElementsByClassName(
         'apexcharts-pie-area'
       )
@@ -652,11 +634,11 @@ class Pie {
     let startRadians = (Math.PI * (startDeg - 90)) / 180
 
     let endDeg = angle + startAngle
-    // prevent overlap
+
     if (
       Math.ceil(endDeg) >=
       this.fullAngle +
-        (this.w.config.plotOptions.pie.startAngle % this.fullAngle)
+      (this.w.config.plotOptions.pie.startAngle % this.fullAngle)
     ) {
       endDeg =
         this.fullAngle +
@@ -759,8 +741,8 @@ class Pie {
         const yLabel = helpers.drawYAxisTexts(
           this.centerX,
           this.centerY -
-            circleSize +
-            parseInt(w.config.yaxis[0].labels.style.fontSize, 10) / 2,
+          circleSize +
+          parseInt(w.config.yaxis[0].labels.style.fontSize, 10) / 2,
           i,
           yTexts[i]
         )
@@ -785,9 +767,8 @@ class Pie {
 
     let g = graphics.group({
       class: 'apexcharts-datalabels-group',
-      transform: `translate(${opts.translateX ? opts.translateX : 0}, ${
-        opts.translateY ? opts.translateY : 0
-      }) scale(${w.config.plotOptions.pie.customScale})`
+      transform: `translate(${opts.translateX ? opts.translateX : 0}, ${opts.translateY ? opts.translateY : 0
+        }) scale(${w.config.plotOptions.pie.customScale})`
     })
 
     const showTotal = dataLabelsConfig.total.show
@@ -873,9 +854,6 @@ class Pie {
       elValue.node.classList.add('apexcharts-datalabel-value')
       g.add(elValue)
     }
-
-    // for a multi-series circle chart, we need to show total value instead of first series labels
-
     return g
   }
 
@@ -912,8 +890,6 @@ class Pie {
 
     let lbFormatter = labelsConfig.value.formatter
     val = lbFormatter(val, w)
-
-    // we need to show Total Val - so get the formatter of it
     if (!el && typeof labelsConfig.total.formatter === 'function') {
       val = labelsConfig.total.formatter(w)
     }

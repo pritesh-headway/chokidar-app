@@ -37,19 +37,13 @@
 					}
 					var i = tokenStack.length;
 					var placeholder;
-
-					// Check for existing strings
 					while (env.code.indexOf(placeholder = getPlaceholder(language, i)) !== -1) {
 						++i;
 					}
-
-					// Create a sparse array
 					tokenStack[i] = match;
 
 					return placeholder;
 				});
-
-				// Switch the grammar to markup
 				env.grammar = Prism.languages.markup;
 			}
 		},
@@ -64,8 +58,6 @@
 				if (env.language !== language || !env.tokenStack) {
 					return;
 				}
-
-				// Switch the grammar back
 				env.grammar = Prism.languages[language];
 
 				var j = 0;
@@ -73,7 +65,7 @@
 
 				function walkTokens(tokens) {
 					for (var i = 0; i < tokens.length; i++) {
-						// all placeholders are replaced already
+
 						if (j >= keys.length) {
 							break;
 						}

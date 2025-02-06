@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./index.js'), require('../dom/manipulator.js')) :
-  typeof define === 'function' && define.amd ? define(['./index', '../dom/manipulator'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Config = factory(global.Index, global.Manipulator));
-})(this, (function (index_js, Manipulator) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./index', '../dom/manipulator'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Config = factory(global.Index, global.Manipulator));
+})(this, (function (index_js, Manipulator) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -21,7 +22,7 @@
    */
 
   class Config {
-    // Getters
+
     static get Default() {
       return {};
     }
@@ -41,7 +42,7 @@
       return config;
     }
     _mergeConfigObj(config, element) {
-      const jsonConfig = index_js.isElement(element) ? Manipulator.getDataAttribute(element, 'config') : {}; // try to parse
+      const jsonConfig = index_js.isElement(element) ? Manipulator.getDataAttribute(element, 'config') : {};
 
       return {
         ...this.constructor.Default,

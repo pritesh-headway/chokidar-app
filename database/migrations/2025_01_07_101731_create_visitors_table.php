@@ -12,12 +12,12 @@ class CreateVisitorsTable extends Migration
             $table->id();
             $table->string('block_number', 50);
             $table->string('visitor_name', 50);
-            $table->string('mobile', 10);  // Assuming mobile is a 10-digit number
+            $table->string('mobile', 10);
             $table->date('date');
             $table->string('reason', 255);
             $table->enum('visitor_status', ['Pending', 'Active', 'Decline'])->default('Pending');
             $table->string('prof_image', 256);
-            $table->foreignId('user_id')->constrained('users');  // Foreign key referencing 'users' table
+            $table->foreignId('user_id')->constrained('users');
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
         });

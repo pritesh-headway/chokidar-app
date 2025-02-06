@@ -13,7 +13,7 @@ class RoleMemberSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\RoleMember::factory(10)->create(); // Create 10 role members
-        // RoleMember::truncate();
+        \App\Models\RoleMember::factory(10)->create();
+
     }
 }

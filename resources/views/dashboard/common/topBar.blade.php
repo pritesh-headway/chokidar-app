@@ -20,9 +20,6 @@
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
-
-
-
         {{-- <li class="nav-item dropdown no-arrow d-sm-none">
             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -219,8 +216,6 @@
                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Notifications</a>
             </div>
         </li>
-
-
     </ul>
 
 </nav>

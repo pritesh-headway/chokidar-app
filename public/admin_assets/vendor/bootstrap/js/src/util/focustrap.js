@@ -25,7 +25,7 @@ const TAB_NAV_BACKWARD = 'backward'
 
 const Default = {
   autofocus: true,
-  trapElement: null // The element to trap focus inside of
+  trapElement: null
 }
 
 const DefaultType = {
@@ -44,8 +44,6 @@ class FocusTrap extends Config {
     this._isActive = false
     this._lastTabNavDirection = null
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -57,8 +55,6 @@ class FocusTrap extends Config {
   static get NAME() {
     return NAME
   }
-
-  // Public
   activate() {
     if (this._isActive) {
       return
@@ -68,7 +64,7 @@ class FocusTrap extends Config {
       this._config.trapElement.focus()
     }
 
-    EventHandler.off(document, EVENT_KEY) // guard against infinite focus loop
+    EventHandler.off(document, EVENT_KEY)
     EventHandler.on(document, EVENT_FOCUSIN, event => this._handleFocusin(event))
     EventHandler.on(document, EVENT_KEYDOWN_TAB, event => this._handleKeydown(event))
 
@@ -83,8 +79,6 @@ class FocusTrap extends Config {
     this._isActive = false
     EventHandler.off(document, EVENT_KEY)
   }
-
-  // Private
   _handleFocusin(event) {
     const { trapElement } = this._config
 

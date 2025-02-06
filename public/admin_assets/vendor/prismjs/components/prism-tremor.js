@@ -5,7 +5,7 @@
 			pattern: /(^|[^\\])(?:\/\*[\s\S]*?\*\/|(?:--|\/\/|#).*)/,
 			lookbehind: true
 		},
-		'interpolated-string': null, // see below
+		'interpolated-string': null,
 		'extractor': {
 			pattern: /\b[a-z_]\w*\|(?:[^\r\n\\|]|\\(?:\r\n|[\s\S]))*\|/i,
 			greedy: true,

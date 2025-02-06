@@ -12,19 +12,19 @@ class VisitorFactory extends Factory
 
     public function definition()
     {
-        // Randomly pick a user from the users table
+
         $user = User::inRandomOrder()->first();
 
         return [
-            'block_number' => $user ? $user->block_number : 'Unknown',  // Use the user's block_number
+            'block_number' => $user ? $user->block_number : 'Unknown',
             'visitor_name' => $this->faker->name(),
-            // 'mobile' => $this->faker->phoneNumber(),
-            'mobile' => $this->faker->numerify('9#########'), // Generates a phone number like '9XXXXXXXXX'
+
+            'mobile' => $this->faker->numerify('9#########'),
             'date' => $this->faker->date(),
             'reason' => $this->faker->sentence(),
             'visitor_status' => $this->faker->randomElement(['Pending', 'Active', 'Decline']),
-            'prof_image' => $this->faker->imageUrl(256, 256),  // Profile image URL
-            'user_id' => $user->id,  // Foreign key to the user
+            'prof_image' => $this->faker->imageUrl(256, 256),
+            'user_id' => $user->id,
             'status' => $this->faker->randomElement(['active', 'deactive']),
         ];
     }

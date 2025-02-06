@@ -1,5 +1,5 @@
 <?php
-// app/Models/ServiceProvider.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,16 +20,12 @@ class ServiceProvider extends Model
     ];
 
     protected $casts = [
-        'documents' => 'array', // Automatically casts documents to an array
+        'documents' => 'array',
     ];
-
-    // Define relationship with Service
     public function service()
     {
         return $this->belongsTo(Service::class);
     }
-
-    // Relationship with ServiceRequest
     public function serviceRequests()
     {
         return $this->hasMany(ServiceRequest::class, 'provider_id');

@@ -13,8 +13,8 @@ export default class Helpers {
     this.barCtx.series = series
     this.barCtx.totalItems = 0
     this.barCtx.seriesLen = 0
-    this.barCtx.visibleI = -1 // visible Series
-    this.barCtx.visibleItems = 1 // number of visible bars after user zoomed in/out
+    this.barCtx.visibleI = -1
+    this.barCtx.visibleItems = 1
 
     for (let sl = 0; sl < series.length; sl++) {
       if (series[sl].length > 0) {
@@ -22,7 +22,7 @@ export default class Helpers {
         this.barCtx.totalItems += series[sl].length
       }
       if (w.globals.isXNumeric) {
-        // get max visible items
+
         for (let j = 0; j < series[sl].length; j++) {
           if (
             w.globals.seriesX[sl][j] > w.globals.minX &&
@@ -37,11 +37,11 @@ export default class Helpers {
     }
 
     if (this.barCtx.seriesLen === 0) {
-      // A small adjustment when combo charts are used
+
       this.barCtx.seriesLen = 1
     }
     this.barCtx.zeroSerieses = []
-    this.barCtx.radiusOnSeriesNumber = series.length - 1 // which series to draw ending shape on
+    this.barCtx.radiusOnSeriesNumber = series.length - 1
 
     if (!w.globals.comboCharts) {
       this.checkZeroSeries({ series })
@@ -54,7 +54,7 @@ export default class Helpers {
 
     let dataPoints = w.globals.dataPoints
     if (this.barCtx.isRangeBar) {
-      // timeline rangebar chart
+
       dataPoints = w.globals.labels.length
     }
 
@@ -64,7 +64,7 @@ export default class Helpers {
     }
 
     if (this.barCtx.isHorizontal) {
-      // height divided into equal parts
+
       yDivision = w.globals.gridHeight / dataPoints
       barHeight = yDivision / seriesLen
 
@@ -84,7 +84,7 @@ export default class Helpers {
 
       y = (yDivision - barHeight * this.barCtx.seriesLen) / 2
     } else {
-      // width divided into equal parts
+
       xDivision = w.globals.gridWidth / this.barCtx.visibleItems
       if (w.config.xaxis.convertedCatToNumeric) {
         xDivision = w.globals.gridWidth / w.globals.dataPoints
@@ -95,7 +95,7 @@ export default class Helpers {
         100
 
       if (w.globals.isXNumeric) {
-        // max barwidth should be equal to minXDiff to avoid overlap
+
         let xRatio = this.barCtx.xRatio
         if (w.config.xaxis.convertedCatToNumeric) {
           xRatio = this.barCtx.initialXRatio
@@ -276,8 +276,6 @@ export default class Helpers {
 
     const x1 = bXP
     const x2 = bXP + bW
-
-    // append tiny pixels to avoid exponentials (which cause issues in border-radius)
     y1 += 0.001
     y2 += 0.001
 
@@ -297,9 +295,6 @@ export default class Helpers {
       (w.config.plotOptions.bar.borderRadiusApplication === 'around'
         ? ' Z'
         : ' z')
-
-    // the lines in pathFrom are repeated to equal it to the points of pathTo
-    // this is to avoid weird animation (bug in svg.js)
     pathFrom =
       pathFrom +
       graphics.line(x1, y1) +
@@ -360,8 +355,6 @@ export default class Helpers {
 
     const y1 = bYP
     const y2 = bYP + bH
-
-    // append tiny pixels to avoid exponentials (which cause issues in border-radius)
     x1 += 0.001
     x2 += 0.001
 
@@ -428,8 +421,6 @@ export default class Helpers {
         this.barCtx.zeroSerieses.push(zs)
       }
     }
-
-    // After getting all zeroserieses, we need to ensure whether radiusOnSeriesNumber is not in that zeroseries array
     for (let s = series.length - 1; s >= 0; s--) {
       if (
         this.barCtx.zeroSerieses.indexOf(s) > -1 &&
@@ -470,7 +461,7 @@ export default class Helpers {
         (this.barCtx.isReversed
           ? value / this.barCtx.yRatio[this.barCtx.yaxisIndex]
           : 0) *
-          2
+        2
     }
     return yForVal
   }

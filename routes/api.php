@@ -1,9 +1,9 @@
 <?php
-//  php artisan serve --host=192.168.1.12 --port=8000
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
-// use App\Http\Controllers\ChokidarController;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AdminController;
@@ -24,175 +24,61 @@ use App\Http\Controllers\ComplaintController;
 
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\GateDetailController;
-// routes/api.php
-
 use App\Http\Controllers\RoleMemberController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\BookingAmenityController;
 
-
-
-
-
-
-
 Route::post('register', [AuthController::class, 'register']);
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
-// Route::post('logout', [AuthController::class, 'logout']);
-Route::post('otp-login', [AuthController::class, 'otpLogin']);
 
-// routes/api.php
+Route::post('otp-login', [AuthController::class, 'otpLogin']);
 
 use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\ServiceProviderController;
 use App\Http\Controllers\Backend\AllSocietyController;
 use App\Http\Controllers\FamilyMemberDetailController;
 
-
-
-// Route::group(['auth:api' => ['route:super-admin']], function () {
-//     Route::post('/super-admin-dashboard', [SuperAdminController::class, 'index']);
-// });
-
-// Route::middleware(['auth:api', 'role:super-admin'])->group(function () {
-//     Route::post('/super-admin-dashboard', [SuperAdminController::class, 'index']);
-// });
-
-// Get a list of all societies
 Route::post('/societies', [SocietyController::class, 'index']);
-
-// Get a specific society by ID
 Route::post('/societies-show', [SocietyController::class, 'show']);
-
-// This route is only accessible by super-admins
 Route::group(['middleware' => ['role:super-admin']], function () {
-    // Create a new society
+
     Route::post('/societies-create', [SocietyController::class, 'create']);
-
-    // // Get a list of all societies
-    // Route::post('/societies', [SocietyController::class, 'index']);
-
-    // // Get a specific society by ID
-    // Route::post('/societies-show', [SocietyController::class, 'show']);
-
-    // Update a society by ID
     Route::post('/societies-update', [SocietyController::class, 'update']);
-
-    // Delete a society by ID
     Route::post('/societies-delete', [SocietyController::class, 'destroy']);
 });
-
-// // This route is accessible by both super-admins and admins
-// Route::group(['middleware' => ['role:super-admin,admin']], function () {
-//     Route::post('/admin-dashboard', [AdminController::class, 'index']);
-
-//     Route::post('register-security', [SecurityController::class, 'registerSecurity']);
-// });
-
-
-
-// Route::group(['auth:api' => ['route:admin,super-admin']], function () {
-//     Route::post('/admin-dashboard', [AdminController::class, 'index']);
-// });
-
 Route::post('/societyregister', [AllSocietyController::class, 'create'])->name('society.register');
-
-
-
-
 Route::post('contact-us', [ContactUsController::class, 'store']);
-
-
-// Middleware-protected user route
-// Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-
 Route::middleware(['auth:api'])->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
-
-    // Route::get('/user', [UsersController::class, 'index']);
-    // Route::post('/user', [UsersController::class, 'store']);  // Create user
-    // Route::post('/user/{id}', [UsersController::class, 'update']);  // Update user
-    // Route::delete('/user/{id}', [UsersController::class, 'destroy']);
-
-    Route::post('/user-read', [UsersController::class, 'index']);  // Get all users or a specific user
-    Route::post('user-create', [UsersController::class, 'store']);  // Create a user
-    Route::post('/user-update', [UsersController::class, 'update']);  // Update a user
-    Route::post('/user-delete', [UsersController::class, 'destroy']);  // Delete a user
+    Route::post('/user-read', [UsersController::class, 'index']);
+    Route::post('user-create', [UsersController::class, 'store']);
+    Route::post('/user-update', [UsersController::class, 'update']);
+    Route::post('/user-delete', [UsersController::class, 'destroy']);
     Route::post('/user-inactive', [UsersController::class, 'inactiveUsers']);
-
-
-    // // Create a new society
-    // Route::post('/societies-create', [SocietyController::class, 'create']);
-
-    // // Get a list of all societies
-    // Route::post('/societies', [SocietyController::class, 'index']);
-
-    // // Get a specific society by ID
-    // Route::post('/societies-show', [SocietyController::class, 'show']);
-
-    // // Update a society by ID
-    // Route::post('/societies-update', [SocietyController::class, 'update']);
-
-    // // Delete a society by ID
-    // Route::post('/societies-delete', [SocietyController::class, 'destroy']);
-
-
-
-    // Route::get('/family', [FamilyMemberDetailController::class, 'index']);
-    // Route::get('/family/{id}', [FamilyMemberDetailController::class, 'show']);
-    // Route::post('/family', [FamilyMemberDetailController::class, 'store']);
-    // Route::post('/family/{id}', [FamilyMemberDetailController::class, 'update']);
-    // Route::delete('/family/{id}', [FamilyMemberDetailController::class, 'destroy']);
     Route::post('/family-read', [FamilyMemberDetailController::class, 'read']);
     Route::post('/family-create', [FamilyMemberDetailController::class, 'store']);
     Route::post('/family-update', [FamilyMemberDetailController::class, 'update']);
     Route::post('/family-delete', [FamilyMemberDetailController::class, 'destroy']);
 
     Route::post('register-security', [SecurityController::class, 'registerSecurity']);
-
-
-    // // Vehicle CRUD routes
-    // Route::prefix('vehicles')->group(function () {
-    //     Route::get('/', [VehicleController::class, 'getVehiclesByUserId']);  // List all vehicles or vehicles by user ID
-    //     Route::get('/{id}', [VehicleController::class, 'show']);             // Get a specific vehicle by ID
-    //     Route::post('/', [VehicleController::class, 'store']);               // Create a new vehicle
-    //     Route::post('/{id}', [VehicleController::class, 'update']);          // Update an existing vehicle by ID
-    //     Route::delete('/{id}', [VehicleController::class, 'destroy']);       // Delete a vehicle by ID
-    // });
-
-    // Vehicle CRUD routes
-
-    Route::post('vehicle-read', [VehicleController::class, 'index']); // Fetch vehicles by user_id
-    Route::post('vehicle-create', [VehicleController::class, 'store']);         // Create a new vehicle
-    Route::post('vehicle-update', [VehicleController::class, 'update']);        // Update an existing vehicle
-    Route::post('vehicle-delete', [VehicleController::class, 'destroy']);       // Delete a vehicle
-
-
-    // Route::get('/visitors', [VisitorController::class, 'index']);  // Get visitors for a specific user
-    // Route::post('/visitors', [VisitorController::class, 'store']);  // Store a new visitor
-    // Route::post('/visitors/{id}', [VisitorController::class, 'update']);  // Update user
-    // Route::delete('/visitors/{id}', [VisitorController::class, 'destroy']);
-    Route::post('/visitor-read', [VisitorController::class, 'index']);  // Fetch visitors
-    Route::post('/visitor-create', [VisitorController::class, 'store']);  // Store a new visitor
-    Route::post('/visitor-update', [VisitorController::class, 'update']);  // Update visitor
-    Route::post('/visitor-delete', [VisitorController::class, 'destroy']);  // Delete visitor
-
-
+    Route::post('vehicle-read', [VehicleController::class, 'index']);
+    Route::post('vehicle-create', [VehicleController::class, 'store']);
+    Route::post('vehicle-update', [VehicleController::class, 'update']);
+    Route::post('vehicle-delete', [VehicleController::class, 'destroy']);
+    Route::post('/visitor-read', [VisitorController::class, 'index']);
+    Route::post('/visitor-create', [VisitorController::class, 'store']);
+    Route::post('/visitor-update', [VisitorController::class, 'update']);
+    Route::post('/visitor-delete', [VisitorController::class, 'destroy']);
     Route::post('/amenity', [AmenityController::class, 'index']);
     Route::post('/amenity-create', [AmenityController::class, 'store']);
     Route::post('/amenity-show', [AmenityController::class, 'show']);
     Route::post('/amenity-update', [AmenityController::class, 'update']);
     Route::post('/amenity-delete', [AmenityController::class, 'destroy']);
     Route::post('/amenity-delete-image', [AmenityController::class, 'deleteAmenityImage']);
-
-
     Route::post('/booking', [BookingAmenityController::class, 'index']);
     Route::post('/booking-create', [BookingAmenityController::class, 'store']);
     Route::post('/booking-show', [BookingAmenityController::class, 'show']);
@@ -202,153 +88,80 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/user-role', [UserRoleController::class, 'store']);
     Route::put('/user-role/{id}', [UserRoleController::class, 'update']);
     Route::delete('/user-role/{id}', [UserRoleController::class, 'destroy']);
-
-
-
-    // Route::post('/notices', [NoticeController::class, 'store']);
-    // Route::get('/notices', [NoticeController::class, 'index']);
-    // Route::get('/notices/{id}', [NoticeController::class, 'show']);
-    // Route::post('/notices/{id}', [NoticeController::class, 'update']);
-    // Route::delete('/notices/{id}', [NoticeController::class, 'destroy']);
-
     Route::post('/notices-create', [NoticeController::class, 'store']);
-    Route::post('/notices', [NoticeController::class, 'index']);  // Use POST for index as well
-    Route::post('/notices-show', [NoticeController::class, 'show']);  // Accept ID in input body
-    Route::post('/notices-update', [NoticeController::class, 'update']);  // Use POST for update with ID in body
-    Route::post('/notices-delete', [NoticeController::class, 'destroy']);  // Use POST for delete with ID in body
-
-
-
-    // Maintenance CRUD
-    // Route::get('/maintenance', [MaintenanceController::class, 'index']); // Fetch all or user-specific maintenance records
-    // Route::get('/maintenance/{id}', [MaintenanceController::class, 'show']); // Fetch a specific maintenance record by ID
-    // Route::post('/maintenance', [MaintenanceController::class, 'store']); // Create a new maintenance record
-    // Route::post('/maintenance/{id}', [MaintenanceController::class, 'update']); // Update a maintenance record by ID
-    // Route::delete('/maintenance/{id}', [MaintenanceController::class, 'destroy']); // Delete a maintenance record by ID
-
-    // Maintenance CRUD (all POST)
-    Route::post('/maintenance', [MaintenanceController::class, 'index']);  // Fetch all or user-specific maintenance records
-    Route::post('/maintenance-show', [MaintenanceController::class, 'show']);    // Fetch a specific maintenance record
-    Route::post('/maintenance-create', [MaintenanceController::class, 'store']);   // Create a new maintenance record
-    Route::post('/maintenance-update', [MaintenanceController::class, 'update']); // Update a maintenance record
-    Route::post('/maintenance-delete', [MaintenanceController::class, 'destroy']); // Delete a maintenance record
-
-
-    // // Retrieve all complaints or complaints for a specific user
-    // Route::get('/complaint', [ComplaintController::class, 'index']);  // Read complaints for user
-    // Route::get('/complaint/{id}', [ComplaintController::class, 'show']);  // Retrieve a specific complaint
-    // Route::post('/complaint', [ComplaintController::class, 'store']);  // Create complaint
-    // Route::post('/complaint/{id}', [ComplaintController::class, 'update']);  // Update complaint
-    // Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy']);  // Delete complaint
-    // Modify routes to only allow POST and remove GET and DELETE
-    Route::post('/complaint', [ComplaintController::class, 'index']);  // Retrieve complaints
-    Route::post('/complaint-show', [ComplaintController::class, 'show']);  // Retrieve a specific complaint
-    Route::post('/complaint-create', [ComplaintController::class, 'store']);  // Create complaint
-    Route::post('/complaint-update', [ComplaintController::class, 'update']);  // Update complaint
-    Route::post('/complaint-delete', [ComplaintController::class, 'destroy']);  // Delete complaint
-
-
+    Route::post('/notices', [NoticeController::class, 'index']);
+    Route::post('/notices-show', [NoticeController::class, 'show']);
+    Route::post('/notices-update', [NoticeController::class, 'update']);
+    Route::post('/notices-delete', [NoticeController::class, 'destroy']);
+    Route::post('/maintenance', [MaintenanceController::class, 'index']);
+    Route::post('/maintenance-show', [MaintenanceController::class, 'show']);
+    Route::post('/maintenance-create', [MaintenanceController::class, 'store']);
+    Route::post('/maintenance-update', [MaintenanceController::class, 'update']);
+    Route::post('/maintenance-delete', [MaintenanceController::class, 'destroy']);
+    Route::post('/complaint', [ComplaintController::class, 'index']);
+    Route::post('/complaint-show', [ComplaintController::class, 'show']);
+    Route::post('/complaint-create', [ComplaintController::class, 'store']);
+    Route::post('/complaint-update', [ComplaintController::class, 'update']);
+    Route::post('/complaint-delete', [ComplaintController::class, 'destroy']);
     Route::post('/security', [SecurityController::class, 'index']);
     Route::post('/security-show', [SecurityController::class, 'show']);
     Route::post('/security-create', [SecurityController::class, 'store']);
     Route::post('/security-update', [SecurityController::class, 'update']);
     Route::post('/security-delete', [SecurityController::class, 'destroy']);
-
-
     Route::post('/gate-details-create', [GateDetailController::class, 'store']);
-    Route::post('/gate-details', [GateDetailController::class, 'index']);  // POST for fetching all gate details
-    Route::post('/gate-details-show', [GateDetailController::class, 'show']);  // Accept ID in input body
-    Route::post('/gate-details-update', [GateDetailController::class, 'update']);  // POST for update with ID in body
-    Route::post('/gate-details-delete', [GateDetailController::class, 'destroy']);  // POST for delete with ID in body
-    Route::post('/gate-details-gate-no', [GateDetailController::class, 'getByGateNo']);  // POST for delete with ID in body
-
-
-
-    // Route::get('/forums', [ForumController::class, 'index']);
-    // Route::get('/forums/{id}', [ForumController::class, 'show']);
-    // Route::post('/forums', [ForumController::class, 'store']);
-    // Route::post('/forums/{id}', [ForumController::class, 'update']);
-    // Route::delete('/forums/{id}', [ForumController::class, 'destroy']);
-    // Route::post('/forums', [ForumController::class, 'index']);  // For listing forums
-    Route::post('/forums', [ForumController::class, 'getAllActiveForums']);  // For listing forums
-    Route::post('/forums-show', [ForumController::class, 'show']);  // For showing a specific forum
-    Route::post('/forums-create', [ForumController::class, 'store']);  // For storing a new forum
-    Route::post('/forums-update', [ForumController::class, 'update']);  // For updating a forum
-    Route::post('/forums-delete', [ForumController::class, 'destroy']);  // For deleting a forum
+    Route::post('/gate-details', [GateDetailController::class, 'index']);
+    Route::post('/gate-details-show', [GateDetailController::class, 'show']);
+    Route::post('/gate-details-update', [GateDetailController::class, 'update']);
+    Route::post('/gate-details-delete', [GateDetailController::class, 'destroy']);
+    Route::post('/gate-details-gate-no', [GateDetailController::class, 'getByGateNo']);
+    Route::post('/forums', [ForumController::class, 'getAllActiveForums']);
+    Route::post('/forums-show', [ForumController::class, 'show']);
+    Route::post('/forums-create', [ForumController::class, 'store']);
+    Route::post('/forums-update', [ForumController::class, 'update']);
+    Route::post('/forums-delete', [ForumController::class, 'destroy']);
     Route::post('/forums-allinactive', [ForumController::class, 'getAllInactiveForums']);
     Route::post('/forums-allactive', [ForumController::class, 'getAllactiveForums']);
-
-
-
     Route::post('responses', [ResponseController::class, 'index']);
     Route::post('responses-show', [ResponseController::class, 'show']);
     Route::post('responses-create', [ResponseController::class, 'store']);
     Route::post('responses-update', [ResponseController::class, 'update']);
     Route::post('responses-delete', [ResponseController::class, 'delete']);
-
-
-    // routes/api.php
-
-
-
-    Route::post('conversations', [ConversationController::class, 'index']);   // Get all conversations
-    Route::post('conversations-show', [ConversationController::class, 'show']);  // Get specific conversation(s)
-    Route::post('conversations-create', [ConversationController::class, 'store']);  // Create a new conversation
-    Route::post('conversations-update', [ConversationController::class, 'update']);  // Update conversation
-    Route::post('conversations-delete', [ConversationController::class, 'destroy']);  // Delete conversation
-
-
-    Route::post('messages', [MessageController::class, 'index']);   // Get all messages
-    Route::post('messages-show', [MessageController::class, 'show']);  // Get specific message(s)
-    Route::post('messages-create', [MessageController::class, 'store']);  // Create a new message
-    Route::post('messages-update', [MessageController::class, 'update']);  // Update message
-    Route::post('messages-delete', [MessageController::class, 'destroy']);  // Delete message
-
-
-
-
-    // routes/api.php
+    Route::post('conversations', [ConversationController::class, 'index']);
+    Route::post('conversations-show', [ConversationController::class, 'show']);
+    Route::post('conversations-create', [ConversationController::class, 'store']);
+    Route::post('conversations-update', [ConversationController::class, 'update']);
+    Route::post('conversations-delete', [ConversationController::class, 'destroy']);
+    Route::post('messages', [MessageController::class, 'index']);
+    Route::post('messages-show', [MessageController::class, 'show']);
+    Route::post('messages-create', [MessageController::class, 'store']);
+    Route::post('messages-update', [MessageController::class, 'update']);
+    Route::post('messages-delete', [MessageController::class, 'destroy']);
     Route::post('house-create', [HouseController::class, 'store']);
     Route::post('house', [HouseController::class, 'index']);
     Route::post('house-show', [HouseController::class, 'show']);
     Route::post('house-update', [HouseController::class, 'update']);
     Route::post('house-delete', [HouseController::class, 'destroy']);
-
-
-
-
-    Route::post('role-create', [DesignationController::class, 'create']); // Create role
-    Route::post('role', [DesignationController::class, 'index']); // Get all roles
-    Route::post('role-show', [DesignationController::class, 'show']); // Get role by ID
-    Route::post('role-update', [DesignationController::class, 'update']); // Update role by ID
-    Route::post('role-delete', [DesignationController::class, 'destroy']); // Delete role by ID
-
-
-
+    Route::post('role-create', [DesignationController::class, 'create']);
+    Route::post('role', [DesignationController::class, 'index']);
+    Route::post('role-show', [DesignationController::class, 'show']);
+    Route::post('role-update', [DesignationController::class, 'update']);
+    Route::post('role-delete', [DesignationController::class, 'destroy']);
     Route::post('role_members-create', [RoleMemberController::class, 'store']);
     Route::post('role_members', [RoleMemberController::class, 'index']);
     Route::post('role_members-show', [RoleMemberController::class, 'show']);
     Route::post('role_members-update', [RoleMemberController::class, 'update']);
     Route::post('role_members-delete', [RoleMemberController::class, 'destroy']);
-
-
-
     Route::post('services-create', [ServiceController::class, 'store']);
     Route::post('services', [ServiceController::class, 'index']);
     Route::post('services-update', [ServiceController::class, 'update']);
     Route::post('services-show', [ServiceController::class, 'show']);
     Route::post('services-delete', [ServiceController::class, 'destroy']);
-
-
     Route::post('service_providers-create', [ServiceProviderController::class, 'store']);
     Route::post('service_providers', [ServiceProviderController::class, 'index']);
     Route::post('service_providers-show', [ServiceProviderController::class, 'show']);
     Route::post('service_providers-update', [ServiceProviderController::class, 'update']);
     Route::post('service_providers-delete', [ServiceProviderController::class, 'destroy']);
     Route::post('service_providers-bytype', [ServiceProviderController::class, 'getByServiceType']);
-
-
-
     Route::post('service_requests', [ServiceRequestController::class, 'index']);
     Route::post('service_requests-update', [ServiceRequestController::class, 'update']);
     Route::post('service_requests-create', [ServiceRequestController::class, 'store']);

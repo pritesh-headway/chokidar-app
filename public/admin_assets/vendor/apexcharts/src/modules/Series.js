@@ -219,7 +219,7 @@ export default class Series {
     let activeIndex = 0
 
     if (w.config.series.length > 1) {
-      // active series flag is required to know if user has not deactivated via legend click
+
       let activeSeriesIndex = w.config.series.map((s, index) => {
         const checkChartType = () => {
           if (w.globals.comboCharts) {
@@ -352,7 +352,7 @@ export default class Series {
     }
 
     if (!w.globals.axisCharts) {
-      // for non-axis charts (i.e., circular charts, pathFrom is not usable. We need whole series)
+
       w.globals.previousPaths = w.globals.series
     }
   }
@@ -434,9 +434,6 @@ export default class Series {
       w.globals.dom.Paper.add(titleText)
     }
   }
-
-  // When user clicks on legends, the collapsed series is filled with [0,0,0,...,0]
-  // This is because we don't want to alter the series' length as it is used at many places
   setNullSeriesToZeroValues(series) {
     let w = this.w
     for (let sl = 0; sl < series.length; sl++) {

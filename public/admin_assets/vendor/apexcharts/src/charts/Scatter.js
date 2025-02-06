@@ -40,8 +40,6 @@ export default class Scatter {
       for (let q = 0; q < pointsPos.x.length; q++) {
         let dataPointIndex = j + 1
         let shouldDraw = true
-
-        // a small hack as we have 2 points for the first val to connect it
         if (j === 0 && q === 0) dataPointIndex = 0
         if (j === 0 && q === 1) dataPointIndex = 1
 
@@ -49,7 +47,7 @@ export default class Scatter {
         let finishRadius = w.globals.markers.size[realIndex]
 
         if (zRatio !== Infinity) {
-          // means we have a bubble
+
           const bubble = w.config.plotOptions.bubble
           finishRadius = w.globals.seriesZ[realIndex][dataPointIndex]
 
@@ -116,9 +114,9 @@ export default class Scatter {
       dataPointIndex,
       finishRadius:
         w.config.chart.type === 'bubble' ||
-        (w.globals.comboCharts &&
-          w.config.series[realIndex] &&
-          w.config.series[realIndex].type === 'bubble')
+          (w.globals.comboCharts &&
+            w.config.series[realIndex] &&
+            w.config.series[realIndex].type === 'bubble')
           ? finishRadius
           : null
     })
@@ -207,7 +205,7 @@ export default class Scatter {
           w.globals.previousPaths[realIndex][j]
 
         if (typeof prevPathJ !== 'undefined' && prevPathJ !== null) {
-          // series containing less elements will ignore these values and revert to 0
+
           prevX = prevPathJ.x
           prevY = prevPathJ.y
           prevR =

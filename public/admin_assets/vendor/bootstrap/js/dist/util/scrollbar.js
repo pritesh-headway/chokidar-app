@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('../dom/selector-engine.js'), require('../dom/manipulator.js'), require('./index.js')) :
-  typeof define === 'function' && define.amd ? define(['../dom/selector-engine', '../dom/manipulator', './index'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Scrollbar = factory(global.SelectorEngine, global.Manipulator, global.Index));
-})(this, (function (SelectorEngine, Manipulator, index_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['../dom/selector-engine', '../dom/manipulator', './index'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Scrollbar = factory(global.SelectorEngine, global.Manipulator, global.Index));
+})(this, (function (SelectorEngine, Manipulator, index_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -33,19 +34,17 @@
     constructor() {
       this._element = document.body;
     }
-
-    // Public
     getWidth() {
-      // https://developer.mozilla.org/en-US/docs/Web/API/Window/innerWidth#usage_notes
+
       const documentWidth = document.documentElement.clientWidth;
       return Math.abs(window.innerWidth - documentWidth);
     }
     hide() {
       const width = this.getWidth();
       this._disableOverFlow();
-      // give padding to element to balance the hidden scrollbar width
+
       this._setElementAttributes(this._element, PROPERTY_PADDING, calculatedValue => calculatedValue + width);
-      // trick: We adjust positive paddingRight and negative marginRight to sticky-top elements to keep showing fullwidth
+
       this._setElementAttributes(SELECTOR_FIXED_CONTENT, PROPERTY_PADDING, calculatedValue => calculatedValue + width);
       this._setElementAttributes(SELECTOR_STICKY_CONTENT, PROPERTY_MARGIN, calculatedValue => calculatedValue - width);
     }
@@ -58,8 +57,6 @@
     isOverflowing() {
       return this.getWidth() > 0;
     }
-
-    // Private
     _disableOverFlow() {
       this._saveInitialAttribute(this._element, 'overflow');
       this._element.style.overflow = 'hidden';
@@ -85,7 +82,7 @@
     _resetElementAttributes(selector, styleProperty) {
       const manipulationCallBack = element => {
         const value = Manipulator.getDataAttribute(element, styleProperty);
-        // We only want to remove the property if the value is `null`; the value can also be zero
+
         if (value === null) {
           element.style.removeProperty(styleProperty);
           return;

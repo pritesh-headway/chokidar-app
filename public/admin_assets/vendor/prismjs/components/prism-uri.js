@@ -1,5 +1,3 @@
-// https://tools.ietf.org/html/rfc3986#appendix-A
-
 Prism.languages.uri = {
 	'scheme': {
 		pattern: /^[a-z][a-z0-9+.-]*:/im,
@@ -37,19 +35,19 @@ Prism.languages.uri = {
 	'authority': {
 		pattern: RegExp(
 			/^\/\//.source
-			// [ userinfo "@" ]
+
 			+ /(?:[\w\-.~!$&'()*+,;=%:]*@)?/.source
-			// host
+
 			+ (
 				'(?:'
-				// IP-literal
+
 				+ /\[(?:[0-9a-fA-F:.]{2,48}|v[0-9a-fA-F]+\.[\w\-.~!$&'()*+,;=]+)\]/.source
 				+ '|'
-				// IPv4address or registered name
+
 				+ /[\w\-.~!$&'()*+,;=%]*/.source
 				+ ')'
 			)
-			// [ ":" port ]
+
 			+ /(?::\d*)?/.source,
 			'm'
 		),

@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./dom/event-handler.js'), require('./base-component.js'), require('./util/component-functions.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './base-component', './util/component-functions'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Toast = factory(global.Index, global.EventHandler, global.BaseComponent, global.ComponentFunctions));
-})(this, (function (index_js, EventHandler, BaseComponent, componentFunctions_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './base-component', './util/component-functions'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Toast = factory(global.Index, global.EventHandler, global.BaseComponent, global.ComponentFunctions));
+})(this, (function (index_js, EventHandler, BaseComponent, componentFunctions_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -32,7 +33,7 @@
   const EVENT_SHOW = `show${EVENT_KEY}`;
   const EVENT_SHOWN = `shown${EVENT_KEY}`;
   const CLASS_NAME_FADE = 'fade';
-  const CLASS_NAME_HIDE = 'hide'; // @deprecated - kept here only for backwards compatibility
+  const CLASS_NAME_HIDE = 'hide';
   const CLASS_NAME_SHOW = 'show';
   const CLASS_NAME_SHOWING = 'showing';
   const DefaultType = {
@@ -58,8 +59,6 @@
       this._hasKeyboardInteraction = false;
       this._setListeners();
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -69,8 +68,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     show() {
       const showEvent = EventHandler.trigger(this._element, EVENT_SHOW);
       if (showEvent.defaultPrevented) {
@@ -85,7 +82,7 @@
         EventHandler.trigger(this._element, EVENT_SHOWN);
         this._maybeScheduleHide();
       };
-      this._element.classList.remove(CLASS_NAME_HIDE); // @deprecated
+      this._element.classList.remove(CLASS_NAME_HIDE);
       index_js.reflow(this._element);
       this._element.classList.add(CLASS_NAME_SHOW, CLASS_NAME_SHOWING);
       this._queueCallback(complete, this._element, this._config.animation);
@@ -99,7 +96,7 @@
         return;
       }
       const complete = () => {
-        this._element.classList.add(CLASS_NAME_HIDE); // @deprecated
+        this._element.classList.add(CLASS_NAME_HIDE);
         this._element.classList.remove(CLASS_NAME_SHOWING, CLASS_NAME_SHOW);
         EventHandler.trigger(this._element, EVENT_HIDDEN);
       };
@@ -116,9 +113,6 @@
     isShown() {
       return this._element.classList.contains(CLASS_NAME_SHOW);
     }
-
-    // Private
-
     _maybeScheduleHide() {
       if (!this._config.autohide) {
         return;
@@ -165,8 +159,6 @@
       clearTimeout(this._timeout);
       this._timeout = null;
     }
-
-    // Static
     static jQueryInterface(config) {
       return this.each(function () {
         const data = Toast.getOrCreateInstance(this, config);

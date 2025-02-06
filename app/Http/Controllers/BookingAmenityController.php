@@ -21,19 +21,17 @@ class BookingAmenityController extends Controller
 
         $bookings = $bookings->map(function ($booking, $index) {
             $memberName = $booking->first_name . ' ' . $booking->last_name;
-
-            // Format 'from' and 'to' to show only hour and minute
             $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
             $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
 
             return [
                 'id' => $booking->id,
-                'no' => $index + 1,  // Sequential number for frontend use
+                'no' => $index + 1,
                 'block_name' => $booking->block_name,
                 'member_name' => $memberName,
                 'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
-                'from' => $formattedFrom,  // Include formatted 'from' as H:i
-                'to' => $formattedTo,  // Include formatted 'to' as H:i
+                'from' => $formattedFrom,
+                'to' => $formattedTo,
                 'amenity_id' => $booking->amenity_id,
                 'user_id' => $booking->user_id,
                 'mobile' => $booking->mobile,
@@ -50,76 +48,6 @@ class BookingAmenityController extends Controller
             'data' => $bookings
         ]);
     }
-
-
-
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'user_id' => 'required|exists:users,id',
-    //         'amenity_id' => 'required|exists:amenities,id',
-    //         'date' => 'required|date|after_or_equal:now',
-    //         'start_time' => 'required|date_format:H:i',
-    //         'end_time' => 'required|date_format:H:i|after:start_time',
-    //         'booking_status' => 'nullable|in:Pending,Approved,Rejected',
-    //     ]);
-
-    //     $user = User::find($validated['user_id']);
-    //     if (!$user) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'User not found.',
-    //             'data' => []
-    //         ], 404);
-    //     }
-
-    //     $amenity = Amenity::find($validated['amenity_id']);
-    //     if (!$amenity) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Amenity not found.',
-    //             'data' => []
-    //         ], 404);
-    //     }
-
-    //     $overlap = BookingAmenity::where('amenity_id', $validated['amenity_id'])
-    //         ->where('date', $validated['date'])
-    //         ->where(function ($query) use ($validated) {
-    //             $query->whereBetween('start_time', [$validated['start_time'], $validated['end_time']])
-    //                 ->orWhereBetween('end_time', [$validated['start_time'], $validated['end_time']]);
-    //         })
-    //         ->exists();
-
-    //     if ($overlap) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'The booking time overlaps with an existing booking for this amenity.',
-    //             'data' => []
-    //         ], 400);
-    //     }
-
-    //     $bookingAmenity = BookingAmenity::create([
-    //         'user_id' => $validated['user_id'],
-    //         'amenity_id' => $validated['amenity_id'],
-    //         'block_name' => $user->block_number,
-    //         'first_name' => $user->first_name,
-    //         'last_name' => $user->last_name,
-    //         'mobile' => $user->mobile,
-    //         'date' => $validated['date'],
-    //         'start_time' => $validated['start_time'],
-    //         'end_time' => $validated['end_time'],
-    //         'booking_status' => $validated['booking_status'] ?? 'Pending',
-    //         'status' => 'active',
-    //     ]);
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'message' => 'Booking created successfully.',
-    //         'data' => $bookingAmenity
-    //     ]);
-    // }
-
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -130,8 +58,6 @@ class BookingAmenityController extends Controller
             'to' => 'required|date_format:H:i|after:from',
             'booking_status' => 'nullable|in:Pending,Approved,Rejected',
         ]);
-
-        // Check if the user exists
         $user = User::find($validated['user_id']);
         if (!$user) {
             return response()->json([
@@ -140,8 +66,6 @@ class BookingAmenityController extends Controller
                 'data' => []
             ], 404);
         }
-
-        // Check if the amenity exists
         $amenity = Amenity::find($validated['amenity_id']);
         if (!$amenity) {
             return response()->json([
@@ -150,12 +74,8 @@ class BookingAmenityController extends Controller
                 'data' => []
             ], 404);
         }
-
-        // Convert the 'from' and 'to' times to include the seconds (HH:MM:SS format)
         $fromTime = $validated['from'] . ':00';
         $toTime = $validated['to'] . ':00';
-
-        // Check for overlapping booking
         $overlap = BookingAmenity::where('amenity_id', $validated['amenity_id'])
             ->where('day', $validated['day'])
             ->where(function ($query) use ($fromTime, $toTime) {
@@ -169,10 +89,8 @@ class BookingAmenityController extends Controller
                 'status' => false,
                 'message' => 'The booking time overlaps with an existing booking for this amenity.',
                 'data' => []
-            ], 400);  // Bad request
+            ], 400);
         }
-
-        // Create the booking amenity record
         $bookingAmenity = BookingAmenity::create([
             'user_id' => $validated['user_id'],
             'amenity_id' => $validated['amenity_id'],
@@ -181,8 +99,8 @@ class BookingAmenityController extends Controller
             'last_name' => $user->last_name,
             'mobile' => $user->mobile,
             'day' => $validated['day'],
-            'from' => $fromTime,  // Store time with seconds
-            'to' => $toTime,      // Store time with seconds
+            'from' => $fromTime,
+            'to' => $toTime,
             'booking_status' => $validated['booking_status'] ?? 'Pending',
             'status' => 'active',
         ]);
@@ -239,15 +157,12 @@ class BookingAmenityController extends Controller
                 'data' => null
             ], 404);
         }
-
-        // Update booking status
-        // $booking->booking_status = $request->booking_status;
         if ($request->booking_status == 'Rejected') {
             if ($request->reason == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Reason is required for rejecting.',
-                    // 'data' => $booking
+
                 ]);
             } else {
                 $booking->reason = $request->reason;
@@ -256,20 +171,14 @@ class BookingAmenityController extends Controller
         } else {
             $booking->booking_status = $request->booking_status;
         }
-
-        // Check and update 'from' (start_time) and 'to' (end_time) if present
         if ($request->has('from') && $request->has('to')) {
-            // Append ':00' to include seconds for both times
+
             $booking->from = $request->from . ':00';
             $booking->to = $request->to . ':00';
         }
-
-        // Check and update 'day' (date) if present
         if ($request->has('day')) {
             $booking->day = $request->day;
         }
-
-        // Save updated booking
         $booking->save();
 
         return response()->json([
@@ -278,8 +187,6 @@ class BookingAmenityController extends Controller
             'data' => $booking
         ]);
     }
-
-
     /**
      * Get a specific booking or bookings by different criteria (id, user_id, or amenity_id).
      */
@@ -300,8 +207,6 @@ class BookingAmenityController extends Controller
         }
 
         $query = BookingAmenity::select('id', 'block_name', 'first_name', 'last_name', 'from', 'to', 'day', 'amenity_id', 'user_id', 'mobile', 'booking_status', 'status', 'created_at', 'updated_at');
-
-        // Check if 'id' is provided
         if ($request->has('id')) {
             $booking = $query->where('id', $request->id)->first();
 
@@ -312,26 +217,20 @@ class BookingAmenityController extends Controller
                     'data' => null
                 ], 404);
             }
-
-            // Concatenate first and last name as member_name
             $memberName = $booking->first_name . ' ' . $booking->last_name;
-
-            // Format 'from' and 'to' to show only hour and minute
             $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
             $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
-
-            // Return the transformed data without time_duration
             return response()->json([
                 'status' => true,
                 'message' => 'Booking retrieved successfully.',
                 'data' => [
                     'id' => $booking->id,
-                    'no' => 1,  // Sequential number for frontend use
+                    'no' => 1,
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
                     'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
-                    'from' => $formattedFrom,  // Include formatted 'from' as H:i
-                    'to' => $formattedTo,  // Include formatted 'to' as H:i
+                    'from' => $formattedFrom,
+                    'to' => $formattedTo,
                     'amenity_id' => $booking->amenity_id,
                     'user_id' => $booking->user_id,
                     'mobile' => $booking->mobile,
@@ -342,16 +241,10 @@ class BookingAmenityController extends Controller
                 ]
             ]);
         }
-
-        // Check if 'user_id' is provided
         if ($request->has('user_id')) {
             $bookings = $query->where('user_id', $request->user_id)->get();
-
-            // Transform the booking records without time_duration
             $bookings = $bookings->map(function ($booking, $index) {
                 $memberName = $booking->first_name . ' ' . $booking->last_name;
-
-                // Format 'from' and 'to' to show only hour and minute
                 $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
                 $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
 
@@ -361,8 +254,8 @@ class BookingAmenityController extends Controller
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
                     'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
-                    'from' => $formattedFrom,  // Include formatted 'from' as H:i
-                    'to' => $formattedTo,  // Include formatted 'to' as H:i
+                    'from' => $formattedFrom,
+                    'to' => $formattedTo,
                     'amenity_id' => $booking->amenity_id,
                     'user_id' => $booking->user_id,
                     'mobile' => $booking->mobile,
@@ -379,16 +272,10 @@ class BookingAmenityController extends Controller
                 'data' => $bookings
             ]);
         }
-
-        // Check if 'amenity_id' is provided
         if ($request->has('amenity_id')) {
             $bookings = $query->where('amenity_id', $request->amenity_id)->get();
-
-            // Transform the booking records without time_duration
             $bookings = $bookings->map(function ($booking, $index) {
                 $memberName = $booking->first_name . ' ' . $booking->last_name;
-
-                // Format 'from' and 'to' to show only hour and minute
                 $formattedFrom = \Carbon\Carbon::parse($booking->from)->format('H:i');
                 $formattedTo = \Carbon\Carbon::parse($booking->to)->format('H:i');
 
@@ -398,8 +285,8 @@ class BookingAmenityController extends Controller
                     'block_name' => $booking->block_name,
                     'member_name' => $memberName,
                     'day' => \Carbon\Carbon::parse($booking->day)->format('d-m-Y'),
-                    'from' => $formattedFrom,  // Include formatted 'from' as H:i
-                    'to' => $formattedTo,  // Include formatted 'to' as H:i
+                    'from' => $formattedFrom,
+                    'to' => $formattedTo,
                     'amenity_id' => $booking->amenity_id,
                     'user_id' => $booking->user_id,
                     'mobile' => $booking->mobile,
@@ -416,8 +303,6 @@ class BookingAmenityController extends Controller
                 'data' => $bookings
             ]);
         }
-
-        // If no criteria are provided, return an error
         return response()->json([
             'status' => false,
             'message' => 'No criteria provided to fetch bookings.',
@@ -447,8 +332,6 @@ class BookingAmenityController extends Controller
                 'data' => null
             ], 404);
         }
-
-        // Delete the booking
         $booking->delete();
 
         return response()->json([

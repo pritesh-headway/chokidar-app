@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./dom/event-handler.js'), require('./dom/selector-engine.js'), require('./base-component.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/selector-engine', './base-component'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Scrollspy = factory(global.Index, global.EventHandler, global.SelectorEngine, global.BaseComponent));
-})(this, (function (index_js, EventHandler, SelectorEngine, BaseComponent) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/selector-engine', './base-component'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Scrollspy = factory(global.Index, global.EventHandler, global.SelectorEngine, global.BaseComponent));
+})(this, (function (index_js, EventHandler, SelectorEngine, BaseComponent) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -40,7 +41,7 @@
   const SELECTOR_DROPDOWN_TOGGLE = '.dropdown-toggle';
   const Default = {
     offset: null,
-    // TODO: v6 @deprecated, keep it for backwards compatibility reasons
+
     rootMargin: '0px 0px -25%',
     smoothScroll: false,
     target: null,
@@ -48,7 +49,7 @@
   };
   const DefaultType = {
     offset: '(number|null)',
-    // TODO v6 @deprecated, keep it for backwards compatibility reasons
+
     rootMargin: 'string',
     smoothScroll: 'boolean',
     target: 'element',
@@ -62,8 +63,6 @@
   class ScrollSpy extends BaseComponent {
     constructor(element, config) {
       super(element, config);
-
-      // this._element is the observablesContainer and config.target the menu links wrapper
       this._targetLinks = new Map();
       this._observableSections = new Map();
       this._rootElement = getComputedStyle(this._element).overflowY === 'visible' ? null : this._element;
@@ -73,10 +72,8 @@
         visibleEntryTop: 0,
         parentScrollTop: 0
       };
-      this.refresh(); // initialize
+      this.refresh();
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -86,8 +83,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     refresh() {
       this._initializeTargetsAndObservables();
       this._maybeEnableSmoothScroll();
@@ -104,13 +99,9 @@
       this._observer.disconnect();
       super.dispose();
     }
-
-    // Private
     _configAfterMerge(config) {
-      // TODO: on v6 target should be given explicitly & remove the {target: 'ss-target'} case
-      config.target = index_js.getElement(config.target) || document.body;
 
-      // TODO: v6 Only for backwards compatibility reasons. Use rootMargin only
+      config.target = index_js.getElement(config.target) || document.body;
       config.rootMargin = config.offset ? `${config.offset}px 0px -30%` : config.rootMargin;
       if (typeof config.threshold === 'string') {
         config.threshold = config.threshold.split(',').map(value => Number.parseFloat(value));
@@ -121,8 +112,6 @@
       if (!this._config.smoothScroll) {
         return;
       }
-
-      // unregister any previous listeners
       EventHandler.off(this._config.target, EVENT_CLICK);
       EventHandler.on(this._config.target, EVENT_CLICK, SELECTOR_TARGET_LINKS, event => {
         const observableSection = this._observableSections.get(event.target.hash);
@@ -137,8 +126,6 @@
             });
             return;
           }
-
-          // Chrome 60 doesn't support `scrollTo`
           root.scrollTop = height;
         }
       });
@@ -151,8 +138,6 @@
       };
       return new IntersectionObserver(entries => this._observerCallback(entries), options);
     }
-
-    // The logic of selection
     _observerCallback(entries) {
       const targetElement = entry => this._targetLinks.get(`#${entry.target.id}`);
       const activate = entry => {
@@ -169,17 +154,15 @@
           continue;
         }
         const entryIsLowerThanPrevious = entry.target.offsetTop >= this._previousScrollData.visibleEntryTop;
-        // if we are scrolling down, pick the bigger offsetTop
+
         if (userScrollsDown && entryIsLowerThanPrevious) {
           activate(entry);
-          // if parent isn't scrolled, let's keep the first visible item, breaking the iteration
+
           if (!parentScrollTop) {
             return;
           }
           continue;
         }
-
-        // if we are scrolling up, pick the smallest offsetTop
         if (!userScrollsDown && !entryIsLowerThanPrevious) {
           activate(entry);
         }
@@ -190,13 +173,11 @@
       this._observableSections = new Map();
       const targetLinks = SelectorEngine.find(SELECTOR_TARGET_LINKS, this._config.target);
       for (const anchor of targetLinks) {
-        // ensure that the anchor has an id and is not disabled
+
         if (!anchor.hash || index_js.isDisabled(anchor)) {
           continue;
         }
         const observableSection = SelectorEngine.findOne(anchor.hash, this._element);
-
-        // ensure that the observableSection exists & is visible
         if (index_js.isVisible(observableSection)) {
           this._targetLinks.set(anchor.hash, anchor);
           this._observableSections.set(anchor.hash, observableSection);
@@ -216,14 +197,12 @@
       });
     }
     _activateParents(target) {
-      // Activate dropdown parents
+
       if (target.classList.contains(CLASS_NAME_DROPDOWN_ITEM)) {
         SelectorEngine.findOne(SELECTOR_DROPDOWN_TOGGLE, target.closest(SELECTOR_DROPDOWN)).classList.add(CLASS_NAME_ACTIVE);
         return;
       }
       for (const listGroup of SelectorEngine.parents(target, SELECTOR_NAV_LIST_GROUP)) {
-        // Set triggered links parents as active
-        // With both <ul> and <nav> markup a parent is the previous sibling of any nav ancestor
         for (const item of SelectorEngine.prev(listGroup, SELECTOR_LINK_ITEMS)) {
           item.classList.add(CLASS_NAME_ACTIVE);
         }
@@ -236,8 +215,6 @@
         node.classList.remove(CLASS_NAME_ACTIVE);
       }
     }
-
-    // Static
     static jQueryInterface(config) {
       return this.each(function () {
         const data = ScrollSpy.getOrCreateInstance(this, config);

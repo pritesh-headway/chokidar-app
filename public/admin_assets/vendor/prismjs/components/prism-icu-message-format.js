@@ -1,6 +1,3 @@
-// https://unicode-org.github.io/icu/userguide/format_parse/messages/
-// https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/MessageFormat.html
-
 (function (Prism) {
 
 	/**
@@ -43,7 +40,7 @@
 			'message': {
 				pattern: /^(\{)[\s\S]+(?=\}$)/,
 				lookbehind: true,
-				inside: null // see below
+				inside: null
 			},
 			'message-delimiter': {
 				pattern: /./,
@@ -66,7 +63,7 @@
 							lookbehind: true
 						},
 						'choice-style': {
-							// https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1ChoiceFormat.html#details
+
 							pattern: /^(\s*,\s*choice\s*,\s*)\S(?:[\s\S]*\S)?/,
 							lookbehind: true,
 							inside: {
@@ -79,11 +76,11 @@
 										'number': /\S+/
 									}
 								},
-								rest: null // see below
+								rest: null
 							}
 						},
 						'plural-style': {
-							// https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/PluralFormat.html#:~:text=Patterns%20and%20Their%20Interpretation
+
 							pattern: /^(\s*,\s*(?:plural|selectordinal)\s*,\s*)\S(?:[\s\S]*\S)?/,
 							lookbehind: true,
 							inside: {
@@ -98,7 +95,7 @@
 							}
 						},
 						'select-style': {
-							// https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/SelectFormat.html#:~:text=Patterns%20and%20Their%20Interpretation
+
 							pattern: /^(\s*,\s*select\s*,\s*)\S(?:[\s\S]*\S)?/,
 							lookbehind: true,
 							inside: {

@@ -18,8 +18,6 @@ return new class extends Migration {
             $table->string('mobile', 10);
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
-
-            // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

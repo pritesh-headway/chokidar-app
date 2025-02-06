@@ -2,15 +2,13 @@
 
 	Prism.languages.diff = {
 		'coord': [
-			// Match all kinds of coord lines (prefixed by "+++", "---" or "***").
+
 			/^(?:\*{3}|-{3}|\+{3}).*$/m,
-			// Match "@@ ... @@" coord lines in unified diff.
+
 			/^@@.*@@$/m,
-			// Match coord lines in normal diff (starts with a number).
+
 			/^\d.*$/m
 		]
-
-		// deleted, inserted, unchanged, diff
 	};
 
 	/**
@@ -26,13 +24,11 @@
 		'unchanged': ' ',
 		'diff': '!',
 	};
-
-	// add a token for each prefix
 	Object.keys(PREFIXES).forEach(function (name) {
 		var prefix = PREFIXES[name];
 
 		var alias = [];
-		if (!/^\w+$/.test(name)) { // "deleted-sign" -> "deleted"
+		if (!/^\w+$/.test(name)) {
 			alias.push(/\w+/.exec(name)[0]);
 		}
 		if (name === 'diff') {
@@ -55,8 +51,6 @@
 		};
 
 	});
-
-	// make prefixes available to Diff plugin
 	Object.defineProperty(Prism.languages.diff, 'PREFIXES', {
 		value: PREFIXES
 	});

@@ -23,8 +23,6 @@ class TimeScale {
 
   calculateTimeScaleTicks(minX, maxX) {
     let w = this.w
-
-    // null check when no series to show
     if (w.globals.allSeriesCollapsed) {
       w.globals.labels = []
       w.globals.timescaleLabels = []
@@ -131,10 +129,6 @@ class TimeScale {
         this.generateSecondScale(params)
         break
     }
-
-    // first, we will adjust the month values index
-    // as in the upper function, it is starting from 0
-    // we will start them from 1
     const adjustedMonthInTimeScaleArray = this.timeScaleArray.map((ts) => {
       let defaultReturn = {
         position: ts.position,
@@ -184,12 +178,12 @@ class TimeScale {
         modulo = Math.floor(adjustedMonthInTimeScaleArray.length / ticks)
       }
 
-      let shouldNotSkipUnit = false // there is a big change in unit i.e days to months
-      let shouldNotPrint = false // should skip these values
+      let shouldNotSkipUnit = false
+      let shouldNotPrint = false
 
       switch (this.tickInterval) {
         case 'years':
-          // make years label denser
+
           if (ts.unit === 'year') {
             shouldNotSkipUnit = true
           }
@@ -286,11 +280,6 @@ class TimeScale {
     )
 
     w.globals.timescaleLabels = removedOverlappingTS.slice()
-
-    // at this stage, we need to re-calculate coords of the grid as timeline labels may have altered the xaxis labels coords
-    // The reason we can't do this prior to this stage is because timeline labels depends on gridWidth, and as the ticks are calculated based on available gridWidth, there can be unknown number of ticks generated for different minX and maxX
-    // Dependency on Dimensions(), need to refactor correctly
-    // TODO - find an alternate way to avoid calling this Heavy method twice
     let dimensions = new Dimensions(this.ctx)
     dimensions.plotCoords()
   }
@@ -362,15 +351,11 @@ class TimeScale {
         firstVal.minMonth,
         firstVal.minDate
       )
-
-      // remainingDaysofFirstMonth is used to reacht the 2nd tick position
       let remainingDaysOfFirstYear =
         dt.determineDaysOfYear(firstVal.minYear) - remainingDays + 1
-
-      // calculate the first tick position
       firstTickPosition = remainingDaysOfFirstYear * daysWidthOnXAxis
       firstTickValue = firstVal.minYear + 1
-      // push the first tick in the array
+
       this.timeScaleArray.push({
         position: firstTickPosition,
         value: firstTickValue,
@@ -379,7 +364,7 @@ class TimeScale {
         month: Utils.monthMod(currentMonth + 1)
       })
     } else if (firstVal.minDate === 1 && firstVal.minMonth === 0) {
-      // push the first tick in the array
+
       this.timeScaleArray.push({
         position: firstTickPosition,
         value: firstTickValue,
@@ -391,8 +376,6 @@ class TimeScale {
 
     let year = firstTickValue
     let pos = firstTickPosition
-
-    // keep drawing rest of the ticks
     for (let i = 0; i < numberOfYears; i++) {
       year++
       pos = dt.determineDaysOfYear(year - 1) * daysWidthOnXAxis + pos
@@ -421,20 +404,18 @@ class TimeScale {
     let yrCounter = 0
 
     if (firstVal.minDate > 1) {
-      // remainingDaysofFirstMonth is used to reacht the 2nd tick position
+
       let remainingDaysOfFirstMonth =
         dt.determineDaysOfMonths(currentMonth + 1, firstVal.minYear) -
         currentMonthDate +
         1
-
-      // calculate the first tick position
       firstTickPosition = remainingDaysOfFirstMonth * daysWidthOnXAxis
       firstTickValue = Utils.monthMod(currentMonth + 1)
 
       let year = currentYear + yrCounter
       let month = Utils.monthMod(firstTickValue)
       let value = firstTickValue
-      // it's Jan, so update the year
+
       if (firstTickValue === 0) {
         unit = 'year'
         value = year
@@ -442,8 +423,6 @@ class TimeScale {
         yrCounter += 1
         year = year + yrCounter
       }
-
-      // push the first tick in the array
       this.timeScaleArray.push({
         position: firstTickPosition,
         value,
@@ -452,7 +431,7 @@ class TimeScale {
         month
       })
     } else {
-      // push the first tick in the array
+
       this.timeScaleArray.push({
         position: firstTickPosition,
         value: firstTickValue,
@@ -464,8 +443,6 @@ class TimeScale {
 
     let month = firstTickValue + 1
     let pos = firstTickPosition
-
-    // keep drawing rest of the ticks
     for (let i = 0, j = 1; i < numberOfMonths; i++, j++) {
       month = Utils.monthMod(month)
 
@@ -518,15 +495,13 @@ class TimeScale {
 
     let remainingHours = 24 - firstVal.minHour
     let yrCounter = 0
-
-    // calculate the first tick position
     let firstTickPosition = remainingHours * hoursWidthOnXAxis
 
     let val = firstTickValue
     let month = changeMonth(date, currentMonth, currentYear)
 
     if (firstVal.minHour === 0 && firstVal.minDate === 1) {
-      // the first value is the first day of month
+
       firstTickPosition = 0
       val = Utils.monthMod(firstVal.minMonth)
       unit = 'month'
@@ -537,16 +512,14 @@ class TimeScale {
       firstVal.minHour === 0 &&
       firstVal.minMinute === 0
     ) {
-      // fixes apexcharts/apexcharts.js/issues/1730
+
       firstTickPosition = 0
       firstTickValue = firstVal.minDate
       date = firstTickValue
       val = firstTickValue
-      // in case it's the last date of month, we need to check it
+
       month = changeMonth(date, currentMonth, currentYear)
     }
-
-    // push the first tick in the array
     this.timeScaleArray.push({
       position: firstTickPosition,
       value: val,
@@ -557,7 +530,7 @@ class TimeScale {
     })
 
     let pos = firstTickPosition
-    // keep drawing rest of the ticks
+
     for (let i = 0; i < numberOfDays; i++) {
       date += 1
       unit = 'day'
@@ -613,8 +586,6 @@ class TimeScale {
 
       return month
     }
-
-    // factor in minSeconds as well
     let remainingMins = 60 - (firstVal.minMinute + firstVal.minSecond / 60.0)
 
     let firstTickPosition = remainingMins * minutesWidthOnXAxis
@@ -630,8 +601,6 @@ class TimeScale {
     let date = currentDate
 
     let month = changeMonth(date, currentMonth)
-
-    // push the first tick in the array
     this.timeScaleArray.push({
       position: firstTickPosition,
       value: firstTickValue,
@@ -643,7 +612,7 @@ class TimeScale {
     })
 
     let pos = firstTickPosition
-    // keep drawing rest of the ticks
+
     for (let i = 0; i < numberOfHours; i++) {
       unit = 'hour'
 
@@ -785,19 +754,15 @@ class TimeScale {
     let raw = ts.year
 
     if (ts.month === 0) {
-      // invalid month, correct it
+
       ts.month = 1
     }
     raw += '-' + ('0' + ts.month.toString()).slice(-2)
-
-    // unit is day
     if (ts.unit === 'day') {
       raw += ts.unit === 'day' ? '-' + ('0' + value).slice(-2) : '-01'
     } else {
       raw += '-' + ('0' + (ts.day ? ts.day : '1')).slice(-2)
     }
-
-    // unit is hour
     if (ts.unit === 'hour') {
       raw += ts.unit === 'hour' ? 'T' + ('0' + value).slice(-2) : 'T00'
     } else {
@@ -834,7 +799,7 @@ class TimeScale {
 
       let dateToFormat = dt.getDate(dt.parseDate(raw))
       if (!this.utc) {
-        // Fixes #1726, #1544, #1485, #1255
+
         dateToFormat = dt.getDate(dt.parseDateWithTimezone(raw))
       }
 
@@ -869,24 +834,24 @@ class TimeScale {
   removeOverlappingTS(arr) {
     const graphics = new Graphics(this.ctx)
 
-    let equalLabelLengthFlag = false // These labels got same length?
-    let constantLabelWidth // If true, what is the constant length to use
+    let equalLabelLengthFlag = false
+    let constantLabelWidth
     if (
-      arr.length > 0 && // check arr length
-      arr[0].value && // check arr[0] contains value
-      arr.every((lb) => lb.value.length === arr[0].value.length) // check every arr label value is the same as the first one
+      arr.length > 0 &&
+      arr[0].value &&
+      arr.every((lb) => lb.value.length === arr[0].value.length)
     ) {
-      equalLabelLengthFlag = true // These labels got same length
-      constantLabelWidth = graphics.getTextRects(arr[0].value).width // The constant label width to use
+      equalLabelLengthFlag = true
+      constantLabelWidth = graphics.getTextRects(arr[0].value).width
     }
 
     let lastDrawnIndex = 0
 
     let filteredArray = arr.map((item, index) => {
       if (index > 0 && this.w.config.xaxis.labels.hideOverlappingLabels) {
-        const prevLabelWidth = !equalLabelLengthFlag // if vary in label length
-          ? graphics.getTextRects(arr[lastDrawnIndex].value).width // get individual length
-          : constantLabelWidth // else: use constant length
+        const prevLabelWidth = !equalLabelLengthFlag
+          ? graphics.getTextRects(arr[lastDrawnIndex].value).width
+          : constantLabelWidth
         const prevPos = arr[lastDrawnIndex].position
         const pos = item.position
 

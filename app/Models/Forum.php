@@ -22,24 +22,16 @@ class Forum extends Model
         'photos',
         'status',
     ];
-
-    // Method to update the number of responses
     public function updateResponseCount()
     {
-        // Count the number of responses for the current forum
-        $responseCount = $this->responses()->count();
 
-        // Update the forum's response count
+        $responseCount = $this->responses()->count();
         $this->update(['responses' => $responseCount]);
     }
-
-    // Relationship: A forum has many responses
     public function responses()
     {
         return $this->hasMany(Response::class, 'forum_id');
     }
-
-    // Accessor to get responses count
     public function getResponsesCountAttribute()
     {
         return $this->responses()->count();
@@ -53,7 +45,7 @@ class Forum extends Model
         parent::boot();
 
         static::deleting(function ($forum) {
-            $forum->responses()->delete();  // Ensures responses are deleted when the forum is deleted
+            $forum->responses()->delete();
         });
     }
 

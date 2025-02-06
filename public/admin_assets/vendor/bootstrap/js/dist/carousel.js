@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./dom/event-handler.js'), require('./dom/manipulator.js'), require('./dom/selector-engine.js'), require('./util/swipe.js'), require('./base-component.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/manipulator', './dom/selector-engine', './util/swipe', './base-component'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Carousel = factory(global.Index, global.EventHandler, global.Manipulator, global.SelectorEngine, global.Swipe, global.BaseComponent));
-})(this, (function (index_js, EventHandler, Manipulator, SelectorEngine, Swipe, BaseComponent) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/manipulator', './dom/selector-engine', './util/swipe', './base-component'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Carousel = factory(global.Index, global.EventHandler, global.Manipulator, global.SelectorEngine, global.Swipe, global.BaseComponent));
+})(this, (function (index_js, EventHandler, Manipulator, SelectorEngine, Swipe, BaseComponent) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -26,7 +27,7 @@
   const DATA_API_KEY = '.data-api';
   const ARROW_LEFT_KEY = 'ArrowLeft';
   const ARROW_RIGHT_KEY = 'ArrowRight';
-  const TOUCHEVENT_COMPAT_WAIT = 500; // Time for mouse compat events to fire after touch
+  const TOUCHEVENT_COMPAT_WAIT = 500;
 
   const ORDER_NEXT = 'next';
   const ORDER_PREV = 'prev';
@@ -68,7 +69,7 @@
   };
   const DefaultType = {
     interval: '(number|boolean)',
-    // TODO:v6 remove boolean support
+
     keyboard: 'boolean',
     pause: '(string|boolean)',
     ride: '(boolean|string)',
@@ -94,8 +95,6 @@
         this.cycle();
       }
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -105,15 +104,10 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     next() {
       this._slide(ORDER_NEXT);
     }
     nextWhenVisible() {
-      // FIXME TODO use `document.visibilityState`
-      // Don't call next when the page isn't visible
-      // or the carousel or its parent isn't visible
       if (!document.hidden && index_js.isVisible(this._element)) {
         this.next();
       }
@@ -164,8 +158,6 @@
       }
       super.dispose();
     }
-
-    // Private
     _configAfterMerge(config) {
       config.defaultInterval = config.interval;
       return config;
@@ -190,15 +182,6 @@
         if (this._config.pause !== 'hover') {
           return;
         }
-
-        // If it's a touch-enabled device, mouseenter/leave are fired as
-        // part of the mouse compatibility events on first tap - the carousel
-        // would stop cycling until user tapped out of it;
-        // here, we listen for touchend, explicitly pause the carousel
-        // (as if it's the second time we tap on it, mouseenter compat event
-        // is NOT fired) and after a timeout (to allow for mouse compatibility
-        // events to fire) we explicitly restart cycling
-
         this.pause();
         if (this.touchTimeout) {
           clearTimeout(this.touchTimeout);
@@ -270,8 +253,6 @@
         return;
       }
       if (!activeElement || !nextElement) {
-        // Some weirdness is happening, so we bail
-        // todo: change tests that use empty divs to avoid this check
         return;
       }
       const isCycling = Boolean(this._interval);
@@ -324,8 +305,6 @@
       }
       return order === ORDER_PREV ? DIRECTION_RIGHT : DIRECTION_LEFT;
     }
-
-    // Static
     static jQueryInterface(config) {
       return this.each(function () {
         const data = Carousel.getOrCreateInstance(this, config);

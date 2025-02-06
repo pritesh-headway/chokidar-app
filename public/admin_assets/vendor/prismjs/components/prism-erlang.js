@@ -21,19 +21,19 @@ Prism.languages.erlang = {
 	],
 	'function': /\b[a-z][\w@]*(?=\()/,
 	'variable': {
-		// Look-behind is used to prevent wrong highlighting of atoms containing "@"
+
 		pattern: /(^|[^@])(?:\b|\?)[A-Z_][\w@]*/,
 		lookbehind: true
 	},
 	'operator': [
 		/[=\/<>:]=|=[:\/]=|\+\+?|--?|[=*\/!]|\b(?:and|andalso|band|bnot|bor|bsl|bsr|bxor|div|not|or|orelse|rem|xor)\b/,
 		{
-			// We don't want to match <<
+
 			pattern: /(^|[^<])<(?!<)/,
 			lookbehind: true
 		},
 		{
-			// We don't want to match >>
+
 			pattern: /(^|[^>])>(?!>)/,
 			lookbehind: true
 		}

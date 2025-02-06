@@ -1,5 +1,3 @@
-// https://www.openpolicyagent.org/docs/latest/policy-reference/
-
 Prism.languages.rego = {
 	'comment': /#.*/,
 	'property': {

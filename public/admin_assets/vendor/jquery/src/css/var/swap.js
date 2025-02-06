@@ -1,26 +1,20 @@
-define( function() {
+define(function () {
 
-"use strict";
+	"use strict";
+	return function (elem, options, callback) {
+		var ret, name,
+			old = {};
+		for (name in options) {
+			old[name] = elem.style[name];
+			elem.style[name] = options[name];
+		}
 
-// A method for quickly swapping in/out CSS properties to get correct calculations.
-return function( elem, options, callback ) {
-	var ret, name,
-		old = {};
+		ret = callback.call(elem);
+		for (name in options) {
+			elem.style[name] = old[name];
+		}
 
-	// Remember the old values, and insert the new ones
-	for ( name in options ) {
-		old[ name ] = elem.style[ name ];
-		elem.style[ name ] = options[ name ];
-	}
+		return ret;
+	};
 
-	ret = callback.call( elem );
-
-	// Revert the old values
-	for ( name in options ) {
-		elem.style[ name ] = old[ name ];
-	}
-
-	return ret;
-};
-
-} );
+});

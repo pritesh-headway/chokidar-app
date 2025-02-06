@@ -62,15 +62,10 @@ export default class Config {
       if (opts.chart.stacked && opts.chart.stackType === '100%') {
         opts = defaults.stacked100(opts)
       }
-
-      // If user has specified a dark theme, make the tooltip dark too
-      this.checkForDarkTheme(window.Apex) // check global window Apex options
-      this.checkForDarkTheme(opts) // check locally passed options
+      this.checkForDarkTheme(window.Apex)
+      this.checkForDarkTheme(opts)
 
       opts.xaxis = opts.xaxis || window.Apex.xaxis || {}
-
-      // an important boolean needs to be set here
-      // otherwise all the charts will have this flag set to true window.Apex.xaxis is set globally
       if (!responsiveOverride) {
         opts.xaxis.convertedCatToNumeric = false
       }
@@ -87,17 +82,8 @@ export default class Config {
       }
       newDefaults = Utils.extend(config, chartDefaults)
     }
-
-    // config should cascade in this fashion
-    // default-config < global-apex-variable-config < user-defined-config
-
-    // get GLOBALLY defined options and merge with the default config
     let mergedWithDefaultConfig = Utils.extend(newDefaults, window.Apex)
-
-    // get the merged config and extend with user defined config
     config = Utils.extend(mergedWithDefaultConfig, opts)
-
-    // some features are not supported. those mismatches should be handled
     config = this.handleUserInputErrors(config)
 
     return config
@@ -148,8 +134,6 @@ export default class Config {
     ) {
       opts.yaxis = {}
     }
-
-    // extend global yaxis config (only if object is provided / not an array)
     if (
       opts.yaxis.constructor !== Array &&
       window.Apex.yaxis &&
@@ -157,11 +141,8 @@ export default class Config {
     ) {
       opts.yaxis = Utils.extend(opts.yaxis, window.Apex.yaxis)
     }
-
-    // as we can't extend nested object's array with extend, we need to do it first
-    // user can provide either an array or object in yaxis config
     if (opts.yaxis.constructor !== Array) {
-      // convert the yaxis to array if user supplied object
+
       opts.yaxis = [Utils.extend(options.yAxis, opts.yaxis)]
     } else {
       opts.yaxis = Utils.extendArray(opts.yaxis, options.yAxis)
@@ -178,9 +159,6 @@ export default class Config {
     if (w && !series) {
       series = w.config.series
     }
-
-    // A logarithmic chart works correctly when each series has a corresponding y-axis
-    // If this is not the case, we manually create yaxis for multi-series log chart
     if (isLogY && series.length !== opts.yaxis.length && series.length) {
       opts.yaxis = series.map((s, i) => {
         if (!s.name) {
@@ -204,8 +182,6 @@ export default class Config {
     }
     return opts
   }
-
-  // annotations also accepts array, so we need to extend them manually
   extendAnnotations(opts) {
     if (typeof opts.annotations === 'undefined') {
       opts.annotations = {}
@@ -281,7 +257,7 @@ export default class Config {
 
   handleUserInputErrors(opts) {
     let config = opts
-    // conflicting tooltip option. intersect makes sure to focus on 1 point at a time. Shared cannot be used along with it
+
     if (config.tooltip.shared && config.tooltip.intersect) {
       throw new Error(
         'tooltip.shared cannot be enabled when tooltip.intersect is true. Turn off any other option by setting it to false.'
@@ -289,21 +265,19 @@ export default class Config {
     }
 
     if (config.chart.type === 'bar' && config.plotOptions.bar.horizontal) {
-      // No multiple yaxis for bars
+
       if (config.yaxis.length > 1) {
         throw new Error(
           'Multiple Y Axis for bars are not supported. Switch to column chart by setting plotOptions.bar.horizontal=false'
         )
       }
-
-      // if yaxis is reversed in horizontal bar chart, you should draw the y-axis on right side
       if (config.yaxis[0].reversed) {
         config.yaxis[0].opposite = true
       }
 
-      config.xaxis.tooltip.enabled = false // no xaxis tooltip for horizontal bar
-      config.yaxis[0].tooltip.enabled = false // no xaxis tooltip for horizontal bar
-      config.chart.zoom.enabled = false // no zooming for horz bars
+      config.xaxis.tooltip.enabled = false
+      config.yaxis[0].tooltip.enabled = false
+      config.chart.zoom.enabled = false
     }
 
     if (config.chart.type === 'bar' || config.chart.type === 'rangeBar') {

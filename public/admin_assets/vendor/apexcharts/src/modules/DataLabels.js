@@ -13,9 +13,6 @@ class DataLabels {
     this.ctx = ctx
     this.w = ctx.w
   }
-
-  // When there are many datalabels to be printed, and some of them overlaps each other in the same series, this method will take care of that
-  // Also, when datalabels exceeds the drawable area and get clipped off, we need to adjust and move some pixels to make them visible again
   dataLabelsCorrection(
     x,
     y,
@@ -35,31 +32,27 @@ class DataLabels {
 
     if (y < 0) y = 0
     if (y > w.globals.gridHeight + height) y = w.globals.gridHeight + height / 2
-
-    // first value in series, so push an empty array
     if (typeof w.globals.dataLabelsRects[i] === 'undefined')
       w.globals.dataLabelsRects[i] = []
-
-    // then start pushing actual rects in that sub-array
     w.globals.dataLabelsRects[i].push({ x, y, width, height })
 
     let len = w.globals.dataLabelsRects[i].length - 2
     let lastDrawnIndex =
       typeof w.globals.lastDrawnDataLabelsIndexes[i] !== 'undefined'
         ? w.globals.lastDrawnDataLabelsIndexes[i][
-            w.globals.lastDrawnDataLabelsIndexes[i].length - 1
-          ]
+        w.globals.lastDrawnDataLabelsIndexes[i].length - 1
+        ]
         : 0
 
     if (typeof w.globals.dataLabelsRects[i][len] !== 'undefined') {
       let lastDataLabelRect = w.globals.dataLabelsRects[i][lastDrawnIndex]
       if (
-        // next label forward and x not intersecting
+
         x > lastDataLabelRect.x + lastDataLabelRect.width + 2 ||
         y > lastDataLabelRect.y + lastDataLabelRect.height + 2 ||
-        x + width < lastDataLabelRect.x // next label is going to be drawn backwards
+        x + width < lastDataLabelRect.x
       ) {
-        // the 2 indexes don't override, so OK to draw next label
+
         drawnextLabel = true
       }
     }
@@ -77,8 +70,6 @@ class DataLabels {
   }
 
   drawDataLabel({ type, pos, i, j, isRangeStart, strokeWidth = 2 }) {
-    // this method handles line, area, bubble, scatter charts as those charts contains markers/points which have pre-defined x/y positions
-    // all other charts like radar / bars / heatmaps will define their own drawDataLabel routine
     let w = this.w
     const graphics = new Graphics(this.ctx)
 
@@ -104,7 +95,7 @@ class DataLabels {
       y = pos.y[q] + dataLabelsConfig.offsetY + strokeWidth
 
       if (!isNaN(x)) {
-        // a small hack as we have 2 points for the first val to connect it
+
         if (j === 1 && q === 0) dataPointIndex = 0
         if (j === 1 && q === 1) dataPointIndex = 1
 
@@ -205,21 +196,18 @@ class DataLabels {
         parseInt(dataLabelsConfig.style.fontSize, 10)
       )
     }
-
-    // when zoomed, we don't need to correct labels offsets,
-    // but if normally, labels get cropped, correct them
     if (!w.globals.zoomed) {
       x = correctedLabels.x
       y = correctedLabels.y
     }
 
     if (correctedLabels.textRects) {
-      // fixes #2264
+
       if (
         x < -10 - correctedLabels.textRects.width ||
         x > w.globals.gridWidth + correctedLabels.textRects.width + 10
       ) {
-        // datalabels fall outside drawing area, so draw a blank label
+
         text = ''
       }
     }
@@ -248,9 +236,6 @@ class DataLabels {
     let offY = dataLabelsConfig.offsetY
 
     if (w.config.chart.type === 'bar' || w.config.chart.type === 'rangeBar') {
-      // for certain chart types, we handle offsets while calculating datalabels pos
-      // why? because bars/column may have negative values and based on that
-      // offsets becomes reversed
       offX = 0
       offY = 0
     }

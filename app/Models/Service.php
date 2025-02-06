@@ -15,14 +15,10 @@ class Service extends Model
         'status',
         'service_image',
     ];
-
-    // Define the relationship with ServiceProvider
     public function serviceProviders()
     {
         return $this->hasMany(ServiceProvider::class);
     }
-
-    // Relationship with ServiceProvider
     public function providers()
     {
         return $this->hasMany(ServiceProvider::class, 'service_id');

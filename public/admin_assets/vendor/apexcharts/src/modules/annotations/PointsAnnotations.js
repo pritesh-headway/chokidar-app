@@ -23,9 +23,8 @@ export default class PointAnnotations {
       pointStrokeColor: anno.marker.strokeColor,
       shape: anno.marker.shape,
       pRadius: anno.marker.radius,
-      class: `apexcharts-point-annotation-marker ${anno.marker.cssClass} ${
-        anno.id ? anno.id : ''
-      }`
+      class: `apexcharts-point-annotation-marker ${anno.marker.cssClass} ${anno.id ? anno.id : ''
+        }`
     }
 
     let point = this.annoCtx.graphics.drawMarker(
@@ -51,9 +50,8 @@ export default class PointAnnotations {
       fontFamily: anno.label.style.fontFamily,
       fontWeight: anno.label.style.fontWeight,
       foreColor: anno.label.style.color,
-      cssClass: `apexcharts-point-annotation-label ${
-        anno.label.style.cssClass
-      } ${anno.id ? anno.id : ''}`
+      cssClass: `apexcharts-point-annotation-label ${anno.label.style.cssClass
+        } ${anno.id ? anno.id : ''}`
     })
 
     elText.attr({
@@ -61,8 +59,6 @@ export default class PointAnnotations {
     })
 
     parent.appendChild(elText.node)
-
-    // TODO: deprecate this as we will use custom
     if (anno.customSVG.SVG) {
       let g = this.annoCtx.graphics.group({
         class:

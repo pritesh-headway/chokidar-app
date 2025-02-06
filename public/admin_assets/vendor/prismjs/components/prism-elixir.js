@@ -10,38 +10,38 @@ Prism.languages.elixir = {
 		pattern: /#.*/,
 		greedy: true
 	},
-	// ~r"""foo""" (multi-line), ~r'''foo''' (multi-line), ~r/foo/, ~r|foo|, ~r"foo", ~r'foo', ~r(foo), ~r[foo], ~r{foo}, ~r<foo>
+
 	'regex': {
 		pattern: /~[rR](?:("""|''')(?:\\[\s\S]|(?!\1)[^\\])+\1|([\/|"'])(?:\\.|(?!\2)[^\\\r\n])+\2|\((?:\\.|[^\\)\r\n])+\)|\[(?:\\.|[^\\\]\r\n])+\]|\{(?:\\.|[^\\}\r\n])+\}|<(?:\\.|[^\\>\r\n])+>)[uismxfr]*/,
 		greedy: true
 	},
 	'string': [
 		{
-			// ~s"""foo""" (multi-line), ~s'''foo''' (multi-line), ~s/foo/, ~s|foo|, ~s"foo", ~s'foo', ~s(foo), ~s[foo], ~s{foo} (with interpolation care), ~s<foo>
+
 			pattern: /~[cCsSwW](?:("""|''')(?:\\[\s\S]|(?!\1)[^\\])+\1|([\/|"'])(?:\\.|(?!\2)[^\\\r\n])+\2|\((?:\\.|[^\\)\r\n])+\)|\[(?:\\.|[^\\\]\r\n])+\]|\{(?:\\.|#\{[^}]+\}|#(?!\{)|[^#\\}\r\n])+\}|<(?:\\.|[^\\>\r\n])+>)[csa]?/,
 			greedy: true,
 			inside: {
-				// See interpolation below
+
 			}
 		},
 		{
 			pattern: /("""|''')[\s\S]*?\1/,
 			greedy: true,
 			inside: {
-				// See interpolation below
+
 			}
 		},
 		{
-			// Multi-line strings are allowed
+
 			pattern: /("|')(?:\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/,
 			greedy: true,
 			inside: {
-				// See interpolation below
+
 			}
 		}
 	],
 	'atom': {
-		// Look-behind prevents bad highlighting of the :: operator
+
 		pattern: /(^|[^:]):\w+/,
 		lookbehind: true,
 		alias: 'symbol'
@@ -50,10 +50,10 @@ Prism.languages.elixir = {
 		pattern: /\b[A-Z]\w*\b/,
 		alias: 'class-name'
 	},
-	// Look-ahead prevents bad highlighting of the :: operator
+
 	'attr-name': /\b\w+\??:(?!:)/,
 	'argument': {
-		// Look-behind prevents bad highlighting of the && operator
+
 		pattern: /(^|[^&])&\d+/,
 		lookbehind: true,
 		alias: 'variable'
@@ -69,12 +69,12 @@ Prism.languages.elixir = {
 	'operator': [
 		/\bin\b|&&?|\|[|>]?|\\\\|::|\.\.\.?|\+\+?|-[->]?|<[-=>]|>=|!==?|\B!|=(?:==?|[>~])?|[*\/^]/,
 		{
-			// We don't want to match <<
+
 			pattern: /([^<])<(?!<)/,
 			lookbehind: true
 		},
 		{
-			// We don't want to match >>
+
 			pattern: /([^>])>(?!>)/,
 			lookbehind: true
 		}

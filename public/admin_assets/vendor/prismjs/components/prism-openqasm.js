@@ -1,5 +1,3 @@
-// https://qiskit.github.io/openqasm/grammar/index.html
-
 Prism.languages.openqasm = {
 	'comment': /\/\*[\s\S]*?\*\/|\/\/.*/,
 	'string': {

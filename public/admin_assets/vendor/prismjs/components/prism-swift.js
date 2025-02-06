@@ -1,20 +1,20 @@
 Prism.languages.swift = {
 	'comment': {
-		// Nested comments are supported up to 2 levels
+
 		pattern: /(^|[^\\:])(?:\/\/.*|\/\*(?:[^/*]|\/(?!\*)|\*(?!\/)|\/\*(?:[^*]|\*(?!\/))*\*\/)*\*\/)/,
 		lookbehind: true,
 		greedy: true
 	},
 	'string-literal': [
-		// https://docs.swift.org/swift-book/LanguageGuide/StringsAndCharacters.html
+
 		{
 			pattern: RegExp(
 				/(^|[^"#])/.source
 				+ '(?:'
-				// single-line string
+
 				+ /"(?:\\(?:\((?:[^()]|\([^()]*\))*\)|\r\n|[^(])|[^\\\r\n"])*"/.source
 				+ '|'
-				// multi-line string
+
 				+ /"""(?:\\(?:\((?:[^()]|\([^()]*\))*\)|[^(])|[^\\"]|"(?!""))*"""/.source
 				+ ')'
 				+ /(?!["#])/.source
@@ -25,7 +25,7 @@ Prism.languages.swift = {
 				'interpolation': {
 					pattern: /(\\\()(?:[^()]|\([^()]*\))*(?=\))/,
 					lookbehind: true,
-					inside: null // see below
+					inside: null
 				},
 				'interpolation-punctuation': {
 					pattern: /^\)|\\\($/,
@@ -39,10 +39,10 @@ Prism.languages.swift = {
 			pattern: RegExp(
 				/(^|[^"#])(#+)/.source
 				+ '(?:'
-				// single-line string
+
 				+ /"(?:\\(?:#+\((?:[^()]|\([^()]*\))*\)|\r\n|[^#])|[^\\\r\n])*?"/.source
 				+ '|'
-				// multi-line string
+
 				+ /"""(?:\\(?:#+\((?:[^()]|\([^()]*\))*\)|[^#])|[^\\])*?"""/.source
 				+ ')'
 				+ '\\2'
@@ -53,7 +53,7 @@ Prism.languages.swift = {
 				'interpolation': {
 					pattern: /(\\#+\()(?:[^()]|\([^()]*\))*(?=\))/,
 					lookbehind: true,
-					inside: null // see below
+					inside: null
 				},
 				'interpolation-punctuation': {
 					pattern: /^\)|\\#+\($/,
@@ -65,16 +65,13 @@ Prism.languages.swift = {
 	],
 
 	'directive': {
-		// directives with conditions
+
 		pattern: RegExp(
 			/#/.source
 			+ '(?:'
 			+ (
 				/(?:elseif|if)\b/.source
 				+ '(?:[ \t]*'
-				// This regex is a little complex. It's equivalent to this:
-				//   (?:![ \t]*)?(?:\b\w+\b(?:[ \t]*<round>)?|<round>)(?:[ \t]*(?:&&|\|\|))?
-				// where <round> is a general parentheses expression.
 				+ /(?:![ \t]*)?(?:\b\w+\b(?:[ \t]*\((?:[^()]|\([^()]*\))*\))?|\((?:[^()]|\([^()]*\))*\))(?:[ \t]*(?:&&|\|\|))?/.source
 				+ ')+'
 			)
@@ -111,7 +108,7 @@ Prism.languages.swift = {
 		alias: 'function'
 	},
 	'label': {
-		// https://docs.swift.org/swift-book/LanguageGuide/ControlFlow.html#ID141
+
 		pattern: /\b(break|continue)\s+\w+|\b[a-zA-Z_]\w*(?=\s*:\s*(?:for|repeat|while)\b)/,
 		lookbehind: true,
 		alias: 'important'
@@ -130,15 +127,9 @@ Prism.languages.swift = {
 		alias: 'keyword'
 	},
 	'number': /\b(?:[\d_]+(?:\.[\de_]+)?|0x[a-f0-9_]+(?:\.[a-f0-9p_]+)?|0b[01_]+|0o[0-7_]+)\b/i,
-
-	// A class name must start with an upper-case letter and be either 1 letter long or contain a lower-case letter.
 	'class-name': /\b[A-Z](?:[A-Z_\d]*[a-z]\w*)?\b/,
 	'function': /\b[a-z_]\w*(?=\s*\()/i,
 	'constant': /\b(?:[A-Z_]{2,}|k[A-Z][A-Za-z_]+)\b/,
-
-	// Operators are generic in Swift. Developers can even create new operators (e.g. +++).
-	// https://docs.swift.org/swift-book/ReferenceManual/zzSummaryOfTheGrammar.html#ID481
-	// This regex only supports ASCII operators.
 	'operator': /[-+*/%=!<>&|^~?]+|\.[.\-+*/%=!<>&|^~?]+/,
 	'punctuation': /[{}[\]();,.:\\]/
 };

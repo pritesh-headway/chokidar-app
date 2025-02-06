@@ -1,6 +1,5 @@
 <?php
 
-// app/Http/Controllers/ResponseController.php
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -11,11 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class ResponseController extends Controller
 {
-    // app/Http/Controllers/ResponseController.php
-
     public function index(Request $request)
     {
-        $responses = Response::all();  // Get all responses from the database
+        $responses = Response::all();
 
         return response()->json([
             'status' => true,
@@ -23,13 +20,9 @@ class ResponseController extends Controller
             'data' => $responses,
         ], 200);
     }
-
-
-    // app/Http/Controllers/ResponseController.php
-
     public function show(Request $request)
     {
-        // Define validation rules
+
         $validator = Validator::make($request->all(), [
             'id' => 'nullable|exists:responses,id',
             'forum_id' => 'nullable|exists:forums,id',
@@ -43,11 +36,7 @@ class ResponseController extends Controller
                 'data' => $validator->errors(),
             ], 200);
         }
-
-        // Start with the base query for responses
         $query = Response::query();
-
-        // Apply filters based on provided parameters
         if ($request->has('id') && $request->id != null) {
             $query->where('id', $request->id);
         }
@@ -59,8 +48,6 @@ class ResponseController extends Controller
         if ($request->has('user_id') && $request->user_id != null) {
             $query->where('user_id', $request->user_id);
         }
-
-        // Execute the query
         $responses = $query->get();
 
         if ($responses->isEmpty()) {
@@ -76,9 +63,6 @@ class ResponseController extends Controller
             'data' => $responses,
         ], 200);
     }
-
-
-    // Store: Create a new response
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -94,8 +78,6 @@ class ResponseController extends Controller
                 'data' => $validator->errors(),
             ], 200);
         }
-
-        // Check if a response with the same forum_id and user_id already exists
         $existingResponse = Response::where('forum_id', $request->forum_id)
             ->where('user_id', $request->user_id)
             ->first();
@@ -120,11 +102,9 @@ class ResponseController extends Controller
             'data' => $response,
         ], 200);
     }
-
-    // Update: Update a response
     public function update(Request $request)
     {
-        // dd($request);
+
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:responses,id',
             'status' => 'required|in:active,deactive',
@@ -149,8 +129,6 @@ class ResponseController extends Controller
             'data' => $response,
         ], 200);
     }
-
-    // Delete: Delete a response
     public function delete(Request $request)
     {
         $validator = Validator::make($request->all(), [

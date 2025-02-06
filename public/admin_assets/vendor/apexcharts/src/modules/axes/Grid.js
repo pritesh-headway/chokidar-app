@@ -21,12 +21,10 @@ class Grid {
     this.isRangeBar = w.globals.seriesRange.length
 
     if (w.globals.timescaleLabels.length > 0) {
-      //  timescaleLabels labels are there
+
       this.xaxisLabels = w.globals.timescaleLabels.slice()
     }
   }
-
-  // when using sparklines or when showing no grid, we need to have a grid area which is reused at many places for other calculations as well
   drawGridArea(elGrid = null) {
     let w = this.w
 
@@ -66,15 +64,13 @@ class Grid {
     let elgrid = null
 
     if (gl.axisCharts) {
-      // grid is drawn after xaxis and yaxis are drawn
+
       elgrid = this.renderGrid()
 
       this.drawGridArea(elgrid.el)
     }
     return elgrid
   }
-
-  // This mask will clip off overflowing graphics from the drawable area
   createGridMask() {
     let w = this.w
     let gl = w.globals
@@ -106,9 +102,6 @@ class Grid {
 
     gl.dom.elNonForecastMask = document.createElementNS(gl.SVGNS, 'clipPath')
     gl.dom.elNonForecastMask.setAttribute('id', `nonForecastMask${gl.cuid}`)
-
-    // let barHalfWidth = 0
-
     const type = w.config.chart.type
     const hasBar =
       type === 'bar' ||
@@ -285,7 +278,7 @@ class Grid {
     const categoryLines = ({ xC, x1, y1, x2, y2 }) => {
       for (let i = 0; i < xC + (w.globals.isXNumeric ? 0 : 1); i++) {
         if (i === 0 && xC === 1 && w.globals.dataPoints === 1) {
-          // single datapoint
+
           x1 = w.globals.gridWidth / 2
           x2 = x1
         }
@@ -303,8 +296,6 @@ class Grid {
         x2 = x1
       }
     }
-
-    // draw vertical lines
     if (w.config.grid.xaxis.lines.show || w.config.xaxis.axisTicks.show) {
       let x1 = w.globals.padHorizontal
       let y1 = 0
@@ -320,8 +311,6 @@ class Grid {
         categoryLines({ xC: xCount, x1, y1, x2, y2 })
       }
     }
-
-    // draw horizontal lines
     if (w.config.grid.yaxis.lines.show) {
       let x1 = 0
       let y1 = 0
@@ -353,8 +342,6 @@ class Grid {
 
   _drawInvertedXYLines({ xCount }) {
     const w = this.w
-
-    // draw vertical lines
     if (w.config.grid.xaxis.lines.show || w.config.xaxis.axisTicks.show) {
       let x1 = w.globals.padHorizontal
       let y1 = 0
@@ -379,8 +366,6 @@ class Grid {
         x2 = x1
       }
     }
-
-    // draw horizontal lines
     if (w.config.grid.yaxis.lines.show) {
       let x1 = 0
       let y1 = 0
@@ -403,8 +388,6 @@ class Grid {
       }
     }
   }
-
-  // actual grid rendering
   renderGrid() {
     let w = this.w
     let graphics = new Graphics(this.ctx)
@@ -455,8 +438,6 @@ class Grid {
       this._drawXYLines({ xCount, tickAmount: yTickAmount })
     } else {
       xCount = yTickAmount
-
-      // for horizontal bar chart, get the xaxis tickamount
       yTickAmount = w.globals.xTickAmount
       this._drawInvertedXYLines({ xCount, tickAmount: yTickAmount })
     }
@@ -471,8 +452,6 @@ class Grid {
 
   drawGridBands(xCount, tickAmount) {
     const w = this.w
-
-    // rows background bands
     if (
       w.config.grid.row.colors !== undefined &&
       w.config.grid.row.colors.length > 0
@@ -498,16 +477,14 @@ class Grid {
         y1 = y1 + w.globals.gridHeight / tickAmount
       }
     }
-
-    // columns background bands
     if (
       w.config.grid.column.colors !== undefined &&
       w.config.grid.column.colors.length > 0
     ) {
       const xc =
         !w.globals.isBarHorizontal &&
-        (w.config.xaxis.type === 'category' ||
-          w.config.xaxis.convertedCatToNumeric)
+          (w.config.xaxis.type === 'category' ||
+            w.config.xaxis.convertedCatToNumeric)
           ? xCount - 1
           : xCount
       let x1 = w.globals.padHorizontal

@@ -158,23 +158,17 @@ Prism.hooks.add('after-tokenize', function afterTokenizeGraphql(env) {
 
 	for (; currentIndex < validTokens.length;) {
 		var startToken = validTokens[currentIndex++];
-
-		// add special aliases for mutation tokens
 		if (startToken.type === 'keyword' && startToken.content === 'mutation') {
-			// any array of the names of all input variables (if any)
+
 			var inputVariables = [];
 
 			if (isTokenType(['definition-mutation', 'punctuation']) && getToken(1).content === '(') {
-				// definition
-
-				currentIndex += 2; // skip 'definition-mutation' and 'punctuation'
+				currentIndex += 2;
 
 				var definitionEnd = findClosingBracket(/^\($/, /^\)$/);
 				if (definitionEnd === -1) {
 					continue;
 				}
-
-				// find all input variables
 				for (; currentIndex < definitionEnd; currentIndex++) {
 					var t = getToken(0);
 					if (t.type === 'variable') {
@@ -187,7 +181,7 @@ Prism.hooks.add('after-tokenize', function afterTokenizeGraphql(env) {
 			}
 
 			if (isTokenType(['punctuation', 'property-query']) && getToken(0).content === '{') {
-				currentIndex++; // skip opening bracket
+				currentIndex++;
 
 				addAlias(getToken(0), 'property-mutation');
 
@@ -196,8 +190,6 @@ Prism.hooks.add('after-tokenize', function afterTokenizeGraphql(env) {
 					if (mutationEnd === -1) {
 						continue;
 					}
-
-					// give references to input variables a special alias
 					for (var i = currentIndex; i < mutationEnd; i++) {
 						var varToken = validTokens[i];
 						if (varToken.type === 'variable' && inputVariables.indexOf(varToken.content) >= 0) {

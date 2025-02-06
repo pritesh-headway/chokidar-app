@@ -103,8 +103,6 @@ class Radar {
 
     series.forEach((s, i) => {
       let longestSeries = s.length === w.globals.dataPoints
-
-      // el to which series will be drawn
       let elSeries = this.graphics.group().attr({
         class: `apexcharts-series`,
         'data:longestSeries': longestSeries,
@@ -139,13 +137,9 @@ class Radar {
         x: 0,
         y: 0
       })
-
-      // points
       elPointsMain = this.graphics.group({
         class: 'apexcharts-series-markers-wrap apexcharts-element-hidden'
       })
-
-      // datapoints
       elDataPointsMain = this.graphics.group({
         class: `apexcharts-datalabels`,
         'data:realIndex': i
@@ -402,7 +396,7 @@ class Radar {
           parent: elXAxisWrap,
           color:
             Array.isArray(xaxisLabelsConfig.style.colors) &&
-            xaxisLabelsConfig.style.colors[i]
+              xaxisLabelsConfig.style.colors[i]
               ? xaxisLabelsConfig.style.colors[i]
               : '#a8a8a8',
           dataLabelsConfig: {

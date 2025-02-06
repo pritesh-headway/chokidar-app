@@ -51,7 +51,7 @@ export default class Annotations {
       for (let i = 0; i < 3; i++) {
         w.globals.dom.elGraphical.add(annoArray[i])
         if (initialAnim && !w.globals.resized && !w.globals.dataChanged) {
-          // fixes apexcharts/apexcharts.js#685
+
           if (
             w.config.chart.type !== 'scatter' &&
             w.config.chart.type !== 'bubble' &&
@@ -62,8 +62,6 @@ export default class Annotations {
         }
         w.globals.delayedElements.push({ el: annoElArray[i], index: 0 })
       }
-
-      // background sizes needs to be calculated after text is drawn, so calling them last
       this.helpers.annotationsBackground()
     }
   }
@@ -180,8 +178,6 @@ export default class Annotations {
 
     return img
   }
-
-  // The addXaxisAnnotation method requires a parent class, and user calling this method externally on the chart instance may not specify parent, hence a different method
   addXaxisAnnotationExternal(params, pushToMemory, context) {
     this.addAnnotationExternal({
       params,
@@ -239,8 +235,8 @@ export default class Annotations {
       type === 'xaxis'
         ? options.xAxisAnnotation
         : type === 'yaxis'
-        ? options.yAxisAnnotation
-        : options.pointAnnotation
+          ? options.yAxisAnnotation
+          : options.pointAnnotation
     )
 
     const anno = Utils.extend(axesAnno, params)
@@ -256,8 +252,6 @@ export default class Annotations {
         this.addPointAnnotation(anno, parent, index)
         break
     }
-
-    // add background
     let axesAnnoLabel = w.globals.dom.baseEl.querySelector(
       `.apexcharts-${type}-annotations .apexcharts-${type}-annotation-label[rel='${index}']`
     )
@@ -284,8 +278,6 @@ export default class Annotations {
     let annos = w.globals.dom.baseEl.querySelectorAll(
       '.apexcharts-yaxis-annotations, .apexcharts-xaxis-annotations, .apexcharts-point-annotations'
     )
-
-    // annotations added externally should be cleared out too
     w.globals.memory.methodsToExec.map((m, i) => {
       if (m.label === 'addText' || m.label === 'addAnnotation') {
         w.globals.memory.methodsToExec.splice(i, 1)
@@ -293,8 +285,6 @@ export default class Annotations {
     })
 
     annos = Utils.listToArray(annos)
-
-    // delete the DOM elements
     Array.prototype.forEach.call(annos, (a) => {
       while (a.firstChild) {
         a.removeChild(a.firstChild)

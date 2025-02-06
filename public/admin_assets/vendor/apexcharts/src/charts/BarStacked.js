@@ -31,19 +31,19 @@ class BarStacked extends Bar {
 
     this.totalItems = 0
 
-    this.prevY = [] // y position on chart
-    this.prevX = [] // x position on chart
-    this.prevYF = [] // y position including shapes on chart
-    this.prevXF = [] // x position including shapes on chart
-    this.prevYVal = [] // y values (series[i][j]) in columns
-    this.prevXVal = [] // x values (series[i][j]) in bars
+    this.prevY = []
+    this.prevX = []
+    this.prevYF = []
+    this.prevXF = []
+    this.prevYVal = []
+    this.prevXVal = []
 
-    this.xArrj = [] // xj indicates x position on graph in bars
-    this.xArrjF = [] // xjF indicates bar's x position + roundedShape's positions in bars
-    this.xArrjVal = [] // x val means the actual series's y values in horizontal/bars
-    this.yArrj = [] // yj indicates y position on graph in columns
-    this.yArrjF = [] // yjF indicates bar's y position + roundedShape's positions in columns
-    this.yArrjVal = [] // y val means the actual series's y values in columns
+    this.xArrj = []
+    this.xArrjF = []
+    this.xArrjVal = []
+    this.yArrj = []
+    this.yArrjF = []
+    this.yArrjVal = []
 
     for (let sl = 0; sl < series.length; sl++) {
       if (series[sl].length > 0) {
@@ -59,10 +59,10 @@ class BarStacked extends Bar {
     let y = 0
 
     for (let i = 0, bc = 0; i < series.length; i++, bc++) {
-      let xDivision // xDivision is the GRIDWIDTH divided by number of datapoints (columns)
-      let yDivision // yDivision is the GRIDHEIGHT divided by number of datapoints (bars)
-      let zeroH // zeroH is the baseline where 0 meets y axis
-      let zeroW // zeroW is the baseline where 0 meets x axis
+      let xDivision
+      let yDivision
+      let zeroH
+      let zeroW
 
       let xArrValues = []
       let yArrValues = []
@@ -76,8 +76,6 @@ class BarStacked extends Bar {
       this.isReversed =
         w.config.yaxis[this.yaxisIndex] &&
         w.config.yaxis[this.yaxisIndex].reversed
-
-      // el to which series will be drawn
       let elSeries = this.graphics.group({
         class: `apexcharts-series`,
         seriesName: Utils.escapeString(w.globals.seriesNames[realIndex]),
@@ -85,8 +83,6 @@ class BarStacked extends Bar {
         'data:realIndex': realIndex
       })
       this.ctx.series.addCollapsedClassToSeries(elSeries, realIndex)
-
-      // eldatalabels
       let elDataLabelsWrap = this.graphics.group({
         class: 'apexcharts-datalabels',
         'data:realIndex': realIndex
@@ -124,18 +120,10 @@ class BarStacked extends Bar {
       this.xArrj = []
       this.xArrjF = []
       this.xArrjVal = []
-
-      // if (!this.horizontal) {
-      // this.xArrj.push(x + barWidth / 2)
-      // }
-
-      // fix issue #1215;
-      // where all stack bar disappear after collapsing the first series
-      // sol: if only 1 arr in this.prevY(this.prevY.length === 1) and all are NaN
       if (this.prevY.length === 1 && this.prevY[0].every((val) => isNaN(val))) {
-        // make this.prevY[0] all zeroH
+
         this.prevY[0] = this.prevY[0].map((val) => zeroH)
-        // make this.prevYF[0] all 0
+
         this.prevYF[0] = this.prevYF[0].map((val) => 0)
       }
 
@@ -208,12 +196,8 @@ class BarStacked extends Bar {
           visibleSeries: 0
         })
       }
-
-      // push all x val arrays into main xArr
       w.globals.seriesXvalues[realIndex] = xArrValues
       w.globals.seriesYvalues[realIndex] = yArrValues
-
-      // push all current y values array to main PrevY Array
       this.prevY.push(this.yArrj)
       this.prevYF.push(this.yArrjF)
       this.prevYVal.push(this.yArrjVal)
@@ -232,7 +216,7 @@ class BarStacked extends Bar {
 
     let barHeight, barWidth
     if (this.isHorizontal) {
-      // height divided into equal parts
+
       yDivision = w.globals.gridHeight / w.globals.dataPoints
       barHeight = yDivision
 
@@ -244,17 +228,15 @@ class BarStacked extends Bar {
         w.globals.padHorizontal +
         (this.isReversed ? w.globals.gridWidth : 0) -
         (this.isReversed ? this.baseLineInvertedY * 2 : 0)
-
-      // initial y position is half of barHeight * half of number of Bars
       y = (yDivision - barHeight) / 2
     } else {
-      // width divided into equal parts
+
       xDivision = w.globals.gridWidth / w.globals.dataPoints
 
       barWidth = xDivision
 
       if (w.globals.isXNumeric && w.globals.dataPoints > 1) {
-        // the check (w.globals.dataPoints > 1) fixes apexcharts.js #1617
+
         xDivision = w.globals.minXDiff / this.xRatio
         barWidth = (xDivision * parseInt(this.barOptions.columnWidth, 10)) / 100
       } else {
@@ -267,8 +249,6 @@ class BarStacked extends Bar {
         this.baseLineY[this.yaxisIndex] -
         (this.isReversed ? w.globals.gridHeight : 0) +
         (this.isReversed ? this.baseLineY[this.yaxisIndex] * 2 : 0)
-
-      // initial x position is one third of barWidth
       x = w.globals.padHorizontal + (xDivision - barWidth) / 2
     }
     return {
@@ -311,21 +291,21 @@ class BarStacked extends Bar {
         bXP =
           this.series[i][j] >= 0
             ? this.prevX[i - 1][j] +
-              prevBarW -
-              (this.isReversed ? prevBarW : 0) * 2
+            prevBarW -
+            (this.isReversed ? prevBarW : 0) * 2
             : this.prevX[i - 1][j]
       } else if (this.prevXVal[i - 1][j] >= 0) {
         bXP =
           this.series[i][j] >= 0
             ? this.prevX[i - 1][j]
             : this.prevX[i - 1][j] -
-              prevBarW +
-              (this.isReversed ? prevBarW : 0) * 2
+            prevBarW +
+            (this.isReversed ? prevBarW : 0) * 2
       }
 
       barXPosition = bXP
     } else {
-      // the first series will not have prevX values
+
       barXPosition = zeroW
     }
 
@@ -397,8 +377,6 @@ class BarStacked extends Bar {
 
     let prevBarH = 0
     for (let k = 0; k < this.prevYF.length; k++) {
-      // fix issue #1215
-      // in case where this.prevYF[k][j] is NaN, use 0 instead
       prevBarH = prevBarH + (!isNaN(this.prevYF[k][j]) ? this.prevYF[k][j] : 0)
     }
 
@@ -414,48 +392,45 @@ class BarStacked extends Bar {
       if (this.prevY[i - 1] !== undefined) {
         for (let ii = 1; ii < p; ii++) {
           if (!isNaN(this.prevY[i - ii][j])) {
-            // find the previous available value to give prevYValue
+
             prevYValue = this.prevY[i - ii][j]
-            // if found it, break the loop
+
             break
           }
         }
       }
 
       for (let ii = 1; ii < p; ii++) {
-        // find the previous available value(non-NaN) to give bYP
+
         if (this.prevYVal[i - ii][j] < 0) {
           bYP =
             this.series[i][j] >= 0
               ? prevYValue - prevBarH + (this.isReversed ? prevBarH : 0) * 2
               : prevYValue
-          // found it? break the loop
+
           break
         } else if (this.prevYVal[i - ii][j] >= 0) {
           bYP =
             this.series[i][j] >= 0
               ? prevYValue
               : prevYValue + prevBarH - (this.isReversed ? prevBarH : 0) * 2
-          // found it? break the loop
+
           break
         }
       }
 
       if (typeof bYP === 'undefined') bYP = w.globals.gridHeight
-
-      // if this.prevYF[0] is all 0 resulted from line #486
-      // AND every arr starting from the second only contains NaN
       if (
         this.prevYF[0].every((val) => val === 0) &&
         this.prevYF.slice(1, i).every((arr) => arr.every((val) => isNaN(val)))
       ) {
         barYPosition = zeroH
       } else {
-        // Nothing special
+
         barYPosition = bYP
       }
     } else {
-      // the first series will not have prevY values, also if the prev index's series X doesn't matches the current index's series X, then start from zero
+
       barYPosition = zeroH
     }
 
@@ -466,9 +441,9 @@ class BarStacked extends Bar {
         (this.isReversed
           ? this.series[i][j] / this.yRatio[this.yaxisIndex]
           : 0) *
-          2
+        2
     } else {
-      // fixes #3610
+
       y = barYPosition
     }
 

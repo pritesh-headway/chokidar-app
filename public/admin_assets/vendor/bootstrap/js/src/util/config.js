@@ -13,7 +13,7 @@ import Manipulator from '../dom/manipulator.js'
  */
 
 class Config {
-  // Getters
+
   static get Default() {
     return {}
   }
@@ -38,7 +38,7 @@ class Config {
   }
 
   _mergeConfigObj(config, element) {
-    const jsonConfig = isElement(element) ? Manipulator.getDataAttribute(element, 'config') : {} // try to parse
+    const jsonConfig = isElement(element) ? Manipulator.getDataAttribute(element, 'config') : {}
 
     return {
       ...this.constructor.Default,

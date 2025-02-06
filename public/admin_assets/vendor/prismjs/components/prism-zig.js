@@ -39,20 +39,20 @@
 		],
 		'string': [
 			{
-				// "string" and c"string"
+
 				pattern: /(^|[^\\@])c?"(?:[^"\\\r\n]|\\.)*"/,
 				lookbehind: true,
 				greedy: true
 			},
 			{
-				// multiline strings and c-strings
+
 				pattern: /([\r\n])([ \t]+c?\\{2}).*(?:(?:\r\n?|\n)\2.*)*/,
 				lookbehind: true,
 				greedy: true
 			}
 		],
 		'char': {
-			// characters 'a', '\n', '\xFF', '\u{10FFFF}'
+
 			pattern: /(^|[^\\])'(?:[^'\\\r\n]|[\uD800-\uDFFF]{2}|\\(?:.|x[a-fA-F\d]{2}|u\{[a-fA-F\d]{1,6}\}))'/,
 			lookbehind: true,
 			greedy: true
@@ -63,21 +63,18 @@
 			lookbehind: true
 		},
 		'class-name': [
-			// const Foo = struct {};
+
 			/\b(?!\d)\w+(?=\s*=\s*(?:(?:extern|packed)\s+)?(?:enum|struct|union)\s*[({])/,
 			{
-				// const x: i32 = 9;
-				// var x: Bar;
-				// fn foo(x: bool, y: f32) void {}
 				pattern: RegExp(/(:\s*)<TYPE>(?=\s*(?:<ALIGN>\s*)?[=;,)])|<TYPE>(?=\s*(?:<ALIGN>\s*)?\{)/.source.replace(/<TYPE>/g, literal(TYPE)).replace(/<ALIGN>/g, literal(ALIGN))),
 				lookbehind: true,
-				inside: null // see below
+				inside: null
 			},
 			{
-				// extern fn foo(x: f64) f64; (optional alignment)
+
 				pattern: RegExp(/(\)\s*)<TYPE>(?=\s*(?:<ALIGN>\s*)?;)/.source.replace(/<TYPE>/g, literal(TYPE)).replace(/<ALIGN>/g, literal(ALIGN))),
 				lookbehind: true,
-				inside: null // see below
+				inside: null
 			}
 		],
 		'builtin-type': {

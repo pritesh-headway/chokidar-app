@@ -51,16 +51,14 @@ export default class Dimensions {
     }
 
     if (gl.axisCharts) {
-      // for line / area / scatter / column
+
       this.setDimensionsForAxisCharts()
     } else {
-      // for pie / donuts / circle
+
       this.setDimensionsForNonAxisCharts()
     }
 
     this.dimGrid.gridPadFortitleSubtitle()
-
-    // after calculating everything, apply padding set by user
     gl.gridHeight = gl.gridHeight - this.gridPad.top - this.gridPad.bottom
 
     gl.gridWidth =
@@ -92,7 +90,7 @@ export default class Dimensions {
     w.globals.yLabelsCoords = []
     w.globals.yTitleCoords = []
     w.config.yaxis.map((yaxe, index) => {
-      // store the labels and titles coords in global vars
+
       w.globals.yLabelsCoords.push({
         width: yaxisLabelCoords[index].width,
         index
@@ -118,8 +116,8 @@ export default class Dimensions {
     gl.translateXAxisY = w.globals.rotateXLabels ? this.xAxisHeight / 8 : -4
     gl.translateXAxisX =
       w.globals.rotateXLabels &&
-      w.globals.isXNumeric &&
-      w.config.xaxis.labels.rotate <= -45
+        w.globals.isXNumeric &&
+        w.config.xaxis.labels.rotate <= -45
         ? -this.xAxisWidth / 4
         : 0
 
@@ -205,8 +203,6 @@ export default class Dimensions {
     }
 
     this.dimGrid.setGridXPosForDualYAxis(yTitleCoords, yaxisLabelCoords)
-
-    // after drawing everything, set the Y axis positions
     let objyAxis = new YAxis(this.ctx)
     objyAxis.setYAxisXPosition(yaxisLabelCoords, yTitleCoords)
   }
@@ -223,8 +219,8 @@ export default class Dimensions {
 
     const type =
       cnf.chart.type === 'pie' ||
-      cnf.chart.type === 'polarArea' ||
-      cnf.chart.type === 'donut'
+        cnf.chart.type === 'polarArea' ||
+        cnf.chart.type === 'donut'
         ? 'pie'
         : 'radialBar'
 

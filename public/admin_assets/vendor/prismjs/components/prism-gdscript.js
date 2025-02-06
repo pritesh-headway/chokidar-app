@@ -5,11 +5,6 @@ Prism.languages.gdscript = {
 		greedy: true
 	},
 	'class-name': {
-		// class_name Foo, extends Bar, class InnerClass
-		// export(int) var baz, export(int, 0) var i
-		// as Node
-		// const FOO: int = 9, var bar: bool = true
-		// func add(reference: Item, amount: int) -> Item:
 		pattern: /(^(?:class|class_name|extends)[ \t]+|^export\([ \t]*|\bas[ \t]+|(?:\b(?:const|var)[ \t]|[,(])[ \t]*\w+[ \t]*:[ \t]*|->[ \t]*)[a-zA-Z_]\w*/m,
 		lookbehind: true
 	},

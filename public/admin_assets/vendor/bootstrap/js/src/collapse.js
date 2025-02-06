@@ -85,8 +85,6 @@ class Collapse extends BaseComponent {
       this.toggle()
     }
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -98,8 +96,6 @@ class Collapse extends BaseComponent {
   static get NAME() {
     return NAME
   }
-
-  // Public
   toggle() {
     if (this._isShown()) {
       this.hide()
@@ -114,8 +110,6 @@ class Collapse extends BaseComponent {
     }
 
     let activeChildren = []
-
-    // find active children
     if (this._config.parent) {
       activeChildren = this._getFirstLevelChildren(SELECTOR_ACTIVES)
         .filter(element => element !== this._element)
@@ -207,10 +201,8 @@ class Collapse extends BaseComponent {
   _isShown(element = this._element) {
     return element.classList.contains(CLASS_NAME_SHOW)
   }
-
-  // Private
   _configAfterMerge(config) {
-    config.toggle = Boolean(config.toggle) // Coerce string values
+    config.toggle = Boolean(config.toggle)
     config.parent = getElement(config.parent)
     return config
   }
@@ -237,7 +229,7 @@ class Collapse extends BaseComponent {
 
   _getFirstLevelChildren(selector) {
     const children = SelectorEngine.find(CLASS_NAME_DEEPER_CHILDREN, this._config.parent)
-    // remove children if greater depth
+
     return SelectorEngine.find(selector, this._config.parent).filter(element => !children.includes(element))
   }
 
@@ -251,8 +243,6 @@ class Collapse extends BaseComponent {
       element.setAttribute('aria-expanded', isOpen)
     }
   }
-
-  // Static
   static jQueryInterface(config) {
     const _config = {}
     if (typeof config === 'string' && /show|hide/.test(config)) {
@@ -278,7 +268,7 @@ class Collapse extends BaseComponent {
  */
 
 EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
-  // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
+
   if (event.target.tagName === 'A' || (event.delegateTarget && event.delegateTarget.tagName === 'A')) {
     event.preventDefault()
   }

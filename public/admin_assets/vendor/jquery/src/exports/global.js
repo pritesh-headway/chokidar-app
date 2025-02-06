@@ -1,34 +1,26 @@
-define( [
+define([
 	"../core"
-], function( jQuery ) {
+], function (jQuery) {
 
-"use strict";
+	"use strict";
 
-var
+	var
+		_jQuery = window.jQuery,
+		_$ = window.$;
 
-	// Map over jQuery in case of overwrite
-	_jQuery = window.jQuery,
+	jQuery.noConflict = function (deep) {
+		if (window.$ === jQuery) {
+			window.$ = _$;
+		}
 
-	// Map over the $ in case of overwrite
-	_$ = window.$;
+		if (deep && window.jQuery === jQuery) {
+			window.jQuery = _jQuery;
+		}
 
-jQuery.noConflict = function( deep ) {
-	if ( window.$ === jQuery ) {
-		window.$ = _$;
+		return jQuery;
+	};
+	if (typeof noGlobal === "undefined") {
+		window.jQuery = window.$ = jQuery;
 	}
 
-	if ( deep && window.jQuery === jQuery ) {
-		window.jQuery = _jQuery;
-	}
-
-	return jQuery;
-};
-
-// Expose jQuery and $ identifiers, even in AMD
-// (trac-7102#comment:10, https://github.com/jquery/jquery/pull/557)
-// and CommonJS for browser emulators (trac-13566)
-if ( typeof noGlobal === "undefined" ) {
-	window.jQuery = window.$ = jQuery;
-}
-
-} );
+});

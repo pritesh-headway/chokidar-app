@@ -15,9 +15,6 @@ export default class Helpers {
       w.config.fill.type[i] === 'gradient'
     ) {
       const coreUtils = new CoreUtils(this.lineCtx.ctx, w)
-
-      // applied only to LINE chart
-      // a small adjustment to allow gradient line to draw correctly for all same values
       /* #fix https://github.com/apexcharts/apexcharts.js/issues/358 */
       if (coreUtils.seriesHaveSameValues(i)) {
         let gSeries = series[i].slice()
@@ -37,17 +34,12 @@ export default class Helpers {
     if (j === 0) {
       let xPT1st =
         this.lineCtx.categoryAxisCorrection + w.config.markers.offsetX
-      // the first point for line series
-      // we need to check whether it's not a time series, because a time series may
-      // start from the middle of the x axis
       if (w.globals.isXNumeric) {
         xPT1st =
           (w.globals.seriesX[realIndex][0] - w.globals.minX) /
-            this.lineCtx.xRatio +
+          this.lineCtx.xRatio +
           w.config.markers.offsetX
       }
-
-      // push 2 points for the first data values
       ptX.push(xPT1st)
       ptY.push(
         Utils.isNumber(series[i][0]) ? prevY + w.config.markers.offsetY : null
@@ -107,10 +99,10 @@ export default class Helpers {
     if (typeof series[i]?.[0] !== 'undefined') {
       if (w.config.chart.stacked) {
         if (i > 0) {
-          // 1st y value of previous series
+
           lineYPosition = this.lineCtx.prevSeriesY[i - 1][0]
         } else {
-          // the first series will not have prevY values
+
           lineYPosition = this.lineCtx.zeroY
         }
       } else {
@@ -122,17 +114,17 @@ export default class Helpers {
         (this.lineCtx.isReversed
           ? series[i][0] / this.lineCtx.yRatio[this.lineCtx.yaxisIndex]
           : 0) *
-          2
+        2
     } else {
-      // the first value in the current series is null
+
       if (
         w.config.chart.stacked &&
         i > 0 &&
         typeof series[i][0] === 'undefined'
       ) {
-        // check for undefined value (undefined value will occur when we clear the series while user clicks on legend to hide serieses)
+
         for (let s = i - 1; s >= 0; s--) {
-          // for loop to get to 1st previous value until we get it
+
           if (series[s][0] !== null && typeof series[s][0] !== 'undefined') {
             lineYPosition = this.lineCtx.prevSeriesY[s][0]
             prevY = lineYPosition

@@ -17,11 +17,11 @@
 					pattern: /(^|[^\w-])(?:and|not|only|or)(?![\w-])/,
 					lookbehind: true
 				}
-				// See rest below
+
 			}
 		},
 		'url': {
-			// https://drafts.csswg.org/css-values-3/#urls
+
 			pattern: RegExp('\\burl\\((?:' + string.source + '|' + /(?:[^\\\r\n()"']|\\[\s\S])*/.source + ')\\)', 'i'),
 			greedy: true,
 			inside: {

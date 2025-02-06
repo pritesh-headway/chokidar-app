@@ -25,25 +25,16 @@ class Handler extends ExceptionHandler
         //
     ];
 
-    public function report(Throwable $exception) // <-- USE Throwable HERE
+    public function report(Throwable $exception)
     {
         parent::report($exception);
     }
-    public function render($request, Throwable $exception) // AND HERE
+    public function render($request, Throwable $exception)
     {
-        // if ($exception instanceof MethodNotAllowedHttpException) {
-        //     return response()->json([
-        //         'error' => 'Method Not Allowed',
-        //         'message' => 'The requested method is not supported for this route.',
-        //         'status' => 405
-        //     ], 405);
-        // }
-        // return parent::render($request, $exception);
-
         if ($request->wantsJson()) {
-            // Handle different types of exceptions
+
             if ($exception instanceof ModelNotFoundException) {
-                // If a model is not found (e.g., no such resource)
+
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Resource not found'
@@ -51,7 +42,7 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception instanceof NotFoundHttpException) {
-                // Handle invalid routes
+
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Route not found'
@@ -59,7 +50,7 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception instanceof AuthenticationException) {
-                // Handle unauthenticated user
+
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Unauthenticated'
@@ -67,7 +58,7 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception instanceof AuthorizationException) {
-                // Handle forbidden action
+
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Forbidden'
@@ -75,22 +66,18 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception instanceof ValidationException) {
-                // Handle validation errors
+
                 return response()->json([
                     'status' => 'error',
                     'message' => $exception->errors()
                 ], 422);
             }
-
-            // Handle all other exceptions
             return response()->json([
                 'status' => 'error',
                 'message' => 'An unexpected error occurred',
                 'error' => $exception->getMessage()
             ], 500);
         }
-
-        // Default: If the request is not expecting JSON, return a default error page (e.g., HTML)
         return parent::render($request, $exception);
     }
 

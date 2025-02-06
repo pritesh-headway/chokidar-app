@@ -6,15 +6,11 @@
 			lookbehind: true
 		},
 		'keyword': {
-			// keywords are the first word in a line preceded be an `@` or surrounded by curly braces.
-			// @word, {@word}
 			pattern: /(^[\t ]*(?:\/{3}|\*|\/\*\*)\s*|\{)@[a-z][a-zA-Z-]+\b/m,
 			lookbehind: true
 		},
 		'punctuation': /[{}]/
 	};
-
-
 	/**
 	 * Adds doc comment support to the given language and calls a given callback on each doc comment pattern.
 	 *
@@ -31,7 +27,7 @@
 		var token = grammar[tokenName];
 
 		if (!token) {
-			// add doc comment: /** */
+
 			var definition = {};
 			definition[tokenName] = {
 				pattern: /(^|[^\\])\/\*\*[^/][\s\S]*?(?:\*\/|$)/,
@@ -43,7 +39,7 @@
 			token = grammar[tokenName];
 		}
 
-		if (token instanceof RegExp) { // convert regex to object
+		if (token instanceof RegExp) {
 			token = grammar[tokenName] = { pattern: token };
 		}
 

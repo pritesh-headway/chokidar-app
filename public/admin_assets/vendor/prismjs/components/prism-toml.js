@@ -32,12 +32,12 @@
 		},
 		'date': [
 			{
-				// Offset Date-Time, Local Date-Time, Local Date
+
 				pattern: /\b\d{4}-\d{2}-\d{2}(?:[T\s]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?)?\b/i,
 				alias: 'number'
 			},
 			{
-				// Local Time
+
 				pattern: /\b\d{2}:\d{2}:\d{2}(?:\.\d+)?\b/,
 				alias: 'number'
 			}

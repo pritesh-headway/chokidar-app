@@ -38,7 +38,7 @@
 			}
 		},
 		'table-body': {
-			// Look-behind is used to skip the table head, which has the same format as any table row
+
 			pattern: RegExp('(' + tableRow + ')(?:' + tableRow + ')+'),
 			lookbehind: true,
 			inside: {

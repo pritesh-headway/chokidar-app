@@ -83,8 +83,6 @@ export default class Tooltip {
       let xAxis = new XAxis(this.ctx)
       this.xAxisTicksPositions = xAxis.getXAxisTicksPositions()
     }
-
-    // we forcefully set intersect true for these conditions
     if (
       (w.globals.comboCharts ||
         this.tConfig.intersect ||
@@ -95,11 +93,9 @@ export default class Tooltip {
     }
 
     if (w.config.markers.size === 0 || w.globals.markers.largestSize === 0) {
-      // when user don't want to show points all the time, but only on when hovering on series
+
       this.marker.drawDynamicPoints(this)
     }
-
-    // no visible series, exit
     if (w.globals.collapsedSeries.length === w.globals.series.length) return
 
     this.dataPointsDividedHeight = w.globals.gridHeight / w.globals.dataPoints
@@ -114,7 +110,7 @@ export default class Tooltip {
       tooltipEl.appendChild(this.tooltipTitle)
     }
 
-    let ttItemsCnt = w.globals.series.length // whether shared or not, default is shared
+    let ttItemsCnt = w.globals.series.length
     if ((w.globals.xyCharts || w.globals.comboCharts) && this.tConfig.shared) {
       if (!this.showOnIntersect) {
         ttItemsCnt = w.globals.series.length
@@ -161,20 +157,20 @@ export default class Tooltip {
       gYZ.style.fontFamily =
         this.tConfig.style.fontFamily || w.config.chart.fontFamily
       gYZ.style.fontSize = this.tConfig.style.fontSize
-      ;['y', 'goals', 'z'].forEach((g) => {
-        const gValText = document.createElement('div')
-        gValText.classList.add(`apexcharts-tooltip-${g}-group`)
+        ;['y', 'goals', 'z'].forEach((g) => {
+          const gValText = document.createElement('div')
+          gValText.classList.add(`apexcharts-tooltip-${g}-group`)
 
-        let txtLabel = document.createElement('span')
-        txtLabel.classList.add(`apexcharts-tooltip-text-${g}-label`)
-        gValText.appendChild(txtLabel)
+          let txtLabel = document.createElement('span')
+          txtLabel.classList.add(`apexcharts-tooltip-text-${g}-label`)
+          gValText.appendChild(txtLabel)
 
-        let txtValue = document.createElement('span')
-        txtValue.classList.add(`apexcharts-tooltip-text-${g}-value`)
-        gValText.appendChild(txtValue)
+          let txtValue = document.createElement('span')
+          txtValue.classList.add(`apexcharts-tooltip-text-${g}-value`)
+          gValText.appendChild(txtValue)
 
-        gYZ.appendChild(gValText)
-      })
+          gYZ.appendChild(gValText)
+        })
 
       gTxt.appendChild(gYZ)
 
@@ -277,11 +273,9 @@ export default class Tooltip {
         '.apexcharts-line-series .apexcharts-marker, .apexcharts-area-series .apexcharts-marker'
       )
       if (lineAreaPoints.length > 0) {
-        // if we find any lineSeries, addEventListeners for them
+
         this.addPathsEventListeners(lineAreaPoints, seriesHoverParams)
       }
-
-      // combo charts may have bars, so add event listeners here too
       if (this.tooltipUtil.hasBars() && !this.tConfig.shared) {
         this.addDatapointEventsListeners(seriesHoverParams)
       }
@@ -358,20 +352,12 @@ export default class Tooltip {
    ** Check to see if the tooltips should be updated based on a mouse / touch event
    */
   onSeriesHover(opt, e) {
-    // If a user is moving their mouse quickly, don't bother updating the tooltip every single frame
-
     const targetDelay = 100
     const timeSinceLastUpdate = Date.now() - this.lastHoverTime
     if (timeSinceLastUpdate >= targetDelay) {
-      // The tooltip was last updated over 100ms ago - redraw it even if the user is still moving their
-      // mouse so they get some feedback that their moves are being registered
       this.seriesHover(opt, e)
     } else {
-      // The tooltip was last updated less than 100ms ago
-      // Cancel any other delayed draw, so we don't show stale data
       clearTimeout(this.seriesHoverTimeout)
-
-      // Schedule the next draw so that it happens about 100ms after the last update
       this.seriesHoverTimeout = setTimeout(() => {
         this.seriesHover(opt, e)
       }, targetDelay - timeSinceLastUpdate)
@@ -385,8 +371,6 @@ export default class Tooltip {
     this.lastHoverTime = Date.now()
     let chartGroups = []
     const w = this.w
-
-    // if user has more than one charts in group, we need to sync
     if (w.config.chart.group) {
       chartGroups = this.ctx.getGroupedCharts()
     }
@@ -412,8 +396,6 @@ export default class Tooltip {
           hoverArea: opt.hoverArea,
           ttItems: ch.w.globals.tooltip.ttItems
         }
-
-        // all the charts should have the same minX and maxX (same xaxis) for multiple tooltips to work correctly
         if (
           ch.w.globals.minX === this.w.globals.minX &&
           ch.w.globals.maxX === this.w.globals.maxX
@@ -441,8 +423,6 @@ export default class Tooltip {
     const tooltipEl = this.getElTooltip()
 
     if (!tooltipEl) return
-
-    // tooltipRect is calculated on every mousemove, because the text is dynamic
     ttCtx.tooltipRect = {
       x: 0,
       y: 0,
@@ -450,8 +430,6 @@ export default class Tooltip {
       ttHeight: tooltipEl.getBoundingClientRect().height
     }
     ttCtx.e = e
-
-    // highlight the current hovered bars
     if (
       ttCtx.tooltipUtil.hasBars() &&
       !w.globals.comboCharts &&
@@ -474,7 +452,7 @@ export default class Tooltip {
         tooltipRect: ttCtx.tooltipRect
       })
     } else {
-      // non-plot charts i.e pie/donut/circle
+
       ttCtx.nonAxisChartsTooltips({
         e,
         opt,
@@ -482,8 +460,6 @@ export default class Tooltip {
       })
     }
   }
-
-  // tooltip handling for line/area/bar/columns/scatter
   axisChartsTooltips({ e, opt }) {
     let w = this.w
     let x, y
@@ -534,10 +510,10 @@ export default class Tooltip {
       e.type === 'touchmove' ||
       e.type === 'mouseup'
     ) {
-      // there is no series to hover over
+
       if (
         w.globals.collapsedSeries.length +
-          w.globals.ancillaryCollapsedSeries.length ===
+        w.globals.ancillaryCollapsedSeries.length ===
         w.globals.series.length
       ) {
         return
@@ -582,7 +558,7 @@ export default class Tooltip {
           }
 
           if (this.tooltipUtil.hasMarkers()) {
-            // intersect - line/area/scatter/bubble
+
             this.intersect.handleMarkerTooltip({
               e,
               opt,
@@ -604,8 +580,6 @@ export default class Tooltip {
       this.handleMouseOut(opt)
     }
   }
-
-  // tooltip handling for pie/donuts
   nonAxisChartsTooltips({ e, opt, tooltipRect }) {
     let w = this.w
     let rel = opt.paths.getAttribute('rel')
@@ -681,10 +655,8 @@ export default class Tooltip {
     if (capturedSeries !== null) {
       this.handleStickyCapturedSeries(e, capturedSeries, opt, j)
     } else {
-      // couldn't capture any series. check if shared X is same,
-      // if yes, draw a grouped tooltip
       if (this.tooltipUtil.isXoverlap(j) || w.globals.isBarHorizontal) {
-        const firstVisibleSeries = w.globals.series.findIndex((s,i) => !w.globals.collapsedSeriesIndices.includes(i))
+        const firstVisibleSeries = w.globals.series.findIndex((s, i) => !w.globals.collapsedSeriesIndices.includes(i))
         this.create(e, this, firstVisibleSeries, j, opt.ttItems)
       }
     }
@@ -712,7 +684,7 @@ export default class Tooltip {
       }
     } else {
       if (this.tooltipUtil.isXoverlap(j)) {
-        const firstVisibleSeries = w.globals.series.findIndex((s,i) => !w.globals.collapsedSeriesIndices.includes(i));
+        const firstVisibleSeries = w.globals.series.findIndex((s, i) => !w.globals.collapsedSeriesIndices.includes(i));
         this.create(e, this, firstVisibleSeries, j, opt.ttItems)
       }
     }
@@ -801,14 +773,10 @@ export default class Tooltip {
       let legendFormatter = w.config.legend.tooltipHoverFormatter
 
       let els = Array.from(this.legendLabels)
-
-      // reset all legend values first
       els.forEach((l) => {
         const legendName = l.getAttribute('data:default-text')
         l.innerHTML = decodeURIComponent(legendName)
       })
-
-      // for irregular time series
       for (let i = 0; i < els.length; i++) {
         const l = els[i]
         const lsIndex = parseInt(l.getAttribute('i'), 10)
@@ -866,13 +834,11 @@ export default class Tooltip {
       else if (this.tooltipUtil.hasBars()) {
         this.barSeriesHeight = this.tooltipUtil.getBarsHeight(bars)
         if (this.barSeriesHeight > 0) {
-          // hover state, activate snap filter
+
           let graphics = new Graphics(this.ctx)
           let paths = w.globals.dom.Paper.select(
             `.apexcharts-bar-area[j='${j}']`
           )
-
-          // de-activate first
           this.deactivateHoverFilter()
 
           this.tooltipPosition.moveStickyTooltipOverBars(j, capturedSeries)

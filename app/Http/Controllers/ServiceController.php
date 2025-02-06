@@ -24,18 +24,14 @@ class ServiceController extends Controller
                 'data' => $validator->errors(),
             ], 200);
         }
-
-        // Use the predefined image for service_image
         $serviceImagePath = 'service_images/service1.png';
 
         $service = Service::create([
             'service_name' => $request->service_name,
             'service_type' => $request->service_type,
-            'status' => $request->status ?: 'active', // Default to 'active' if not provided
+            'status' => $request->status ?: 'active',
             'service_image' => $serviceImagePath,
         ]);
-
-        // Return full URL for the service image
         $service->service_image = env('APP_URL') . '/public/storage/' . $serviceImagePath;
 
         return response()->json([
@@ -63,12 +59,8 @@ class ServiceController extends Controller
         }
 
         $service = Service::find($request->id);
-
-        // Keep the same predefined image for service_image
         $service->service_image = 'service_images/service1.png';
         $service->update($request->only('service_name', 'service_type', 'status'));
-
-        // Return full URL for the service image
         $service->service_image = env('APP_URL') . '/public/storage/' . $service->service_image;
 
         return response()->json([
@@ -77,21 +69,14 @@ class ServiceController extends Controller
             'data' => $service,
         ], 200);
     }
-
-    // Get all services with "no" indexing
     public function index(Request $request)
     {
         $services = Service::all();
-
-        // Add 'no' for indexing and full URL for service_image
         $services = $services->map(function ($service, $index) {
             $service->no = $index + 1;
             $service->service_image = env('APP_URL') . '/public/storage/' . $service->service_image;
             return $service;
         });
-
-
-
         return response()->json([
             'status' => true,
             'message' => 'Services retrieved successfully',
@@ -101,8 +86,8 @@ class ServiceController extends Controller
     public function show(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'nullable|exists:services,id', // 'id' is optional, but must exist if provided
-            'service_type' => 'nullable|in:society,owner,both', // 'service_type' is optional and validated if provided
+            'id' => 'nullable|exists:services,id',
+            'service_type' => 'nullable|in:society,owner,both',
         ]);
 
         if ($validator->fails()) {
@@ -112,11 +97,7 @@ class ServiceController extends Controller
                 'data' => $validator->errors(),
             ], 200);
         }
-
-        // Start building the query
         $query = Service::query();
-
-        // If 'id' is provided, filter by 'id' (single service)
         if ($request->has('id')) {
             $service = $query->where('id', $request->id)->first();
 
@@ -127,9 +108,7 @@ class ServiceController extends Controller
                     'data' => [],
                 ], 404);
             }
-
-            // Add "no" index along with the id
-            $service->no = 1; // Since only one service is returned, index is 1
+            $service->no = 1;
             $service->service_image = env('APP_URL') . '/public/storage/' . $service->service_image;
 
             return response()->json([
@@ -138,8 +117,6 @@ class ServiceController extends Controller
                 'data' => $service,
             ], 200);
         }
-
-        // If 'service_type' is provided, filter by 'service_type' (multiple services)
         if ($request->has('service_type')) {
             $services = $query->where('service_type', $request->service_type)->get();
 
@@ -150,10 +127,8 @@ class ServiceController extends Controller
                     'data' => [],
                 ], 200);
             }
-
-            // Add "no" index along with the id for each service
             $services->each(function ($service, $index) {
-                $service->no = $index + 1; // Index starts from 1 (not 0)
+                $service->no = $index + 1;
                 $service->service_image = env('APP_URL') . '/public/storage/' . $service->service_image;
             });
 
@@ -163,13 +138,9 @@ class ServiceController extends Controller
                 'data' => $services,
             ], 200);
         }
-
-        // If neither 'id' nor 'service_type' is provided, return all services
         $services = $query->get();
-
-        // Add "no" index along with the id for each service
         $services->each(function ($service, $index) {
-            $service->no = $index + 1; // Index starts from 1 (not 0)
+            $service->no = $index + 1;
             $service->service_image = env('APP_URL') . '/public/storage/' . $service->service_image;
         });
 
@@ -179,10 +150,6 @@ class ServiceController extends Controller
             'data' => $services,
         ], 200);
     }
-
-
-
-    // Delete a service
     public function destroy(Request $request)
     {
         $validator = Validator::make($request->all(), [

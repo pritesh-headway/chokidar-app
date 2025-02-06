@@ -31,7 +31,7 @@
 			}
 		},
 		'class-name': {
-			// @param <T> the first generic type parameter
+
 			pattern: /(@param\s+)<[A-Z]\w*>/,
 			lookbehind: true,
 			inside: {
@@ -44,7 +44,7 @@
 				lookbehind: true,
 				inside: {
 					'code': {
-						// there can't be any HTML inside of {@code} tags
+
 						pattern: codeLinePattern,
 						lookbehind: true,
 						inside: Prism.languages.java,
@@ -60,11 +60,11 @@
 						pattern: codeLinePattern,
 						lookbehind: true,
 						inside: {
-							// highlight HTML tags and entities
+
 							'tag': Prism.languages.markup.tag,
 							'entity': Prism.languages.markup.entity,
 							'code': {
-								// everything else is Java code
+
 								pattern: /.+/,
 								inside: Prism.languages.java,
 								alias: 'language-java'

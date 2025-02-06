@@ -20,14 +20,6 @@ Route::get('/societyregister', function () {
 })->name('societyregister');
 
 Route::post('/login', [SuperAdminController::class, 'login'])->name('auth.login');
-
-// Route::group(['middleware' => ['web'], 'prefix' => 'admin'], function () {
-//     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-
-// });
-
-
-
 Route::middleware([WebMiddleware::class])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
@@ -37,8 +29,6 @@ Route::middleware([WebMiddleware::class])->group(function () {
     Route::get('/admin/societies/{id}/edit', [AllSocietyController::class, 'edit'])->name('societies.edit');
     Route::post('/admin/societies/{id}/update', [AllSocietyController::class, 'update'])->name('societies.update');
     Route::delete('/admin/societies/{id}', [AllSocietyController::class, 'destroy'])->name('societies.destroy');
-
-
     Route::resource('contactus', App\Http\Controllers\backend\ContactUsController::class)->names([
         'index' => 'contactus.index',
         'create' => 'contactus.create',
@@ -58,7 +48,4 @@ Route::middleware([WebMiddleware::class])->group(function () {
         'update' => 'houses.update',
         'destroy' => 'houses.destroy',
     ]);
-
-    // Route::post('/admin/societies/create', [AllSocietyController::class, 'create'])->name('societies.create');
-    // Route::post('/admin/societies', [AllSocietyController::class, 'store'])->name('societies.store');
 });

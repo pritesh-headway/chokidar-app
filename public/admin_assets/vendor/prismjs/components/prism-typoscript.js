@@ -5,19 +5,17 @@
 	Prism.languages.typoscript = {
 		'comment': [
 			{
-				// multiline comments /* */
+
 				pattern: /(^|[^\\])\/\*[\s\S]*?(?:\*\/|$)/,
 				lookbehind: true
 			},
 			{
-				// double-slash comments - ignored when backslashes or colon is found in front
-				// also ignored whenever directly after an equal-sign, because it would probably be an url without protocol
 				pattern: /(^|[^\\:= \t]|(?:^|[^= \t])[ \t]+)\/\/.*/,
 				lookbehind: true,
 				greedy: true
 			},
 			{
-				// hash comments - ignored when leading quote is found for hex colors in strings
+
 				pattern: /(^|[^"'])#.*/,
 				lookbehind: true,
 				greedy: true
@@ -25,7 +23,7 @@
 		],
 		'function': [
 			{
-				// old include style
+
 				pattern: /<INCLUDE_TYPOSCRIPT:\s*source\s*=\s*(?:"[^"\r\n]*"|'[^'\r\n]*')\s*>/,
 				inside: {
 					'string': {
@@ -40,7 +38,7 @@
 				},
 			},
 			{
-				// new include style
+
 				pattern: /@import\s*(?:"[^"\r\n]*"|'[^'\r\n]*')/,
 				inside: {
 					'string': /"[^"\r\n]*"|'[^'\r\n]*'/,
@@ -51,7 +49,7 @@
 			pattern: /^([^=]*=[< ]?)(?:(?!\]\n).)*/,
 			lookbehind: true,
 			inside: {
-				'function': /\{\$.*\}/, // constants include
+				'function': /\{\$.*\}/,
 				'keyword': keywords,
 				'number': /^\d+$/,
 				'punctuation': /[,|:]/,
@@ -59,7 +57,7 @@
 		},
 		'keyword': keywords,
 		'number': {
-			// special highlighting for indexes of arrays in tags
+
 			pattern: /\b\d+\s*[.{=]/,
 			inside: {
 				'operator': /[.{=]/,

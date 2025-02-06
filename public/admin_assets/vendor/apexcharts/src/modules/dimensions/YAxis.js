@@ -41,16 +41,12 @@ export default class DimYAxis {
         let minV = yS.niceMin === Number.MIN_VALUE ? 0 : yS.niceMin
         const longestStr =
           String(minV).length > String(yS.niceMax).length ? minV : yS.niceMax
-
-        // the second parameter -1 is the index of tick which user can use in the formatter
         let val = lbFormatter(longestStr, {
           seriesIndex: index,
           dataPointIndex: -1,
           w
         })
         let valArr = val
-
-        // if user has specified a custom formatter, and the result is null or empty, we need to discard the formatter and take the value as it is.
         if (typeof val === 'undefined' || val.length === 0) {
           val = longestStr
         }
@@ -59,8 +55,6 @@ export default class DimYAxis {
           labelPad = 0
 
           let barYaxisLabels = w.globals.labels.slice()
-
-          //  get the longest string from the labels array and also apply label formatter to it
           val = Utils.getLargestStringFromArr(barYaxisLabels)
 
           val = lbFormatter(val, { seriesIndex: index, dataPointIndex: -1, w })
@@ -98,8 +92,8 @@ export default class DimYAxis {
             (yAxisMinWidth > arrLabelrect.width || yAxisMinWidth > rect.width
               ? yAxisMinWidth
               : arrLabelrect.width > rect.width
-              ? arrLabelrect.width
-              : rect.width) + labelPad,
+                ? arrLabelrect.width
+                : rect.width) + labelPad,
           height:
             arrLabelrect.height > rect.height
               ? arrLabelrect.height
@@ -160,7 +154,7 @@ export default class DimYAxis {
     let padding = w.globals.yAxisScale.length > 1 ? 10 : 0
     const axesUtils = new AxesUtils(this.dCtx.ctx)
 
-    const isHiddenYAxis = function(index) {
+    const isHiddenYAxis = function (index) {
       return w.globals.ignoreYAxisIndexes.indexOf(index) > -1
     }
 

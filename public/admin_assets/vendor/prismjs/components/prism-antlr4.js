@@ -23,7 +23,7 @@ Prism.languages.antlr4 = {
 		greedy: true,
 		inside: {
 			'content': {
-				// this might be C, C++, Python, Java, C#, or any other language ANTLR4 compiles to
+
 				pattern: /(\{)[\s\S]+(?=\})/,
 				lookbehind: true
 			},

@@ -63,25 +63,19 @@ class Graphics {
         y: movingPoint.y + (targetPoint.y - movingPoint.y) * fraction
       }
     }
-
-    // Adjusts the ending position of a command
     function adjustCommand(cmd, newPoint) {
       if (cmd.length > 2) {
         cmd[cmd.length - 2] = newPoint.x
         cmd[cmd.length - 1] = newPoint.y
       }
     }
-
-    // Gives an {x, y} object for a command's ending position
     function pointForCommand(cmd) {
       return {
         x: parseFloat(cmd[cmd.length - 2]),
         y: parseFloat(cmd[cmd.length - 1])
       }
     }
-
-    // Split apart the path, handing concatonated letters and numbers
-    var pathParts = pathString.split(/[,\s]/).reduce(function(parts, part) {
+    var pathParts = pathString.split(/[,\s]/).reduce(function (parts, part) {
       var match = part.match('([a-zA-Z])(.+)')
       if (match) {
         parts.push(match[1])
@@ -92,9 +86,7 @@ class Graphics {
 
       return parts
     }, [])
-
-    // Group the commands with their arguments for easier handling
-    var commands = pathParts.reduce(function(commands, part) {
+    var commands = pathParts.reduce(function (commands, part) {
       if (parseFloat(part) == part && commands.length) {
         commands[commands.length - 1].push(part)
       } else {
@@ -103,33 +95,23 @@ class Graphics {
 
       return commands
     }, [])
-
-    // The resulting commands, also grouped
     var resultCommands = []
 
     if (commands.length > 1) {
       var startPoint = pointForCommand(commands[0])
-
-      // Handle the close path case with a "virtual" closing line
       var virtualCloseLine = null
       if (commands[commands.length - 1][0] == 'Z' && commands[0].length > 2) {
         virtualCloseLine = ['L', startPoint.x, startPoint.y]
         commands[commands.length - 1] = virtualCloseLine
       }
-
-      // We always use the first command (but it may be mutated)
       resultCommands.push(commands[0])
 
       for (var cmdIndex = 1; cmdIndex < commands.length; cmdIndex++) {
         var prevCmd = resultCommands[resultCommands.length - 1]
 
         var curCmd = commands[cmdIndex]
-
-        // Handle closing case
         var nextCmd =
           curCmd == virtualCloseLine ? commands[1] : commands[cmdIndex + 1]
-
-        // Nasty logic to decide if this path is a candidite.
         if (
           nextCmd &&
           prevCmd &&
@@ -138,28 +120,19 @@ class Graphics {
           nextCmd.length > 2 &&
           nextCmd[0] == 'L'
         ) {
-          // Calc the points we're dealing with
+
           var prevPoint = pointForCommand(prevCmd)
           var curPoint = pointForCommand(curCmd)
           var nextPoint = pointForCommand(nextCmd)
-
-          // The start and end of the cuve are just our point moved towards the previous and next points, respectivly
           var curveStart, curveEnd
 
           curveStart = moveTowardsLength(curPoint, prevPoint, radius)
           curveEnd = moveTowardsLength(curPoint, nextPoint, radius)
-
-          // Adjust the current command and add it
           adjustCommand(curCmd, curveStart)
           curCmd.origPoint = curPoint
           resultCommands.push(curCmd)
-
-          // The curve control points are halfway between the start/end of the curve and
-          // the original point
           var startControl = moveTowardsFractional(curveStart, curPoint, 0.5)
           var endControl = moveTowardsFractional(curPoint, curveEnd, 0.5)
-
-          // Create the curve
           var curveCmd = [
             'C',
             startControl.x,
@@ -169,16 +142,14 @@ class Graphics {
             curveEnd.x,
             curveEnd.y
           ]
-          // Save the original point for fractional calculations
+
           curveCmd.origPoint = curPoint
           resultCommands.push(curveCmd)
         } else {
-          // Pass through commands that don't qualify
+
           resultCommands.push(curCmd)
         }
       }
-
-      // Fix up the starting point and restore the close path if the path was orignally closed
       if (virtualCloseLine) {
         var newStartPoint = pointForCommand(
           resultCommands[resultCommands.length - 1]
@@ -190,7 +161,7 @@ class Graphics {
       resultCommands = commands
     }
 
-    return resultCommands.reduce(function(str, c) {
+    return resultCommands.reduce(function (str, c) {
       return str + c.join(' ') + ' '
     }, '')
   }
@@ -247,8 +218,6 @@ class Graphics {
       stroke: strokeColor !== null ? strokeColor : 'none',
       'stroke-dasharray': strokeDashArray
     })
-
-    // fix apexcharts.js#1410
     rect.node.setAttribute('fill', color)
 
     return rect
@@ -441,9 +410,6 @@ class Graphics {
         'clip-path': `url(#gridRectMask${w.globals.cuid})`
       })
     }
-
-    // const defaultFilter = el.filterer
-
     if (w.config.states.normal.filter.type !== 'none') {
       filters.getDefaultFilter(el, realIndex)
     } else {
@@ -556,7 +522,7 @@ class Graphics {
     let g
 
     if (gfrom.length < 9 && gfrom.indexOf('#') === 0) {
-      // if the hex contains alpha and is of 9 digit, skip the opacity
+
       gfrom = Utils.hexToRgba(gfrom, opacityFrom)
     }
     if (gto.length < 9 && gto.indexOf('#') === 0) {
@@ -765,9 +731,6 @@ class Graphics {
         size = 0
         y = 0
       }
-
-      // let nSize = size - opts.pRadius / 2 < 0 ? 0 : size - opts.pRadius / 2
-
       elPoint = this.drawCircle(size, {
         cx: x,
         cy: y,
@@ -899,7 +862,7 @@ class Graphics {
       if (activeFilter !== 'none') {
         filters.applyFilter(path, i, activeFilter.type, activeFilter.value)
       } else {
-        // Reapply the hover filter in case it was removed by `deselect`when there is no active filter and it is not a touch device
+
         if (w.config.states.hover.filter !== 'none') {
           if (!w.globals.isTouchDevice) {
             var hoverFilter = w.config.states.hover.filter
@@ -908,7 +871,7 @@ class Graphics {
         }
       }
     } else {
-      // If the item was deselected, apply hover state filter if it is not a touch device
+
       if (w.config.states.active.filter.type !== 'none') {
         if (
           w.config.states.hover.filter.type !== 'none' &&
@@ -1007,7 +970,7 @@ class Graphics {
     if (typeof textObj.getComputedTextLength !== 'function') return
     textObj.textContent = textString
     if (textString.length > 0) {
-      // ellipsis is needed
+
       if (textObj.getComputedTextLength() >= width / 1.1) {
         for (let x = textString.length - 3; x > 0; x -= 3) {
           if (textObj.getSubStringLength(0, x) <= width / 1.1) {
@@ -1015,7 +978,7 @@ class Graphics {
             return
           }
         }
-        textObj.textContent = '.' // can't place at all
+        textObj.textContent = '.'
       }
     }
   }

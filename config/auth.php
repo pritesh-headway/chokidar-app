@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web', //env('AUTH_GUARD', 'api'), // should be api here
+        'guard' => 'web', //env('AUTH_GUARD', 'api'),
         'passwords' => 'users',
     ],
 
@@ -44,8 +44,6 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
-
-
     ],
 
     /*
@@ -68,14 +66,9 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            // 'model' => env('AUTH_MODEL', App\Models\User::class),
+
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*

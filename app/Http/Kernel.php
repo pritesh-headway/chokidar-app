@@ -15,7 +15,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        // Add middleware you need globally here
+
         \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Http\Middleware\HandleCors::class,
 
@@ -59,18 +59,9 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        // 'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
-        // 'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        // 'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-        // 'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-        // 'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-        // 'role' => \App\Http\Middleware\RoleMiddleware::class,
-        // 'route' => \App\Http\Middleware\RoleMiddleware::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'auth.api' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
         'auth.web' => \Illuminate\Auth\Middleware\Authenticate::class,
         'web' => \App\Http\Middleware\WebMiddleware::class,
-
-
     ];
 }

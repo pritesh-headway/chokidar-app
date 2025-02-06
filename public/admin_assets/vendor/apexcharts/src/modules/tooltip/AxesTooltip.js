@@ -115,8 +115,6 @@ class AxesTooltip {
   setXCrosshairWidth() {
     let w = this.w
     const ttCtx = this.ttCtx
-
-    // set xcrosshairs width
     const xcrosshairs = ttCtx.getElXCrosshairs()
     ttCtx.xcrosshairsWidth = parseInt(w.config.xaxis.crosshairs.width, 10)
 
@@ -157,8 +155,6 @@ class AxesTooltip {
   handleYCrosshair() {
     let w = this.w
     const ttCtx = this.ttCtx
-
-    // set ycrosshairs height
     ttCtx.ycrosshairs = w.globals.dom.baseEl.querySelector(
       '.apexcharts-ycrosshairs'
     )

@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('../dom/event-handler.js'), require('./index.js'), require('../dom/selector-engine.js')) :
-  typeof define === 'function' && define.amd ? define(['exports', '../dom/event-handler', './index', '../dom/selector-engine'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ComponentFunctions = {}, global.EventHandler, global.Index, global.SelectorEngine));
-})(this, (function (exports, EventHandler, index_js, SelectorEngine) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['exports', '../dom/event-handler', './index', '../dom/selector-engine'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ComponentFunctions = {}, global.EventHandler, global.Index, global.SelectorEngine));
+})(this, (function (exports, EventHandler, index_js, SelectorEngine) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -27,8 +28,6 @@
       }
       const target = SelectorEngine.getElementFromSelector(this) || this.closest(`.${name}`);
       const instance = component.getOrCreateInstance(target);
-
-      // Method argument is left, for Alert and only, as it doesn't implement the 'hide' method
       instance[method]();
     });
   };

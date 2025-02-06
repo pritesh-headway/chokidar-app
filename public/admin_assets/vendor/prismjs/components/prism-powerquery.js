@@ -1,5 +1,3 @@
-// https://docs.microsoft.com/en-us/powerquery-m/power-query-m-language-specification
-
 Prism.languages.powerquery = {
 	'comment': {
 		pattern: /(^|[^\\])(?:\/\*[\s\S]*?\*\/|\/\/.*)/,

@@ -1,5 +1,3 @@
-// https://www.stata.com/manuals/m.pdf
-
 (function (Prism) {
 
 	var orgType = /\b(?:(?:col|row)?vector|matrix|scalar)\b/.source;

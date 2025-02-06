@@ -19,17 +19,12 @@
 	 * @property {string} type
 	 * @property {string} content
 	 */
-
-	// options
-
 	/** @type {ClassAdder | undefined} */
 	var adder;
 	/** @type {ClassMapper | undefined} */
 	var mapper;
 	/** @type {string} */
 	var prefixString = '';
-
-
 	/**
 	 * @param {string} className
 	 * @param {string} language
@@ -37,8 +32,6 @@
 	function apply(className, language) {
 		return prefixString + (mapper ? mapper(className, language) : className);
 	}
-
-
 	Prism.plugins.customClass = {
 		/**
 		 * Sets the function which can be used to add custom aliases to any token.

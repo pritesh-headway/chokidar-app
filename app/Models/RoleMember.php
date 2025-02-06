@@ -20,8 +20,6 @@ class RoleMember extends Model
         'last_name',
         'status',
     ];
-
-    // Define relationships
     public function role()
     {
         return $this->belongsTo(Designation::class);

@@ -39,8 +39,6 @@ export default class Labels {
       shared,
       e
     })
-
-    // Re-calculate tooltip dimensions now that we have drawn the text
     const tooltipEl = this.ttCtx.getElTooltip()
 
     this.ttCtx.tooltipRect.ttWidth = tooltipEl.getBoundingClientRect().width
@@ -63,7 +61,7 @@ export default class Labels {
 
     let seriesName = ''
 
-    let pColor = w.globals.colors[i] // The pColor here is for the markers inside tooltip
+    let pColor = w.globals.colors[i]
     if (j !== null && w.config.plotOptions.bar.distributed) {
       pColor = w.globals.colors[j]
     }
@@ -138,14 +136,14 @@ export default class Labels {
             })
           }
         } else {
-          // get a color from a hover area (if it's a line pattern then get from a first line)
+
           const targetFill = e?.target?.getAttribute('fill')
           if (targetFill) {
             pColor =
               targetFill.indexOf('url') !== -1
                 ? document
-                    .querySelector(targetFill.substr(4).slice(0, -1))
-                    .childNodes[0].getAttribute('stroke')
+                  .querySelector(targetFill.substr(4).slice(0, -1))
+                  .childNodes[0].getAttribute('stroke')
                 : targetFill
           }
           val = getValBySeriesIndex(i)
@@ -163,8 +161,6 @@ export default class Labels {
           }
         }
       }
-
-      // for pie / donuts
       if (j === null) {
         val = f.yLbFormatter(w.globals.series[i], {
           ...w,
@@ -219,14 +215,14 @@ export default class Labels {
       if (w.globals.yLabelFormatters[0]) {
         yLbFormatter = w.globals.yLabelFormatters[0]
       } else {
-        yLbFormatter = function(label) {
+        yLbFormatter = function (label) {
           return label
         }
       }
     }
 
     if (typeof yLbTitleFormatter !== 'function') {
-      yLbTitleFormatter = function(label) {
+      yLbTitleFormatter = function (label) {
         return label
       }
     }
@@ -263,15 +259,13 @@ export default class Labels {
 
     if (ttCtx.showTooltipTitle) {
       if (ttCtx.tooltipTitle === null) {
-        // get it once if null, and store it in class property
+
         ttCtx.tooltipTitle = w.globals.dom.baseEl.querySelector(
           '.apexcharts-tooltip-title'
         )
       }
       ttCtx.tooltipTitle.innerHTML = xVal
     }
-
-    // if xaxis tooltip is constructed, we need to replace the innerHTML
     if (ttCtx.isXAxisTooltipEnabled) {
       ttCtx.xaxisTooltipText.innerHTML = xAxisTTVal !== '' ? xAxisTTVal : xVal
     }
@@ -353,7 +347,7 @@ export default class Labels {
     }
 
     if (shared && ttItemsChildren[0]) {
-      // hide when no Val or series collapsed
+
       if (
         typeof val === 'undefined' ||
         val === null ||
@@ -371,13 +365,11 @@ export default class Labels {
   toggleActiveInactiveSeries(shared) {
     const w = this.w
     if (shared) {
-      // make all tooltips active
+
       this.tooltipUtil.toggleAllTooltipSeriesGroups('enable')
     } else {
-      // disable all tooltip text groups
-      this.tooltipUtil.toggleAllTooltipSeriesGroups('disable')
 
-      // enable the first tooltip text group
+      this.tooltipUtil.toggleAllTooltipSeriesGroups('disable')
       let firstTooltipSeriesGroup = w.globals.dom.baseEl.querySelector(
         '.apexcharts-tooltip-series-group'
       )
@@ -413,7 +405,7 @@ export default class Labels {
       if (w.globals.isXNumeric && w.config.chart.type !== 'treemap') {
         xVal = filteredSeriesX[i][j]
         if (filteredSeriesX[i].length === 0) {
-          // a series (possibly the first one) might be collapsed, so get the next active index
+
           const firstActiveSeriesIndex = this.tooltipUtil.getFirstActiveXArray(
             filteredSeriesX
           )
@@ -446,8 +438,6 @@ export default class Labels {
         xVal = w.globals.xLabelFormatter(bufferXVal, customFormatterOpts)
       }
     }
-
-    // override default x-axis formatter with tooltip formatter
     if (w.config.tooltip.x.formatter !== undefined) {
       xVal = w.globals.ttKeyFormatter(bufferXVal, customFormatterOpts)
     }
@@ -480,8 +470,6 @@ export default class Labels {
     if (Array.isArray(fn) && fn[i]) {
       fn = fn[i]
     }
-
-    // override everything with a custom html tooltip and replace it
     tooltipEl.innerHTML = fn({
       ctx: this.ctx,
       series: w.globals.series,

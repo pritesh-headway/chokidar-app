@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/ContactUsController.php
 
 namespace App\Http\Controllers;
 
@@ -16,22 +15,20 @@ class ContactUsController extends Controller
 {
     public function store(Request $request)
     {
-        // Validate the incoming data
+
         $validator = Validator::make($request->all(), [
             'society_name' => 'required|string|max:255',
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone_number' => 'nullable|digits:10', // Ensure it's a 10-digit number
+            'phone_number' => 'nullable|digits:10',
             'comments' => 'required|string|max:500',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
-        // Create a new contact record
         $contactUs = ContactUs::create([
             'society_name' => $request->society_name,
             'country' => $request->country,
@@ -43,9 +40,7 @@ class ContactUsController extends Controller
         ]);
 
         Mail::to('durgesh.hirani@headway.org.in')->send(new ContactUsSubmitted($contactUs));
-
-        // Send notification to admin
-        $admin = User::where('role_id', 1)->first(); // Assuming role_id 1 is for admin
+        $admin = User::where('role_id', 1)->first();
         Notification::send($admin, new ContactUsNotification($contactUs->toArray()));
 
         return response()->json(['status' => true, 'message' => 'Contact submitted successfully!', 'data' => $contactUs], 201);

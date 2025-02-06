@@ -1,8 +1,10 @@
 @use "sass:math";
 
-.dropzone, .dropzone * {
+.dropzone,
+.dropzone * {
   box-sizing: border-box;
 }
+
 .dropzone {
 
   position: relative;
@@ -17,6 +19,7 @@
       display: block;
       height: 15px;
       border: 1px solid #aaa;
+
       .dz-upload {
         display: block;
         height: 100%;
@@ -29,18 +32,23 @@
       color: red;
       display: none;
     }
+
     &.dz-error {
-      .dz-error-message, .dz-error-mark {
+
+      .dz-error-message,
+      .dz-error-mark {
         display: block;
       }
     }
+
     &.dz-success {
       .dz-success-mark {
         display: block;
       }
     }
 
-    .dz-error-mark, .dz-success-mark {
+    .dz-error-mark,
+    .dz-success-mark {
       position: absolute;
       display: none;
       left: 30px;
@@ -50,8 +58,6 @@
       left: 50%;
       margin-left: -(math.div(54px, 2));
     }
-
-
   }
 
 }

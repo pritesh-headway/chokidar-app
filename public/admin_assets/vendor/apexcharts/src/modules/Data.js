@@ -19,8 +19,6 @@ export default class Data {
   isMultiFormat() {
     return this.isFormatXY() || this.isFormat2DArray()
   }
-
-  // given format is [{x, y}, {x, y}]
   isFormatXY() {
     const series = this.w.config.series.slice()
 
@@ -37,8 +35,6 @@ export default class Data {
       return true
     }
   }
-
-  // given format is [[x, y], [x, y]]
   isFormat2DArray() {
     const series = this.w.config.series.slice()
 
@@ -70,10 +66,10 @@ export default class Data {
           ser[i].data[j][1].length === 4 &&
           !isBoxPlot
         ) {
-          // candlestick nested ohlc format
+
           this.twoDSeries.push(Utils.parseNumber(ser[i].data[j][1][3]))
         } else if (ser[i].data[j].length >= 5) {
-          // candlestick non-nested ohlc format
+
           this.twoDSeries.push(Utils.parseNumber(ser[i].data[j][4]))
         } else {
           this.twoDSeries.push(Utils.parseNumber(ser[i].data[j][1]))
@@ -81,8 +77,6 @@ export default class Data {
         gl.dataFormatXNumeric = true
       }
       if (cnf.xaxis.type === 'datetime') {
-        // if timestamps are provided and xaxis type is datetime,
-
         let ts = new Date(ser[i].data[j][0])
         ts = new Date(ts).getTime()
         this.twoDSeriesX.push(ts)
@@ -107,11 +101,9 @@ export default class Data {
 
     let activeI = i
     if (gl.collapsedSeriesIndices.indexOf(i) > -1) {
-      // fix #368
+
       activeI = this.activeSeriesIndex
     }
-
-    // get series
     for (let j = 0; j < ser[i].data.length; j++) {
       if (typeof ser[i].data[j].y !== 'undefined') {
         if (Array.isArray(ser[i].data[j].y)) {
@@ -138,8 +130,6 @@ export default class Data {
         this.seriesGoals[i].push(null)
       }
     }
-
-    // get seriesX
     for (let j = 0; j < ser[activeI].data.length; j++) {
       const isXString = typeof ser[activeI].data[j].x === 'string'
       const isXArr = Array.isArray(ser[activeI].data[j].x)
@@ -147,14 +137,14 @@ export default class Data {
         !isXArr && !!dt.isValidDate(ser[activeI].data[j].x.toString())
 
       if (isXString || isXDate) {
-        // user supplied '01/01/2017' or a date string (a JS date object is not supported)
+
         if (isXString || cnf.xaxis.convertedCatToNumeric) {
           const isRangeColumn = gl.isBarHorizontal && gl.isRangeData
 
           if (cnf.xaxis.type === 'datetime' && !isRangeColumn) {
             this.twoDSeriesX.push(dt.parseDate(ser[activeI].data[j].x))
           } else {
-            // a category and not a numeric x value
+
             this.fallbackToCategory = true
             this.twoDSeriesX.push(ser[activeI].data[j].x)
           }
@@ -170,11 +160,11 @@ export default class Data {
           }
         }
       } else if (isXArr) {
-        // a multiline label described in array format
+
         this.fallbackToCategory = true
         this.twoDSeriesX.push(ser[activeI].data[j].x)
       } else {
-        // a numeric value in x property
+
         gl.isXNumeric = true
         gl.dataFormatXNumeric = true
         this.twoDSeriesX.push(ser[activeI].data[j].x)
@@ -203,8 +193,6 @@ export default class Data {
     gl.seriesRangeEnd.push(range.end)
 
     gl.seriesRange.push(range.rangeUniques)
-
-    // check for overlaps to avoid clashes in a timeline chart
     gl.seriesRange.forEach((sr, si) => {
       if (sr) {
         sr.forEach((sarr, sarri) => {
@@ -288,9 +276,6 @@ export default class Data {
           y2: isDataPoint2D ? ser[i].data[j].y[1] : ser[i].data[j].y,
           rangeName: id
         }
-
-        // mutating config object by adding a new property
-        // TODO: As this is specifically for timeline rangebar charts, update the docs mentioning the series only supports xy format
         ser[i].data[j].rangeName = id
 
         const uI = uniqueKeys.findIndex((t) => t.x === x)
@@ -399,7 +384,7 @@ export default class Data {
     const handleDates = () => {
       for (let j = 0; j < xlabels.length; j++) {
         if (typeof xlabels[j] === 'string') {
-          // user provided date strings
+
           let isDate = dt.isValidDate(xlabels[j])
           if (isDate) {
             this.twoDSeriesX.push(dt.parseDate(xlabels[j]))
@@ -409,7 +394,7 @@ export default class Data {
             )
           }
         } else {
-          // user provided timestamps
+
           this.twoDSeriesX.push(xlabels[j])
         }
       }
@@ -472,8 +457,6 @@ export default class Data {
         }
       } else {
         if (cnf.xaxis.type === 'datetime') {
-          // user didn't supplied [{x,y}] or [[x,y]], but single array in data.
-          // Also labels/categories were supplied differently
           gl.isXNumeric = true
 
           handleDates()
@@ -499,8 +482,6 @@ export default class Data {
       } else {
         gl.seriesNames.push('series-' + parseInt(i + 1, 10))
       }
-
-      // overrided default color if user inputs color with series data
       if (ser[i].color !== undefined) {
         gl.seriesColors.push(ser[i].color)
       } else {
@@ -537,13 +518,13 @@ export default class Data {
     const gl = this.w.globals
 
     if (cnf.xaxis.categories.length > 0) {
-      // user provided labels in xaxis.category prop
+
       gl.labels = cnf.xaxis.categories
     } else if (cnf.labels.length > 0) {
-      // user provided labels in labels props
+
       gl.labels = cnf.labels.slice()
     } else if (this.fallbackToCategory) {
-      // user provided labels in x prop in [{ x: 3, y: 55 }] data, and those labels are already stored in gl.labels[0], so just re-arrange the gl.labels array
+
       gl.labels = gl.labels[0]
 
       if (gl.seriesRange.length) {
@@ -572,14 +553,12 @@ export default class Data {
   _generateExternalLabels(ser) {
     const gl = this.w.globals
     const cnf = this.w.config
-    // user didn't provided any labels, fallback to 1-2-3-4-5
+
     let labelArr = []
 
     if (gl.axisCharts) {
       if (gl.series.length > 0) {
         if (this.isFormatXY()) {
-          // in case there is a combo chart (boxplot/scatter)
-          // and there are duplicated x values, we need to eliminate duplicates
           const seriesDataFiltered = cnf.series.map((serie, s) => {
             return serie.data.filter(
               (v, i, a) => a.findIndex((t) => t.x === v.x) === i
@@ -602,29 +581,22 @@ export default class Data {
       }
 
       gl.seriesX = []
-      // create gl.seriesX as it will be used in calculations of x positions
+
       for (let i = 0; i < ser.length; i++) {
         gl.seriesX.push(labelArr)
       }
-
-      // turn on the isXNumeric flag to allow minX and maxX to function properly
       gl.isXNumeric = true
     }
-
-    // no series to pull labels from, put a 0-10 series
-    // possibly, user collapsed all series. Hence we can't work with above calc
     if (labelArr.length === 0) {
       labelArr = gl.axisCharts
         ? []
         : gl.series.map((gls, glsi) => {
-            return glsi + 1
-          })
+          return glsi + 1
+        })
       for (let i = 0; i < ser.length; i++) {
         gl.seriesX.push(labelArr)
       }
     }
-
-    // Finally, pass the labelArr in gl.labels which will be printed on x-axis
     gl.labels = labelArr
 
     if (cnf.xaxis.convertedCatToNumeric) {
@@ -632,34 +604,26 @@ export default class Data {
         return cnf.xaxis.labels.formatter(l)
       })
     }
-
-    // Turn on this global flag to indicate no labels were provided by user
     gl.noLabelsProvided = true
   }
-
-  // Segregate user provided data into appropriate vars
   parseData(ser) {
     let w = this.w
     let cnf = w.config
     let gl = w.globals
     this.excludeCollapsedSeriesInYAxis()
-
-    // If we detected string in X prop of series, we fallback to category x-axis
     this.fallbackToCategory = false
 
     this.ctx.core.resetGlobals()
     this.ctx.core.isMultipleY()
 
     if (gl.axisCharts) {
-      // axisCharts includes line / area / column / scatter
+
       this.parseDataAxisCharts(ser)
       this.coreUtils.getLargestSeries()
     } else {
-      // non-axis charts are pie / donut
+
       this.parseDataNonAxisCharts(ser)
     }
-
-    // set Null values to 0 in all series when user hides/shows some series
     if (cnf.chart.type === 'bar' && cnf.chart.stacked) {
       const series = new Series(this.ctx)
       gl.series = series.setNullSeriesToZeroValues(gl.series)
@@ -679,11 +643,9 @@ export default class Data {
           cnf.labels.length === 0 &&
           cnf.xaxis.categories.length === 0))
     ) {
-      // x-axis labels couldn't be detected; hence try searching every option in config
+
       this.handleExternalLabelsData(ser)
     }
-
-    // check for multiline xaxis
     const catLabels = this.coreUtils.getCategoryLabels(gl.labels)
     for (let l = 0; l < catLabels.length; l++) {
       if (Array.isArray(catLabels[l])) {
@@ -697,8 +659,6 @@ export default class Data {
     const w = this.w
     w.globals.ignoreYAxisIndexes = w.globals.collapsedSeries.map(
       (collapsed, i) => {
-        // fix issue #1215
-        // if stacked, not returning collapsed.index to preserve yaxis
         if (this.w.globals.isMultipleYAxis && !w.config.chart.stacked) {
           return collapsed.index
         }

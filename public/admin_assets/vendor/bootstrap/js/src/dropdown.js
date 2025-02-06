@@ -35,7 +35,7 @@ const ESCAPE_KEY = 'Escape'
 const TAB_KEY = 'Tab'
 const ARROW_UP_KEY = 'ArrowUp'
 const ARROW_DOWN_KEY = 'ArrowDown'
-const RIGHT_MOUSE_BUTTON = 2 // MouseEvent.button value for the secondary button, usually the right button
+const RIGHT_MOUSE_BUTTON = 2
 
 const EVENT_HIDE = `hide${EVENT_KEY}`
 const EVENT_HIDDEN = `hidden${EVENT_KEY}`
@@ -95,15 +95,13 @@ class Dropdown extends BaseComponent {
     super(element, config)
 
     this._popper = null
-    this._parent = this._element.parentNode // dropdown wrapper
-    // todo: v6 revert #37011 & change markup https://getbootstrap.com/docs/5.3/forms/input-group/
+    this._parent = this._element.parentNode
+
     this._menu = SelectorEngine.next(this._element, SELECTOR_MENU)[0] ||
       SelectorEngine.prev(this._element, SELECTOR_MENU)[0] ||
       SelectorEngine.findOne(SELECTOR_MENU, this._parent)
     this._inNavbar = this._detectNavbar()
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -115,8 +113,6 @@ class Dropdown extends BaseComponent {
   static get NAME() {
     return NAME
   }
-
-  // Public
   toggle() {
     return this._isShown() ? this.hide() : this.show()
   }
@@ -137,11 +133,6 @@ class Dropdown extends BaseComponent {
     }
 
     this._createPopper()
-
-    // If this is a touch-enabled device we add extra
-    // empty mouseover listeners to the body's immediate children;
-    // only needed because of broken event delegation on iOS
-    // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
     if ('ontouchstart' in document.documentElement && !this._parent.closest(SELECTOR_NAVBAR_NAV)) {
       for (const element of [].concat(...document.body.children)) {
         EventHandler.on(element, 'mouseover', noop)
@@ -182,16 +173,11 @@ class Dropdown extends BaseComponent {
       this._popper.update()
     }
   }
-
-  // Private
   _completeHide(relatedTarget) {
     const hideEvent = EventHandler.trigger(this._element, EVENT_HIDE, relatedTarget)
     if (hideEvent.defaultPrevented) {
       return
     }
-
-    // If this is a touch-enabled device we remove the extra
-    // empty mouseover listeners we added for iOS support
     if ('ontouchstart' in document.documentElement) {
       for (const element of [].concat(...document.body.children)) {
         EventHandler.off(element, 'mouseover', noop)
@@ -215,7 +201,7 @@ class Dropdown extends BaseComponent {
     if (typeof config.reference === 'object' && !isElement(config.reference) &&
       typeof config.reference.getBoundingClientRect !== 'function'
     ) {
-      // Popper virtual elements require a getBoundingClientRect method
+
       throw new TypeError(`${NAME.toUpperCase()}: Option "reference" provided type "object" without a required "getBoundingClientRect" method.`)
     }
 
@@ -263,8 +249,6 @@ class Dropdown extends BaseComponent {
     if (parentDropdown.classList.contains(CLASS_NAME_DROPDOWN_CENTER)) {
       return PLACEMENT_BOTTOMCENTER
     }
-
-    // We need to trim the value because custom properties can also include spaces
     const isEnd = getComputedStyle(this._menu).getPropertyValue('--bs-position').trim() === 'end'
 
     if (parentDropdown.classList.contains(CLASS_NAME_DROPUP)) {
@@ -308,10 +292,8 @@ class Dropdown extends BaseComponent {
         }
       }]
     }
-
-    // Disable Popper if we have a static display or Dropdown is in Navbar
     if (this._inNavbar || this._config.display === 'static') {
-      Manipulator.setDataAttribute(this._menu, 'popper', 'static') // todo:v6 remove
+      Manipulator.setDataAttribute(this._menu, 'popper', 'static')
       defaultBsPopperConfig.modifiers = [{
         name: 'applyStyles',
         enabled: false
@@ -330,13 +312,8 @@ class Dropdown extends BaseComponent {
     if (!items.length) {
       return
     }
-
-    // if target isn't included in items (e.g. when expanding the dropdown)
-    // allow cycling to get the last item in case key equals ARROW_UP_KEY
     getNextActiveElement(items, target, key === ARROW_DOWN_KEY, !items.includes(target)).focus()
   }
-
-  // Static
   static jQueryInterface(config) {
     return this.each(function () {
       const data = Dropdown.getOrCreateInstance(this, config)
@@ -375,8 +352,6 @@ class Dropdown extends BaseComponent {
       ) {
         continue
       }
-
-      // Tab navigation through the dropdown menu or events from contained inputs shouldn't close the menu
       if (context._menu.contains(event.target) && ((event.type === 'keyup' && event.key === TAB_KEY) || /input|select|option|textarea|form/i.test(event.target.tagName))) {
         continue
       }
@@ -392,9 +367,6 @@ class Dropdown extends BaseComponent {
   }
 
   static dataApiKeydownHandler(event) {
-    // If not an UP | DOWN | ESCAPE key => not a dropdown command
-    // If input/textarea && if key is other than ESCAPE => not a dropdown command
-
     const isInput = /input|textarea/i.test(event.target.tagName)
     const isEscapeEvent = event.key === ESCAPE_KEY
     const isUpOrDownEvent = [ARROW_UP_KEY, ARROW_DOWN_KEY].includes(event.key)
@@ -408,8 +380,6 @@ class Dropdown extends BaseComponent {
     }
 
     event.preventDefault()
-
-    // todo: v6 revert #37011 & change markup https://getbootstrap.com/docs/5.3/forms/input-group/
     const getToggleButton = this.matches(SELECTOR_DATA_TOGGLE) ?
       this :
       (SelectorEngine.prev(this, SELECTOR_DATA_TOGGLE)[0] ||
@@ -425,7 +395,7 @@ class Dropdown extends BaseComponent {
       return
     }
 
-    if (instance._isShown()) { // else is escape and we check if it is shown
+    if (instance._isShown()) {
       event.stopPropagation()
       instance.hide()
       getToggleButton.focus()

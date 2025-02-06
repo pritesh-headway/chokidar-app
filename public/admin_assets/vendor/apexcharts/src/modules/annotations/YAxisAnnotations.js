@@ -20,12 +20,12 @@ export default class YAnnotations {
 
     if (anno.y2 === null || typeof anno.y2 === 'undefined') {
       let line = this.annoCtx.graphics.drawLine(
-        0 + anno.offsetX, // x1
-        y1 + anno.offsetY, // y1
-        this._getYAxisAnnotationWidth(anno), // x2
-        y1 + anno.offsetY, // y2
-        anno.borderColor, // lineColor
-        strokeDashArray, // dashArray
+        0 + anno.offsetX,
+        y1 + anno.offsetY,
+        this._getYAxisAnnotationWidth(anno),
+        y1 + anno.offsetY,
+        anno.borderColor,
+        strokeDashArray,
         anno.borderWidth
       )
       parent.appendChild(line.node)
@@ -42,16 +42,16 @@ export default class YAnnotations {
       }
 
       let rect = this.annoCtx.graphics.drawRect(
-        0 + anno.offsetX, // x1
-        y2 + anno.offsetY, // y1
-        this._getYAxisAnnotationWidth(anno), // x2
-        y1 - y2, // y2
-        0, // radius
-        anno.fillColor, // color
-        anno.opacity, // opacity,
-        1, // strokeWidth
-        anno.borderColor, // strokeColor
-        strokeDashArray // stokeDashArray
+        0 + anno.offsetX,
+        y2 + anno.offsetY,
+        this._getYAxisAnnotationWidth(anno),
+        y1 - y2,
+        0,
+        anno.fillColor,
+        anno.opacity,
+        1,
+        anno.borderColor,
+        strokeDashArray
       )
       rect.node.classList.add('apexcharts-annotation-rect')
       rect.attr('clip-path', `url(#gridRectMask${w.globals.cuid})`)
@@ -65,8 +65,8 @@ export default class YAnnotations {
       anno.label.position === 'right'
         ? w.globals.gridWidth
         : anno.label.position === 'center'
-        ? w.globals.gridWidth / 2
-        : 0
+          ? w.globals.gridWidth / 2
+          : 0
 
     let elText = this.annoCtx.graphics.drawText({
       x: textX + anno.label.offsetX,
@@ -77,9 +77,8 @@ export default class YAnnotations {
       fontFamily: anno.label.style.fontFamily,
       fontWeight: anno.label.style.fontWeight,
       foreColor: anno.label.style.color,
-      cssClass: `apexcharts-yaxis-annotation-label ${
-        anno.label.style.cssClass
-      } ${anno.id ? anno.id : ''}`
+      cssClass: `apexcharts-yaxis-annotation-label ${anno.label.style.cssClass
+        } ${anno.id ? anno.id : ''}`
     })
 
     elText.attr({
@@ -90,7 +89,7 @@ export default class YAnnotations {
   }
 
   _getYAxisAnnotationWidth(anno) {
-    // issue apexcharts.js#2009
+
     const w = this.w
     let width = w.globals.gridWidth
     if (anno.width.indexOf('%') > -1) {

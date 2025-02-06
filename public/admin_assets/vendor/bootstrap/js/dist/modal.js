@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./util/index.js'), require('./dom/event-handler.js'), require('./dom/selector-engine.js'), require('./util/scrollbar.js'), require('./base-component.js'), require('./util/backdrop.js'), require('./util/focustrap.js'), require('./util/component-functions.js')) :
-  typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/selector-engine', './util/scrollbar', './base-component', './util/backdrop', './util/focustrap', './util/component-functions'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Modal = factory(global.Index, global.EventHandler, global.SelectorEngine, global.Scrollbar, global.BaseComponent, global.Backdrop, global.Focustrap, global.ComponentFunctions));
-})(this, (function (index_js, EventHandler, SelectorEngine, ScrollBarHelper, BaseComponent, Backdrop, FocusTrap, componentFunctions_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./util/index', './dom/event-handler', './dom/selector-engine', './util/scrollbar', './base-component', './util/backdrop', './util/focustrap', './util/component-functions'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Modal = factory(global.Index, global.EventHandler, global.SelectorEngine, global.Scrollbar, global.BaseComponent, global.Backdrop, global.Focustrap, global.ComponentFunctions));
+})(this, (function (index_js, EventHandler, SelectorEngine, ScrollBarHelper, BaseComponent, Backdrop, FocusTrap, componentFunctions_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -69,8 +70,6 @@
       this._scrollBar = new ScrollBarHelper();
       this._addEventListeners();
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -80,8 +79,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     toggle(relatedTarget) {
       return this._isShown ? this.hide() : this.show(relatedTarget);
     }
@@ -127,12 +124,10 @@
     handleUpdate() {
       this._adjustDialog();
     }
-
-    // Private
     _initializeBackDrop() {
       return new Backdrop({
         isVisible: Boolean(this._config.backdrop),
-        // 'static' option will be translated to true, and booleans will keep their value,
+
         isAnimated: this._isAnimated()
       });
     }
@@ -142,7 +137,7 @@
       });
     }
     _showElement(relatedTarget) {
-      // try to append dynamic modal
+
       if (!document.body.contains(this._element)) {
         document.body.append(this._element);
       }
@@ -186,7 +181,7 @@
         }
       });
       EventHandler.on(this._element, EVENT_MOUSEDOWN_DISMISS, event => {
-        // a bad trick to segregate clicks that may start inside dialog but end outside, and avoid listen to scrollbar clicks
+
         EventHandler.one(this._element, EVENT_CLICK_DISMISS, event2 => {
           if (this._element !== event.target || this._element !== event2.target) {
             return;
@@ -224,7 +219,7 @@
       }
       const isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight;
       const initialOverflowY = this._element.style.overflowY;
-      // return if the following background transition hasn't yet completed
+
       if (initialOverflowY === 'hidden' || this._element.classList.contains(CLASS_NAME_STATIC)) {
         return;
       }
@@ -262,8 +257,6 @@
       this._element.style.paddingLeft = '';
       this._element.style.paddingRight = '';
     }
-
-    // Static
     static jQueryInterface(config, relatedTarget) {
       return this.each(function () {
         const data = Modal.getOrCreateInstance(this, config);
@@ -289,7 +282,7 @@
     }
     EventHandler.one(target, EVENT_SHOW, showEvent => {
       if (showEvent.defaultPrevented) {
-        // only register focus restorer if modal will actually get shown
+
         return;
       }
       EventHandler.one(target, EVENT_HIDDEN, () => {
@@ -298,8 +291,6 @@
         }
       });
     });
-
-    // avoid conflict when clicking modal toggler while another one is open
     const alreadyOpen = SelectorEngine.findOne(OPEN_SELECTOR);
     if (alreadyOpen) {
       Modal.getInstance(alreadyOpen).hide();

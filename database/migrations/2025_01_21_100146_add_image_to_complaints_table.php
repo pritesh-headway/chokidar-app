@@ -12,14 +12,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('complaints', function (Blueprint $table) {
-            $table->string('image')->nullable();  // Add the 'image' column
+            $table->string('image')->nullable();
         });
     }
 
     public function down()
     {
         Schema::table('complaints', function (Blueprint $table) {
-            $table->dropColumn('image');  // Rollback the addition of the 'image' column
+            $table->dropColumn('image');
         });
     }
 };

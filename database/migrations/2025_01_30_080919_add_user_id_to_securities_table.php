@@ -9,14 +9,14 @@ class AddUserIdToSecuritiesTable extends Migration
     public function up()
     {
         Schema::table('securities', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable(); // Add user_id column (nullable initially)
+            $table->unsignedBigInteger('user_id')->nullable();
         });
     }
 
     public function down()
     {
         Schema::table('securities', function (Blueprint $table) {
-            $table->dropColumn('user_id'); // Rollback the column if migration is reversed
+            $table->dropColumn('user_id');
         });
     }
 }

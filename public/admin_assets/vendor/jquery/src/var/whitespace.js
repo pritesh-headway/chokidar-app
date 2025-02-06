@@ -1,8 +1,6 @@
-define( function() {
+define(function () {
 
-"use strict";
+    "use strict";
+    return "[\\x20\\t\\r\\n\\f]";
 
-// https://www.w3.org/TR/css3-selectors/#whitespace
-return "[\\x20\\t\\r\\n\\f]";
-
-} );
+});

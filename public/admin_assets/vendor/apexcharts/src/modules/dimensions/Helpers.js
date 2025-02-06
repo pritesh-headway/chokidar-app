@@ -43,7 +43,7 @@ export default class Helpers {
       (w.config.legend.position === 'top' ||
         w.config.legend.position === 'bottom')
     ) {
-      // avoid legend to take up all the space
+
       elLegendWrap.style.maxHeight = w.globals.svgHeight / 2 + 'px'
     }
 
@@ -68,8 +68,6 @@ export default class Helpers {
         width: 0
       }
     }
-
-    // if legend takes up all of the chart space, we need to restrict it.
     if (
       w.config.legend.position === 'left' ||
       w.config.legend.position === 'right'
@@ -86,7 +84,7 @@ export default class Helpers {
     const w = this.w
     let valArr = val
     if (w.globals.isMultiLineX) {
-      // if the xaxis labels has multiline texts (array)
+
       let maxArrs = arr.map((xl, idx) => {
         return Array.isArray(xl) ? xl.length : 1
       })

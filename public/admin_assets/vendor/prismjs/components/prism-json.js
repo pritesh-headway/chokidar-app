@@ -1,4 +1,4 @@
-// https://www.json.org/json-en.html
+
 Prism.languages.json = {
 	'property': {
 		pattern: /(^|[^\\])"(?:\\.|[^\\"\r\n])*"(?=\s*:)/,

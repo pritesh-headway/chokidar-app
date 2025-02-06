@@ -1,7 +1,5 @@
 const components = require('../components.js');
 const getLoader = require('../dependencies');
-
-
 /**
  * The set of all languages which have been loaded using the below function.
  *
@@ -23,9 +21,6 @@ function loadLanguages(languages) {
 	} else if (!Array.isArray(languages)) {
 		languages = [languages];
 	}
-
-	// the user might have loaded languages via some other way or used `prism.js` which already includes some
-	// we don't need to validate the ids because `getLoader` will ignore invalid ones
 	const loaded = [...loadedLanguages, ...Object.keys(Prism.languages)];
 
 	getLoader(components, languages, loaded).load(lang => {
@@ -37,8 +32,6 @@ function loadLanguages(languages) {
 		}
 
 		const pathToLanguage = './prism-' + lang;
-
-		// remove from require cache and from Prism
 		delete require.cache[require.resolve(pathToLanguage)];
 		delete Prism.languages[lang];
 

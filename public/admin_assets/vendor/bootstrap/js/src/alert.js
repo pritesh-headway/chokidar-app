@@ -28,12 +28,10 @@ const CLASS_NAME_SHOW = 'show'
  */
 
 class Alert extends BaseComponent {
-  // Getters
+
   static get NAME() {
     return NAME
   }
-
-  // Public
   close() {
     const closeEvent = EventHandler.trigger(this._element, EVENT_CLOSE)
 
@@ -46,15 +44,11 @@ class Alert extends BaseComponent {
     const isAnimated = this._element.classList.contains(CLASS_NAME_FADE)
     this._queueCallback(() => this._destroyElement(), this._element, isAnimated)
   }
-
-  // Private
   _destroyElement() {
     this._element.remove()
     EventHandler.trigger(this._element, EVENT_CLOSED)
     this.dispose()
   }
-
-  // Static
   static jQueryInterface(config) {
     return this.each(function () {
       const data = Alert.getOrCreateInstance(this)

@@ -1,4 +1,4 @@
-// NOTES - follows first-first highlight method, block is locked after highlight, different from SyntaxHl
+
 Prism.languages.autohotkey = {
 	'comment': [
 		{
@@ -12,7 +12,7 @@ Prism.languages.autohotkey = {
 		}
 	],
 	'tag': {
-		// labels
+
 		pattern: /^([ \t]*)[^\s,`":]+(?=:[ \t]*$)/m,
 		lookbehind: true
 	},

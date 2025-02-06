@@ -71,8 +71,6 @@ class Offcanvas extends BaseComponent {
     this._focustrap = this._initializeFocusTrap()
     this._addEventListeners()
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -84,8 +82,6 @@ class Offcanvas extends BaseComponent {
   static get NAME() {
     return NAME
   }
-
-  // Public
   toggle(relatedTarget) {
     return this._isShown ? this.hide() : this.show(relatedTarget)
   }
@@ -162,8 +158,6 @@ class Offcanvas extends BaseComponent {
     this._focustrap.deactivate()
     super.dispose()
   }
-
-  // Private
   _initializeBackDrop() {
     const clickCallback = () => {
       if (this._config.backdrop === 'static') {
@@ -173,8 +167,6 @@ class Offcanvas extends BaseComponent {
 
       this.hide()
     }
-
-    // 'static' option will be translated to true, and booleans will keep their value
     const isVisible = Boolean(this._config.backdrop)
 
     return new Backdrop({
@@ -206,8 +198,6 @@ class Offcanvas extends BaseComponent {
       this.hide()
     })
   }
-
-  // Static
   static jQueryInterface(config) {
     return this.each(function () {
       const data = Offcanvas.getOrCreateInstance(this, config)
@@ -241,13 +231,11 @@ EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (
   }
 
   EventHandler.one(target, EVENT_HIDDEN, () => {
-    // focus on trigger when it is closed
+
     if (isVisible(this)) {
       this.focus()
     }
   })
-
-  // avoid conflict when clicking a toggler of an offcanvas, while another is open
   const alreadyOpen = SelectorEngine.findOne(OPEN_SELECTOR)
   if (alreadyOpen && alreadyOpen !== target) {
     Offcanvas.getInstance(alreadyOpen).hide()

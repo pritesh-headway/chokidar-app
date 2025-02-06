@@ -36,13 +36,13 @@
 				inside: classNameInside
 			},
 			{
-				// cast
+
 				pattern: insertClassName(/(\(\s*)<CLASS-NAME>(?=\s*\)\s*[\w(])/.source),
 				lookbehind: true,
 				inside: classNameInside
 			},
 			{
-				// variable/parameter declaration and return types
+
 				pattern: insertClassName(/<CLASS-NAME>(?=\s*\w+\s*[;=,(){:])/.source),
 				inside: classNameInside
 			}

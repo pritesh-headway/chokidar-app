@@ -1,6 +1,3 @@
-// Test files for the parser itself:
-// https://github.com/JesusFreke/smali/tree/master/smali/src/test/resources/LexerTest
-
 Prism.languages.smali = {
 	'comment': /#.*/,
 	'string': {
@@ -28,12 +25,12 @@ Prism.languages.smali = {
 	},
 	'builtin': [
 		{
-			// Reference: https://github.com/JesusFreke/smali/wiki/TypesMethodsAndFields#types
+
 			pattern: /([();\[])[BCDFIJSVZ]+/,
 			lookbehind: true
 		},
 		{
-			// e.g. .field mWifiOnUid:I
+
 			pattern: /([\w$>]:)[BCDFIJSVZ]/,
 			lookbehind: true
 		}

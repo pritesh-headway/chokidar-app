@@ -1,17 +1,17 @@
 //
-// Extended from bootstrap
+
 //
-
-
-// btn outline white
 .btn-outline-white {
     border-color: $gray-300;
     color: $body-color;
-    &:hover, &:focus {
+
+    &:hover,
+    &:focus {
         background-color: $gray-100;
         border-color: $gray-400;
         color: $body-color;
     }
+
     &.active {
         background-color: $gray-100;
         border-color: $gray-400;
@@ -19,8 +19,6 @@
     }
 }
 
-
-// btn icon
 .btn-icon {
     position: relative;
     display: -ms-inline-flexbox;

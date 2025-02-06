@@ -20,8 +20,6 @@ class Visitor extends Model
         'user_id',
         'status',
     ];
-
-    // A visitor belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);

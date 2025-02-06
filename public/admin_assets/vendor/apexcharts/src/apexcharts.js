@@ -24,8 +24,6 @@ export default class ApexCharts {
   constructor(el, opts) {
     this.opts = opts
     this.ctx = this
-
-    // Pass the user supplied options to the Base Class where these options will be extended with defaults. The returned object from Base Class will become the config object in the entire codebase.
     this.w = new Base(opts).init()
 
     this.el = el
@@ -47,9 +45,9 @@ export default class ApexCharts {
    * The primary method user will call to render the chart.
    */
   render() {
-    // main method
+
     return new Promise((resolve, reject) => {
-      // only draw chart, if element found
+
       if (this.el !== null) {
         if (typeof Apex._chartInstances === 'undefined') {
           Apex._chartInstances = []
@@ -61,8 +59,6 @@ export default class ApexCharts {
             chart: this
           })
         }
-
-        // set the locale here
         this.setLocale(this.w.config.chart.defaultLocale)
         const beforeMount = this.w.config.chart.events.beforeMount
         if (typeof beforeMount === 'function') {
@@ -72,8 +68,6 @@ export default class ApexCharts {
         this.events.fireEvent('beforeMount', [this, this.w])
         window.addEventListener('resize', this.windowResizeHandler)
         addResizeListener(this.el.parentNode, this.parentResizeHandler)
-
-        // Add CSS if not already added
         if (!this.css) {
           let rootNode = this.el.getRootNode && this.el.getRootNode()
           let inShadowRoot = Utils.is('ShadowRoot', rootNode)
@@ -86,10 +80,10 @@ export default class ApexCharts {
             this.css.textContent = apexCSS
 
             if (inShadowRoot) {
-              // We are in Shadow DOM, add to shadow root
+
               rootNode.prepend(this.css)
             } else {
-              // Add to <head> of element's document
+
               doc.head.appendChild(this.css)
             }
           }
@@ -108,7 +102,7 @@ export default class ApexCharts {
           })
           .catch((e) => {
             reject(e)
-            // handle error in case no data or element not found
+
           })
       } else {
         reject(new Error('Element not found'))
@@ -146,7 +140,7 @@ export default class ApexCharts {
     }
 
     if (gl.svgWidth === 0) {
-      // if the element is hidden, skip drawing
+
       gl.animationEnded = true
       return null
     }
@@ -162,23 +156,12 @@ export default class ApexCharts {
     }
 
     this.events.setupEventHandlers()
-
-    // Handle the data inputted by user and set some of the global variables (for eg, if data is datetime / numeric / category). Don't calculate the range / min / max at this time
     this.data.parseData(ser)
-
-    // this is a good time to set theme colors first
     this.theme.init()
-
-    // as markers accepts array, we need to setup global markers for easier access
     const markers = new Markers(this)
     markers.setGlobalMarkerSize()
-
-    // labelFormatters should be called before dimensions as in dimensions we need text labels width
     this.formatters.setLabelFormatters()
     this.titleSubtitle.draw()
-
-    // legend is calculated here before coreCalculations because it affects the plottable area
-    // if there is some data to show or user collapsed all series, then proceed drawing legend
     if (
       !gl.noData ||
       gl.collapsedSeries.length === gl.series.length ||
@@ -186,30 +169,19 @@ export default class ApexCharts {
     ) {
       this.legend.init()
     }
-
-    // check whether in multiple series, all series share the same X
     this.series.hasAllSeriesEqualX()
-
-    // coreCalculations will give the min/max range and yaxis/axis values. It should be called here to set series variable from config to globals
     if (gl.axisCharts) {
       this.core.coreCalculations()
       if (w.config.xaxis.type !== 'category') {
-        // as we have minX and maxX values, determine the default DateTimeFormat for time series
+
         this.formatters.setLabelFormatters()
       }
       this.ctx.toolbar.minX = w.globals.minX
       this.ctx.toolbar.maxX = w.globals.maxX
     }
-
-    // we need to generate yaxis for heatmap separately as we are not showing numerics there, but seriesNames. There are some tweaks which are required for heatmap to align labels correctly which are done in below function
-    // Also we need to do this before calculating Dimensions plotCoords() method of Dimensions
     this.formatters.heatmapLabelFormatters()
-
-    // get the largest marker size which will be needed in dimensions calc
     const coreUtils = new CoreUtils(this)
     coreUtils.getLargestMarkerSize()
-
-    // We got plottable area here, next task would be to calculate axis areas
     this.dimensions.plotCoords()
 
     const xyRatios = this.core.xySettings()
@@ -223,8 +195,6 @@ export default class ApexCharts {
     if (w.config.dataLabels.background.enabled) {
       dataLabels.dataLabelsBackground()
     }
-
-    // after all the drawing calculations, shift the graphical area (actual charts/bars) excluding legends
     this.core.shiftGraphPosition()
 
     const dim = {
@@ -249,7 +219,7 @@ export default class ApexCharts {
     let w = me.w
 
     return new Promise((resolve, reject) => {
-      // no data to display
+
       if (me.el === null) {
         return reject(
           new Error('Not enough data to display or target element not found')
@@ -314,7 +284,7 @@ export default class ApexCharts {
       me.annotations.drawAxesAnnotations()
 
       if (!w.globals.noData) {
-        // draw tooltips at the end
+
         if (w.config.tooltip.enabled && !w.globals.noData) {
           me.w.globals.tooltip.drawTooltip(graphData.xyRatios)
         }
@@ -374,7 +344,7 @@ export default class ApexCharts {
     window.removeEventListener('resize', this.windowResizeHandler)
 
     removeResizeListener(this.el.parentNode, this.parentResizeHandler)
-    // remove the chart's instance from the global Apex._chartInstances
+
     const chartID = this.w.config.chart.id
     if (chartID) {
       Apex._chartInstances.forEach((c, i) => {
@@ -401,9 +371,6 @@ export default class ApexCharts {
     overwriteInitialConfig = true
   ) {
     const w = this.w
-
-    // when called externally, clear some global variables
-    // fixes apexcharts.js#1488
     w.globals.selection = undefined
 
     if (options.series) {
@@ -413,12 +380,9 @@ export default class ApexCharts {
           return this.updateHelpers._extendSeries(s, i)
         })
       }
-
-      // user updated the series via updateOptions() function.
-      // Hence, we need to reset axis min/max to avoid zooming issues
       this.updateHelpers.revertDefaultAxisMinMax()
     }
-    // user has set x-axis min/max externally - hence we need to forcefully set the xaxis min/max
+
     if (options.xaxis) {
       options = this.updateHelpers.forceXAxisUpdate(options)
     }
@@ -592,8 +556,6 @@ export default class ApexCharts {
   static exec(chartID, fn, ...opts) {
     const chart = this.getChartByID(chartID)
     if (!chart) return
-
-    // turn on the global exec flag to indicate this method was called
     chart.w.globals.isExecCalled = true
 
     let ret = null
@@ -626,13 +588,9 @@ export default class ApexCharts {
   resetSeries(shouldUpdateChart = true, shouldResetZoom = true) {
     this.series.resetSeries(shouldUpdateChart, shouldResetZoom)
   }
-
-  // Public method to add event listener on chart context
   addEventListener(name, handler) {
     this.events.addEventListener(name, handler)
   }
-
-  // Public method to remove event listener on chart context
   removeEventListener(name, handler) {
     this.events.removeEventListener(name, handler)
   }
@@ -747,8 +705,6 @@ export default class ApexCharts {
     this.w.globals.resizeTimer = window.setTimeout(() => {
       this.w.globals.resized = true
       this.w.globals.dataChanged = false
-
-      // we need to redraw the whole chart on window resize (with a small delay).
       this.ctx.update()
     }, 150)
   }

@@ -26,15 +26,10 @@
 			copyTextToClipboard(copyInfo);
 		});
 	}
-
-	// https://stackoverflow.com/a/30810322/7595472
-
 	/** @param {CopyInfo} copyInfo */
 	function fallbackCopyTextToClipboard(copyInfo) {
 		var textArea = document.createElement('textarea');
 		textArea.value = copyInfo.getText();
-
-		// Avoid scrolling to bottom
 		textArea.style.top = '0';
 		textArea.style.left = '0';
 		textArea.style.position = 'fixed';
@@ -64,7 +59,7 @@
 	function copyTextToClipboard(copyInfo) {
 		if (navigator.clipboard) {
 			navigator.clipboard.writeText(copyInfo.getText()).then(copyInfo.success, function () {
-				// try the fallback in case `writeText` didn't work
+
 				fallbackCopyTextToClipboard(copyInfo);
 			});
 		} else {
@@ -78,7 +73,7 @@
 	 * @param {Element} element
 	 */
 	function selectElementText(element) {
-		// https://stackoverflow.com/a/20079910/7595472
+
 		window.getSelection().selectAllChildren(element);
 	}
 

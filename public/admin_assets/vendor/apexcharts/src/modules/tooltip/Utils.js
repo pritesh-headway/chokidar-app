@@ -86,11 +86,7 @@ export default class Utils {
     seriesYValArr = seriesYValArr.map((seriesYVal) => {
       return seriesYVal.filter((s) => Utilities.isNumber(s))
     })
-
-    // if X axis type is not category and tooltip is not shared, then we need to find the cursor position and get the nearest value
     if (w.globals.isXNumeric) {
-      // Change origin of cursor position so that we can compute the relative nearest point to the cursor on our chart
-      // we only need to scale because all points are relative to the bounds.left and bounds.top => origin is virtually (0, 0)
       const chartGridEl = this.ttCtx.getElGrid()
       const chartGridElBoundingRect = chartGridEl.getBoundingClientRect()
       const transformedHoverX =
@@ -108,7 +104,7 @@ export default class Utils {
       j = closest.j
 
       if (capturedSeries !== null) {
-        // initial push, it should be a little smaller than the 1st val
+
         seriesXValArr = w.globals.seriesXvalues[capturedSeries]
 
         closest = this.closestInArray(transformedHoverX, seriesXValArr)
@@ -150,8 +146,6 @@ export default class Utils {
 
     let currX = Xarrays[activeIndex][0]
     let diffX = Math.abs(hoverX - currX)
-
-    // find nearest point on x-axis
     Xarrays.forEach((arrX) => {
       arrX.forEach((x, iX) => {
         const newDiff = Math.abs(hoverX - x)
@@ -163,7 +157,7 @@ export default class Utils {
     })
 
     if (j !== -1) {
-      // find nearest graph on y-axis relevanted to nearest point on x-axis
+
       let currY = Yarrays[activeIndex][j]
       let diffY = Math.abs(hoverY - currY)
       currIndex = activeIndex
@@ -281,8 +275,6 @@ export default class Utils {
   }
 
   getElMarkers(capturedSeries) {
-    // The selector .apexcharts-series-markers-wrap > * includes marker groups for which the
-    // .apexcharts-series-markers class is not added due to null values or discrete markers
     if (typeof capturedSeries == 'number') {
       return this.w.globals.dom.baseEl.querySelectorAll(
         `.apexcharts-series[data\\:realIndex='${capturedSeries}'] .apexcharts-series-markers-wrap > *`
@@ -294,8 +286,6 @@ export default class Utils {
   }
 
   getAllMarkers() {
-    // first get all marker parents. This parent class contains series-index
-    // which helps to sort the markers as they are dynamic
     let markersWraps = this.w.globals.dom.baseEl.querySelectorAll(
       '.apexcharts-series-markers-wrap'
     )

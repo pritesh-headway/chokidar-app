@@ -127,7 +127,7 @@ export default class Options {
         }
       },
       customSVG: {
-        // this will be deprecated in the next major version as it is going to be replaced with a better alternative below
+
         SVG: undefined,
         cssClass: undefined,
         offsetX: 0,
@@ -258,7 +258,7 @@ export default class Options {
       chart: {
         animations: {
           enabled: true,
-          easing: 'easeinout', // linear, easeout, easein, easeinout, swing, bounce, elastic
+          easing: 'easeinout',
           speed: 800,
           animateGradually: {
             delay: 150,
@@ -315,7 +315,7 @@ export default class Options {
         selection: {
           enabled: false,
           type: 'x',
-          // selectedPoints: undefined, // default datapoints that should be selected automatically
+
           fill: {
             color: '#24292e',
             opacity: 0.1
@@ -376,7 +376,7 @@ export default class Options {
               filename: undefined
             }
           },
-          autoSelected: 'zoom' // accepts -> zoom, pan, selection
+          autoSelected: 'zoom'
         },
         type: 'line',
         width: '100%',
@@ -403,12 +403,12 @@ export default class Options {
         },
         bar: {
           horizontal: false,
-          columnWidth: '70%', // should be in percent 0 - 100
-          barHeight: '70%', // should be in percent 0 - 100
+          columnWidth: '70%',
+          barHeight: '70%',
           distributed: false,
           borderRadius: 0,
-          borderRadiusApplication: 'around', // [around, end]
-          borderRadiusWhenStacked: 'last', // [all, last]
+          borderRadiusApplication: 'around',
+          borderRadiusWhenStacked: 'last',
           rangeBarOverlap: true,
           rangeBarGroupRows: false,
           hideZeroBarsWhenGrouped: false,
@@ -419,7 +419,7 @@ export default class Options {
             backgroundBarRadius: 0
           },
           dataLabels: {
-            position: 'top', // top, center, bottom
+            position: 'top',
             maxItems: 100,
             hideOverflowingLabels: true,
             orientation: 'horizontal',
@@ -517,7 +517,7 @@ export default class Options {
             background: '#f2f2f2',
             strokeWidth: '97%',
             opacity: 1,
-            margin: 5, // margin is in pixels
+            margin: 5,
             dropShadow: {
               enabled: false,
               top: 0,
@@ -561,7 +561,7 @@ export default class Options {
               formatter(w) {
                 return (
                   w.globals.seriesTotals.reduce((a, b) => a + b, 0) /
-                    w.globals.series.length +
+                  w.globals.series.length +
                   '%'
                 )
               }
@@ -576,15 +576,15 @@ export default class Options {
           endAngle: 360,
           expandOnClick: true,
           dataLabels: {
-            // These are the percentage values which are displayed on slice
-            offset: 0, // offset by which labels will move outside
+
+            offset: 0,
             minAngleToShowLabel: 10
           },
           donut: {
             size: '65%',
             background: 'transparent',
             labels: {
-              // These are the inner labels appearing inside donut
+
               show: false,
               name: {
                 show: true,
@@ -638,7 +638,7 @@ export default class Options {
           offsetX: 0,
           offsetY: 0,
           polygons: {
-            // strokeColor: '#e8e8e8', // should be deprecated in the minor version i.e 3.2
+
             strokeWidth: 1,
             strokeColors: '#e8e8e8',
             connectorColors: '#e8e8e8',
@@ -693,7 +693,7 @@ export default class Options {
       },
       fill: {
         type: 'solid',
-        colors: undefined, // array of colors
+        colors: undefined,
         opacity: 0.85,
         gradient: {
           shade: 'dark',
@@ -708,11 +708,11 @@ export default class Options {
         },
         image: {
           src: [],
-          width: undefined, // optional
-          height: undefined // optional
+          width: undefined,
+          height: undefined
         },
         pattern: {
-          style: 'squares', // String | Array of Strings
+          style: 'squares',
           width: 6,
           height: 6,
           strokeWidth: 2
@@ -740,11 +740,11 @@ export default class Options {
           }
         },
         row: {
-          colors: undefined, // takes as array which will be repeated on rows
+          colors: undefined,
           opacity: 0.5
         },
         column: {
-          colors: undefined, // takes an array which will be repeated on columns
+          colors: undefined,
           opacity: 0.5
         },
         padding: {
@@ -761,9 +761,9 @@ export default class Options {
         showForNullSeries: true,
         showForZeroSeries: true,
         floating: false,
-        position: 'bottom', // whether to position legends in 1 of 4
-        // direction - top, bottom, left, right
-        horizontalAlign: 'center', // when position top/bottom, you can specify whether to align legends left, right or center
+        position: 'bottom',
+
+        horizontalAlign: 'center',
         inverseOrder: false,
         fontSize: '12px',
         fontFamily: undefined,
@@ -806,15 +806,15 @@ export default class Options {
         discrete: [],
         size: 0,
         colors: undefined,
-        //strokeColor: '#fff', // TODO: deprecate in major version 4.0
+        //strokeColor: '#fff',
         strokeColors: '#fff',
         strokeWidth: 2,
         strokeOpacity: 0.9,
         strokeDashArray: 0,
         fillOpacity: 1,
         shape: 'circle',
-        width: 8, // only applicable when shape is rect/square
-        height: 8, // only applicable when shape is rect/square
+        width: 8,
+        height: 8,
         radius: 2,
         offsetX: 0,
         offsetY: 0,
@@ -838,7 +838,7 @@ export default class Options {
           fontFamily: undefined
         }
       },
-      responsive: [], // breakpoints should follow ascending order 400, then 700, then 1000
+      responsive: [],
       series: undefined,
       states: {
         normal: {
@@ -891,14 +891,14 @@ export default class Options {
       },
       stroke: {
         show: true,
-        curve: 'smooth', // "smooth" / "straight" / "stepline"
-        lineCap: 'butt', // round, butt , square
+        curve: 'smooth',
+        lineCap: 'butt',
         width: 2,
-        colors: undefined, // array of colors
-        dashArray: 0, // single value or array of values
+        colors: undefined,
+        dashArray: 0,
         fill: {
           type: 'solid',
-          colors: undefined, // array of colors
+          colors: undefined,
           opacity: 0.85,
           gradient: {
             shade: 'dark',
@@ -917,8 +917,8 @@ export default class Options {
         enabled: true,
         enabledOnSeries: undefined,
         shared: true,
-        followCursor: false, // when disabled, the tooltip will show on top of the series instead of mouse position
-        intersect: false, // when enabled, tooltip will only show when user directly hovers over point
+        followCursor: false,
+        intersect: false,
         inverseOrder: false,
         custom: undefined,
         fillSeriesColor: false,
@@ -932,10 +932,10 @@ export default class Options {
           highlightDataSeries: false
         },
         x: {
-          // x value
+
           show: true,
-          format: 'dd MMM', // dd/MM, dd MMM yy, dd MMM yyyy
-          formatter: undefined // a custom user supplied formatter function
+          format: 'dd MMM',
+          formatter: undefined
         },
         y: {
           formatter: undefined,
@@ -958,7 +958,7 @@ export default class Options {
         },
         fixed: {
           enabled: false,
-          position: 'topRight', // topRight, topLeft, bottomRight, bottomLeft
+          position: 'topRight',
           offsetX: 0,
           offsetY: 0
         }
@@ -966,7 +966,7 @@ export default class Options {
       xaxis: {
         type: 'category',
         categories: [],
-        convertedCatToNumeric: false, // internal property which should not be altered outside
+        convertedCatToNumeric: false,
         offsetX: 0,
         offsetY: 0,
         overwriteCategories: undefined,
@@ -989,7 +989,7 @@ export default class Options {
           offsetX: 0,
           offsetY: 0,
           format: undefined,
-          formatter: undefined, // custom formatter function which will override format
+          formatter: undefined,
           datetimeUTC: true,
           datetimeFormatter: {
             year: 'yyyy',
@@ -1047,7 +1047,7 @@ export default class Options {
         },
         crosshairs: {
           show: true,
-          width: 1, // tickWidth/barWidth or an integer
+          width: 1,
           position: 'back',
           opacity: 0.9,
           stroke: {
@@ -1056,7 +1056,7 @@ export default class Options {
             dashArray: 3
           },
           fill: {
-            type: 'solid', // solid, gradient
+            type: 'solid',
             color: '#B1B9C4',
             gradient: {
               colorFrom: '#D8E3F0',
@@ -1087,9 +1087,9 @@ export default class Options {
       yaxis: this.yAxis,
       theme: {
         mode: 'light',
-        palette: 'palette1', // If defined, it will overwrite globals.colors variable
+        palette: 'palette1',
         monochrome: {
-          // monochrome allows you to select just 1 color and fill out the rest with light/dark shade (intensity can be selected)
+
           enabled: false,
           color: '#008FFB',
           shadeTo: 'light',

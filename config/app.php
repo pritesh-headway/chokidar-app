@@ -122,13 +122,6 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-    //     'providers' => [
-    //     /*
-    //      * Laravel Framework Service Providers...
-    //      */
-    //     // App\Providers\RouteServiceProvider::class,
-    //     // Illuminate\Filesystem\FilesystemServiceProvider::class,
-    // ],
     'providers' => [
 
         /*
@@ -165,17 +158,11 @@ return [
     |--------------------------------------------------------------------------
     */
         App\Providers\AppServiceProvider::class,
-        // App\Providers\AuthServiceProvider::class,
-        // App\Providers\EventServiceProvider::class,
-        // App\Providers\RouteServiceProvider::class,
-
         App\Providers\RouteServiceProvider::class,
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         Filament\FilamentServiceProvider::class,
-        // App\Providers\Filament\SuperAdminPanelProvider::class,
+
     ],
-
-
 ];

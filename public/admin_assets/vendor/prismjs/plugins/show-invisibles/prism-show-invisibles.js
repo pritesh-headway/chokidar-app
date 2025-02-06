@@ -3,8 +3,6 @@
 	if (typeof Prism === 'undefined') {
 		return;
 	}
-
-
 	var invisibles = {
 		'tab': /\t/,
 		'crlf': /\r\n/,
@@ -12,8 +10,6 @@
 		'cr': /\r/,
 		'space': / /
 	};
-
-
 	/**
 	 * Handles the recursive calling of `addInvisibles` for one token.
 	 *
@@ -40,8 +36,8 @@
 				}
 				break;
 
-			default: // 'Object'
-				// eslint-disable-next-line no-redeclare
+			default:
+
 				var inside = value.inside || (value.inside = {});
 				addInvisibles(inside);
 				break;
@@ -57,15 +53,11 @@
 		if (!grammar || grammar['tab']) {
 			return;
 		}
-
-		// assign invisibles here to "mark" the grammar in case of self references
 		for (var name in invisibles) {
 			if (invisibles.hasOwnProperty(name)) {
 				grammar[name] = invisibles[name];
 			}
 		}
-
-		// eslint-disable-next-line no-redeclare
 		for (var name in grammar) {
 			if (grammar.hasOwnProperty(name) && !invisibles[name]) {
 				if (name === 'rest') {

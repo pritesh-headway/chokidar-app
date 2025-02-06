@@ -1,16 +1,12 @@
 (function (Prism) {
-
-	// https://cuelang.org/docs/references/spec/
-
-	// eslint-disable-next-line regexp/strict
 	var stringEscape = /\\(?:(?!\2)|\2(?:[^()\r\n]|\([^()]*\)))/.source;
-	// eslint-disable-next-line regexp/strict
+
 	var stringTypes = /"""(?:[^\\"]|"(?!""\2)|<esc>)*"""/.source +
-		// eslint-disable-next-line regexp/strict
+
 		'|' + /'''(?:[^\\']|'(?!''\2)|<esc>)*'''/.source +
-		// eslint-disable-next-line regexp/strict
+
 		'|' + /"(?:[^\\\r\n"]|"(?!\2)|<esc>)*"/.source +
-		// eslint-disable-next-line regexp/strict
+
 		'|' + /'(?:[^\\\r\n']|'(?!\2)|<esc>)*'/.source;
 	var stringLiteral = '(?:' + stringTypes.replace(/<esc>/g, stringEscape) + ')';
 
@@ -20,14 +16,11 @@
 			greedy: true
 		},
 		'string-literal': {
-			// eslint-disable-next-line regexp/strict
+
 			pattern: RegExp(/(^|[^#"'\\])(#*)/.source + stringLiteral + /(?!["'])\2/.source),
 			lookbehind: true,
 			greedy: true,
 			inside: {
-				// I'm using dirty hack here. We have to know the number hashes at the start of the string somehow,
-				// but we can't look back. So instead, we will use a lookahead, go to the end of the string, and
-				// capture the hashes at the end of the string.
 				'escape': {
 					pattern: /(?=[\s\S]*["'](#*)$)\\\1(?:U[a-fA-F0-9]{1,8}|u[a-fA-F0-9]{1,4}|x[a-fA-F0-9]{1,2}|\d{2,3}|[^(])/,
 					greedy: true,

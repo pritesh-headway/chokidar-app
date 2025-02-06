@@ -1,5 +1,3 @@
-// according to the offical reference (EN)
-// https://ichigojam.net/IchigoJam-en.html
 Prism.languages.ichigojam = {
 	'comment': /(?:\B'|REM)(?:[^\n\r]*)/i,
 	'string': {

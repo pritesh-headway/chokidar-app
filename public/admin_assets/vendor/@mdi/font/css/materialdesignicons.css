@@ -29207,19 +29207,23 @@
   visibility: hidden;
 }
 
-.mdi-18px.mdi-set, .mdi-18px.mdi:before {
+.mdi-18px.mdi-set,
+.mdi-18px.mdi:before {
   font-size: 18px;
 }
 
-.mdi-24px.mdi-set, .mdi-24px.mdi:before {
+.mdi-24px.mdi-set,
+.mdi-24px.mdi:before {
   font-size: 24px;
 }
 
-.mdi-36px.mdi-set, .mdi-36px.mdi:before {
+.mdi-36px.mdi-set,
+.mdi-36px.mdi:before {
   font-size: 36px;
 }
 
-.mdi-48px.mdi-set, .mdi-48px.mdi:before {
+.mdi-48px.mdi-set,
+.mdi-48px.mdi:before {
   font-size: 48px;
 }
 
@@ -29241,7 +29245,7 @@
 
 .mdi-rotate-45 {
   /*
-        // Not included in production
+
         &.mdi-flip-h:before {
             -webkit-transform: scaleX(-1) rotate(45deg);
             transform: scaleX(-1) rotate(45deg);
@@ -29266,7 +29270,7 @@
 
 .mdi-rotate-90 {
   /*
-        // Not included in production
+
         &.mdi-flip-h:before {
             -webkit-transform: scaleX(-1) rotate(90deg);
             transform: scaleX(-1) rotate(90deg);
@@ -29291,7 +29295,7 @@
 
 .mdi-rotate-135 {
   /*
-        // Not included in production
+
         &.mdi-flip-h:before {
             -webkit-transform: scaleX(-1) rotate(135deg);
             transform: scaleX(-1) rotate(135deg);
@@ -29316,7 +29320,7 @@
 
 .mdi-rotate-180 {
   /*
-        // Not included in production
+
         &.mdi-flip-h:before {
             -webkit-transform: scaleX(-1) rotate(180deg);
             transform: scaleX(-1) rotate(180deg);
@@ -29341,7 +29345,7 @@
 
 .mdi-rotate-225 {
   /*
-        // Not included in production
+
         &.mdi-flip-h:before {
             -webkit-transform: scaleX(-1) rotate(225deg);
             transform: scaleX(-1) rotate(225deg);
@@ -29366,7 +29370,7 @@
 
 .mdi-rotate-270 {
   /*
-        // Not included in production
+
         &.mdi-flip-h:before {
             -webkit-transform: scaleX(-1) rotate(270deg);
             transform: scaleX(-1) rotate(270deg);
@@ -29391,7 +29395,7 @@
 
 .mdi-rotate-315 {
   /*
-        // Not included in production
+
         &.mdi-flip-h:before {
             -webkit-transform: scaleX(-1) rotate(315deg);
             transform: scaleX(-1) rotate(315deg);
@@ -29438,6 +29442,7 @@
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(359deg);
     transform: rotate(359deg);
@@ -29449,6 +29454,7 @@
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(359deg);
     transform: rotate(359deg);

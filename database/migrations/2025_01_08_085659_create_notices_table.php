@@ -14,13 +14,13 @@ class CreateNoticesTable extends Migration
     public function up()
     {
         Schema::create('notices', function (Blueprint $table) {
-            $table->id();  // ID field
-            $table->string('notice_title');  // Title of the notice
-            $table->text('notice_desc');  // Description of the notice
-            $table->date('date');  // Date of the notice
-            $table->time('time');  // Time of the notice
-            $table->enum('status', ['active', 'deactive'])->default('active');  // Status of the notice
-            $table->timestamps();  // Created_at and Updated_at timestamps
+            $table->id();
+            $table->string('notice_title');
+            $table->text('notice_desc');
+            $table->date('date');
+            $table->time('time');
+            $table->enum('status', ['active', 'deactive'])->default('active');
+            $table->timestamps();
         });
     }
 

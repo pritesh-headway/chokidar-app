@@ -1,6 +1,4 @@
 Prism.languages.yang = {
-	// https://tools.ietf.org/html/rfc6020#page-34
-	// http://www.yang-central.org/twiki/bin/view/Main/YangExamples
 	'comment': /\/\*[\s\S]*?\*\/|\/\/.*/,
 	'string': {
 		pattern: /"(?:[^\\"]|\\.)*"|'[^']*'/,

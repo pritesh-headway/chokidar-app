@@ -19,8 +19,6 @@ GET /api/user?id={id} -> 1 user with id {id}.
 POST /api/user with body json -> create user
 POST /api/user/{id} with only key-values to be updated -> update user of id {id}
 DELETE /api/user/{id} -> delete user with id {id}
-
-
 Family CRUD
 
 GET /api/family?id=all -> all family (user id)
@@ -28,8 +26,6 @@ GET /api/family?id={id} -> family members  with user id {id}.
 POST /api/family?id={id} with body json -> create family with user id {id} (user with {id} must be present)
 POST /api/family/{id} with only key-values to be updated -> update family of id {id} (not user id)
 DELETE /api/family/{id} -> delete family with id {id} (not user id)
-
-
 Visitors CRUD
 
 GET /api/visitor?id=all -> All visitors (you can filter or paginate if needed).
@@ -45,8 +41,6 @@ GET /api/notice?id={id} -> Retrieve a specific notice by {id}.
 POST /api/notice with body JSON -> Create a new notice.
 POST /api/notice/{id} with only key-value pairs to be updated -> Update notice with {id}.
 DELETE /api/notice/{id} -> Delete notice with {id}.
-
-
 Vehicles CRUD
 
 GET /api/vehicle?id=all -> All vehicles.
@@ -72,8 +66,6 @@ GET /api/complaint/{id} -> Retrieve a specific complaint record by {id}.
 POST /api/complaint with body JSON -> Create a new complaint record.
 POST /api/complaint/{id} with only key-value pairs to be updated -> Update complaint record with id {id}.
 DELETE /api/complaint/{id} -> Delete complaint record with id {id}.
-
-
 Security CRUD Notes (Condensed):
 
 GET /api/security?id=all -> Retrieve all security records.
@@ -82,8 +74,6 @@ GET /api/security/{id} -> Retrieve a specific security record by id.
 POST /api/security -> Create a new security record (status defaults to deactive if not provided).
 POST /api/security/{id} -> Update an existing security record with given id and provided fields.
 DELETE /api/security/{id} -> Delete a specific security record by id.
-
-
 Forum CRUD
 
 GET /api/forums?id=all -> Get all forums
@@ -91,8 +81,6 @@ GET /api/forums?id={id} -> Get forum with id {id}
 POST /api/forums with body JSON -> Create a new forum
 POST /api/forums/{id} with key-values to update -> Update forum with id {id}
 DELETE /api/forums/{id} -> Delete forum with id {id}
-
-
 Responses CRUD
 
 GET /api/responses?id=all -> Get all responses
@@ -105,8 +93,6 @@ DELETE /api/responses/{id} -> Delete response with id {id}
 
 /table/{id} -> accessing table 1 element using table's id
 /table?id={id} -> accessing multiple elements of table using user_id
-
-
 DB::table('users')->update(['profile_photo' => 'profile_photos/avatar.png']);
 
 DB::table('visitors')->update(['prof_image' => 'profile_photos/avatar.png']);
@@ -131,13 +117,8 @@ php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
-
-
-
 booking amenity particular
 'no' => $index + 1,
-
-
 status:
 message:
 data:
@@ -154,9 +135,6 @@ data:
             documents: [],
     }
 }
-
-
-
 status:
 message:
 data:
@@ -189,84 +167,49 @@ data:
     ]
     }
 }
-
-
 family member details : role diff from users member
-
-
 images sometimes it does not load .
-
-
 'service_name' => $this->faker->randomeElement(['Security', 'Cleaner', 'Gardener', 'Electrician', 'Plumber', 'Maid', 'Iron Press', 'Milk man', 'Baby Caretaker']),
-
-
-
-
 now make service_requests table migrations, model, factory, seeder, controller, routes(all should be posts not get put delete and parameters like id should be in input not query)
 
 id	member_id	service_id	provider_id	request_status	status	created_at	updated_at
 INT	INT(foreign key from users table)	INT(foreign key from services table)	INT(foreign key from providers table)	ENUM ('pending'(default), 'completed', 'cancelled')	ENUM(active (default) , deactive)	TIMESTAMP	TIMESTAMP
 
 this table contains which member is containing which services of which providers with request status
-
-
-
 amenity description
 guard image not working first time
-
-
 role_name , role -> role members table CRUD
-
-
 messages conversations api postman
 
 contact us api
 super admin.
 
 - in services(all) and chat(all) avoid duplicate creation.
-
-
 - login 405 and token expiry
 
 messages update problem and doubt.
-
-
-
-
 notices url change
 recheck all files with factory and other things after society_id dynamic.
-
-
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
-$user = User::find(247); // Replace with your user ID
-$user->assignRole('super-admin'); // Assign super-admin role
+$user = User::find(247);
+$user->assignRole('super-admin');
 
-$user = User::find(241); // Another user
-$user->assignRole('admin'); // Assign admin role
-
-
-
+$user = User::find(241);
+$user->assignRole('admin');
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-
-// Create a role if not exists
 $role = Role::firstOrCreate(['name' => 'super-admin']);
 $adminRole = Role::firstOrCreate(['name' => 'admin']);
+$user = User::find(241);
+$user->assignRole($role);
 
-// Assign roles to users
-$user = User::find(241); // Replace with your user ID
-$user->assignRole($role); // Assign super-admin role
-
-$user2 = User::find(247); // Another user
-$user2->assignRole($adminRole); // Assign admin role
-
-
+$user2 = User::find(247);
+$user2->assignRole($adminRole);
 city state postal_code contact_number type status
 register() method,
 registersociety form add users inputs
 
 houses controller for web supre admin
 houses / views and user detaisl in society view section
-    

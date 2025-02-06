@@ -37,7 +37,7 @@ const SELECTOR_DROPDOWN = '.dropdown'
 const SELECTOR_DROPDOWN_TOGGLE = '.dropdown-toggle'
 
 const Default = {
-  offset: null, // TODO: v6 @deprecated, keep it for backwards compatibility reasons
+  offset: null,
   rootMargin: '0px 0px -25%',
   smoothScroll: false,
   target: null,
@@ -45,7 +45,7 @@ const Default = {
 }
 
 const DefaultType = {
-  offset: '(number|null)', // TODO v6 @deprecated, keep it for backwards compatibility reasons
+  offset: '(number|null)',
   rootMargin: 'string',
   smoothScroll: 'boolean',
   target: 'element',
@@ -59,8 +59,6 @@ const DefaultType = {
 class ScrollSpy extends BaseComponent {
   constructor(element, config) {
     super(element, config)
-
-    // this._element is the observablesContainer and config.target the menu links wrapper
     this._targetLinks = new Map()
     this._observableSections = new Map()
     this._rootElement = getComputedStyle(this._element).overflowY === 'visible' ? null : this._element
@@ -70,10 +68,8 @@ class ScrollSpy extends BaseComponent {
       visibleEntryTop: 0,
       parentScrollTop: 0
     }
-    this.refresh() // initialize
+    this.refresh()
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -85,8 +81,6 @@ class ScrollSpy extends BaseComponent {
   static get NAME() {
     return NAME
   }
-
-  // Public
   refresh() {
     this._initializeTargetsAndObservables()
     this._maybeEnableSmoothScroll()
@@ -106,13 +100,9 @@ class ScrollSpy extends BaseComponent {
     this._observer.disconnect()
     super.dispose()
   }
-
-  // Private
   _configAfterMerge(config) {
-    // TODO: on v6 target should be given explicitly & remove the {target: 'ss-target'} case
-    config.target = getElement(config.target) || document.body
 
-    // TODO: v6 Only for backwards compatibility reasons. Use rootMargin only
+    config.target = getElement(config.target) || document.body
     config.rootMargin = config.offset ? `${config.offset}px 0px -30%` : config.rootMargin
 
     if (typeof config.threshold === 'string') {
@@ -126,8 +116,6 @@ class ScrollSpy extends BaseComponent {
     if (!this._config.smoothScroll) {
       return
     }
-
-    // unregister any previous listeners
     EventHandler.off(this._config.target, EVENT_CLICK)
 
     EventHandler.on(this._config.target, EVENT_CLICK, SELECTOR_TARGET_LINKS, event => {
@@ -140,8 +128,6 @@ class ScrollSpy extends BaseComponent {
           root.scrollTo({ top: height, behavior: 'smooth' })
           return
         }
-
-        // Chrome 60 doesn't support `scrollTo`
         root.scrollTop = height
       }
     })
@@ -156,8 +142,6 @@ class ScrollSpy extends BaseComponent {
 
     return new IntersectionObserver(entries => this._observerCallback(entries), options)
   }
-
-  // The logic of selection
   _observerCallback(entries) {
     const targetElement = entry => this._targetLinks.get(`#${entry.target.id}`)
     const activate = entry => {
@@ -178,18 +162,16 @@ class ScrollSpy extends BaseComponent {
       }
 
       const entryIsLowerThanPrevious = entry.target.offsetTop >= this._previousScrollData.visibleEntryTop
-      // if we are scrolling down, pick the bigger offsetTop
+
       if (userScrollsDown && entryIsLowerThanPrevious) {
         activate(entry)
-        // if parent isn't scrolled, let's keep the first visible item, breaking the iteration
+
         if (!parentScrollTop) {
           return
         }
 
         continue
       }
-
-      // if we are scrolling up, pick the smallest offsetTop
       if (!userScrollsDown && !entryIsLowerThanPrevious) {
         activate(entry)
       }
@@ -203,14 +185,12 @@ class ScrollSpy extends BaseComponent {
     const targetLinks = SelectorEngine.find(SELECTOR_TARGET_LINKS, this._config.target)
 
     for (const anchor of targetLinks) {
-      // ensure that the anchor has an id and is not disabled
+
       if (!anchor.hash || isDisabled(anchor)) {
         continue
       }
 
       const observableSection = SelectorEngine.findOne(anchor.hash, this._element)
-
-      // ensure that the observableSection exists & is visible
       if (isVisible(observableSection)) {
         this._targetLinks.set(anchor.hash, anchor)
         this._observableSections.set(anchor.hash, observableSection)
@@ -232,7 +212,7 @@ class ScrollSpy extends BaseComponent {
   }
 
   _activateParents(target) {
-    // Activate dropdown parents
+
     if (target.classList.contains(CLASS_NAME_DROPDOWN_ITEM)) {
       SelectorEngine.findOne(SELECTOR_DROPDOWN_TOGGLE, target.closest(SELECTOR_DROPDOWN))
         .classList.add(CLASS_NAME_ACTIVE)
@@ -240,8 +220,6 @@ class ScrollSpy extends BaseComponent {
     }
 
     for (const listGroup of SelectorEngine.parents(target, SELECTOR_NAV_LIST_GROUP)) {
-      // Set triggered links parents as active
-      // With both <ul> and <nav> markup a parent is the previous sibling of any nav ancestor
       for (const item of SelectorEngine.prev(listGroup, SELECTOR_LINK_ITEMS)) {
         item.classList.add(CLASS_NAME_ACTIVE)
       }
@@ -256,8 +234,6 @@ class ScrollSpy extends BaseComponent {
       node.classList.remove(CLASS_NAME_ACTIVE)
     }
   }
-
-  // Static
   static jQueryInterface(config) {
     return this.each(function () {
       const data = ScrollSpy.getOrCreateInstance(this, config)

@@ -15,7 +15,7 @@ Prism.languages.brightscript = {
 			},
 			'expression': {
 				pattern: /[\s\S]+/,
-				inside: null // see below
+				inside: null
 			}
 		}
 	},

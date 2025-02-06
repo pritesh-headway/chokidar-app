@@ -9,7 +9,7 @@ Prism.languages.python = {
 		greedy: true,
 		inside: {
 			'interpolation': {
-				// "{" <expression> <optional "!s", "!r", or "!a"> <optional ":" format specifier> "}"
+
 				pattern: /((?:^|[^{])(?:\{\{)*)\{(?!\{)(?:[^{}]|\{(?!\{)(?:[^{}]|\{(?!\{)(?:[^{}])+\})+\})+\}/,
 				lookbehind: true,
 				inside: {

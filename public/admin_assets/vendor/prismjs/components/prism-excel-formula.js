@@ -9,15 +9,6 @@ Prism.languages['excel-formula'] = {
 		greedy: true
 	},
 	'reference': {
-		// https://www.ablebits.com/office-addins-blog/2015/12/08/excel-reference-another-sheet-workbook/
-
-		// Sales!B2
-		// 'Winter sales'!B2
-		// [Sales.xlsx]Jan!B2:B5
-		// D:\Reports\[Sales.xlsx]Jan!B2:B5
-		// '[Sales.xlsx]Jan sales'!B2:B5
-		// 'D:\Reports\[Sales.xlsx]Jan sales'!B2:B5
-
 		pattern: /(?:'[^']*'|(?:[^\s()[\]{}<>*?"';,$&]*\[[^^\s()[\]{}<>*?"']+\])?\w+)!/,
 		greedy: true,
 		alias: 'string',
@@ -52,8 +43,6 @@ Prism.languages['excel-formula'] = {
 		}
 	},
 	'cell': {
-		// Excel is case insensitive, so the string "foo1" could be either a variable or a cell.
-		// To combat this, we match cells case insensitive, if the contain at least one "$", and case sensitive otherwise.
 		pattern: /\b[A-Z]+\d+\b|\$[A-Za-z]+\$?\d+\b|\b[A-Za-z]+\$\d+\b/,
 		alias: 'selector'
 	},

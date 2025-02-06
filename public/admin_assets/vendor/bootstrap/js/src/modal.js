@@ -74,8 +74,6 @@ class Modal extends BaseComponent {
 
     this._addEventListeners()
   }
-
-  // Getters
   static get Default() {
     return Default
   }
@@ -87,8 +85,6 @@ class Modal extends BaseComponent {
   static get NAME() {
     return NAME
   }
-
-  // Public
   toggle(relatedTarget) {
     return this._isShown ? this.hide() : this.show(relatedTarget)
   }
@@ -151,11 +147,9 @@ class Modal extends BaseComponent {
   handleUpdate() {
     this._adjustDialog()
   }
-
-  // Private
   _initializeBackDrop() {
     return new Backdrop({
-      isVisible: Boolean(this._config.backdrop), // 'static' option will be translated to true, and booleans will keep their value,
+      isVisible: Boolean(this._config.backdrop),
       isAnimated: this._isAnimated()
     })
   }
@@ -167,7 +161,7 @@ class Modal extends BaseComponent {
   }
 
   _showElement(relatedTarget) {
-    // try to append dynamic modal
+
     if (!document.body.contains(this._element)) {
       document.body.append(this._element)
     }
@@ -223,7 +217,7 @@ class Modal extends BaseComponent {
     })
 
     EventHandler.on(this._element, EVENT_MOUSEDOWN_DISMISS, event => {
-      // a bad trick to segregate clicks that may start inside dialog but end outside, and avoid listen to scrollbar clicks
+
       EventHandler.one(this._element, EVENT_CLICK_DISMISS, event2 => {
         if (this._element !== event.target || this._element !== event2.target) {
           return
@@ -268,7 +262,7 @@ class Modal extends BaseComponent {
 
     const isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight
     const initialOverflowY = this._element.style.overflowY
-    // return if the following background transition hasn't yet completed
+
     if (initialOverflowY === 'hidden' || this._element.classList.contains(CLASS_NAME_STATIC)) {
       return
     }
@@ -312,8 +306,6 @@ class Modal extends BaseComponent {
     this._element.style.paddingLeft = ''
     this._element.style.paddingRight = ''
   }
-
-  // Static
   static jQueryInterface(config, relatedTarget) {
     return this.each(function () {
       const data = Modal.getOrCreateInstance(this, config)
@@ -344,7 +336,7 @@ EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (
 
   EventHandler.one(target, EVENT_SHOW, showEvent => {
     if (showEvent.defaultPrevented) {
-      // only register focus restorer if modal will actually get shown
+
       return
     }
 
@@ -354,8 +346,6 @@ EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (
       }
     })
   })
-
-  // avoid conflict when clicking modal toggler while another one is open
   const alreadyOpen = SelectorEngine.findOne(OPEN_SELECTOR)
   if (alreadyOpen) {
     Modal.getInstance(alreadyOpen).hide()

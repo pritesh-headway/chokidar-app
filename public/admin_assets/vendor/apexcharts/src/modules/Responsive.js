@@ -13,14 +13,9 @@ export default class Responsive {
     this.ctx = ctx
     this.w = ctx.w
   }
-
-  // the opts parameter if not null has to be set overriding everything
-  // as the opts is set by user externally
   checkResponsiveConfig(opts) {
     const w = this.w
     const cnf = w.config
-
-    // check if responsive config exists
     if (cnf.responsive.length === 0) return
 
     let res = cnf.responsive.slice()

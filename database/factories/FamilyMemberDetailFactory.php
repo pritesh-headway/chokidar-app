@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Database\Factories;
 
 use App\Models\User;
@@ -14,13 +13,13 @@ class FamilyMemberDetailFactory extends Factory
 
     public function definition()
     {
-        // $user = User::inRandomOrder()->first();
+
         $user = User::whereIn('role', ['owner', 'tenant'])->inRandomOrder()->first();
         return [
-            // 'block_number' => $this->faker->regexify('[A-Z]-[0-9]{3}'),
+
             'block_number' => $user->block_number,
             'member_name' => $this->faker->name,
-            'user_id' => $user->id, // This will create a new user if not provided
+            'user_id' => $user->id,
             'mobile' => $this->faker->numerify('##########'),
             'status' => $this->faker->randomElement(['active', 'deactive']),
         ];

@@ -38,22 +38,17 @@
 		}
 		return pattern.replace(/<<self>>/g, '[^\\s\\S]');
 	}
-
-	// https://docs.microsoft.com/en-us/azure/quantum/user-guide/language/typesystem/
-	// https://github.com/microsoft/qsharp-language/tree/main/Specifications/Language/5_Grammar
 	var keywordKinds = {
-		// keywords which represent a return or variable type
+
 		type: 'Adj BigInt Bool Ctl Double false Int One Pauli PauliI PauliX PauliY PauliZ Qubit Range Result String true Unit Zero',
-		// all other keywords
+
 		other: 'Adjoint adjoint apply as auto body borrow borrowing Controlled controlled distribute elif else fail fixup for function if in internal intrinsic invert is let mutable namespace new newtype open operation repeat return self set until use using while within'
 	};
-	// keywords
+
 	function keywordsToPattern(words) {
 		return '\\b(?:' + words.trim().replace(/ /g, '|') + ')\\b';
 	}
 	var keywords = RegExp(keywordsToPattern(keywordKinds.type + ' ' + keywordKinds.other));
-
-	// types
 	var identifier = /\b[A-Za-z_]\w*\b/.source;
 	var qualifiedName = replace(/<<0>>(?:\s*\.\s*<<0>>)*/.source, [identifier]);
 
@@ -61,8 +56,6 @@
 		'keyword': keywords,
 		'punctuation': /[<>()?,.:[\]]/
 	};
-
-	// strings
 	var regularString = /"(?:\\.|[^\\"])*"/.source;
 
 	Prism.languages.qsharp = Prism.languages.extend('clike', {
@@ -76,14 +69,12 @@
 		],
 		'class-name': [
 			{
-				// open Microsoft.Quantum.Canon;
-				// open Microsoft.Quantum.Canon as CN;
 				pattern: re(/(\b(?:as|open)\s+)<<0>>(?=\s*(?:;|as\b))/.source, [qualifiedName]),
 				lookbehind: true,
 				inside: typeInside
 			},
 			{
-				// namespace Quantum.App1;
+
 				pattern: re(/(\bnamespace\s+)<<0>>(?=\s*\{)/.source, [qualifiedName]),
 				lookbehind: true,
 				inside: typeInside
@@ -101,8 +92,6 @@
 			alias: 'operator'
 		}
 	});
-
-	// single line
 	var interpolationExpr = nested(replace(/\{(?:[^"{}]|<<0>>|<<self>>)*\}/.source, [regularString]), 2);
 
 	Prism.languages.insertBefore('qsharp', 'string', {

@@ -1,5 +1,5 @@
 Prism.languages.wolfram = {
-	'comment': // Allow one level of nesting - note: regex taken from applescipt
+	'comment':
 		/\(\*(?:\(\*(?:[^*]|\*(?!\)))*\*\)|(?!\(\*)[\s\S])*?\*\)/,
 	'string': {
 		pattern: /"(?:\\.|[^"\\\r\n])*"/,

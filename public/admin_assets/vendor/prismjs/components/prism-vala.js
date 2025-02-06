@@ -1,15 +1,15 @@
 Prism.languages.vala = Prism.languages.extend('clike', {
-	// Classes copied from prism-csharp
+
 	'class-name': [
 		{
-			// (Foo bar, Bar baz)
+
 			pattern: /\b[A-Z]\w*(?:\.\w+)*\b(?=(?:\?\s+|\*?\s+\*?)\w)/,
 			inside: {
 				punctuation: /\./
 			}
 		},
 		{
-			// [Foo]
+
 			pattern: /(\[)[A-Z]\w*(?:\.\w+)*\b/,
 			lookbehind: true,
 			inside: {
@@ -17,7 +17,7 @@ Prism.languages.vala = Prism.languages.extend('clike', {
 			}
 		},
 		{
-			// class Foo : Bar
+
 			pattern: /(\b(?:class|interface)\s+[A-Z]\w*(?:\.\w+)*\s*:\s*)[A-Z]\w*(?:\.\w+)*\b/,
 			lookbehind: true,
 			inside: {
@@ -25,7 +25,7 @@ Prism.languages.vala = Prism.languages.extend('clike', {
 			}
 		},
 		{
-			// class Foo
+
 			pattern: /((?:\b(?:class|enum|interface|new|struct)\s+)|(?:catch\s+\())[A-Z]\w*(?:\.\w+)*\b/,
 			lookbehind: true,
 			inside: {

@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./config.js'), require('../dom/event-handler.js'), require('./index.js')) :
-  typeof define === 'function' && define.amd ? define(['./config', '../dom/event-handler', './index'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Swipe = factory(global.Config, global.EventHandler, global.Index));
-})(this, (function (Config, EventHandler, index_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./config', '../dom/event-handler', './index'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Swipe = factory(global.Config, global.EventHandler, global.Index));
+})(this, (function (Config, EventHandler, index_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -58,8 +59,6 @@
       this._supportPointerEvents = Boolean(window.PointerEvent);
       this._initEvents();
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -69,13 +68,9 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     dispose() {
       EventHandler.off(this._element, EVENT_KEY);
     }
-
-    // Private
     _start(event) {
       if (!this._supportPointerEvents) {
         this._deltaX = event.touches[0].clientX;
@@ -121,8 +116,6 @@
     _eventIsPointerPenTouch(event) {
       return this._supportPointerEvents && (event.pointerType === POINTER_TYPE_PEN || event.pointerType === POINTER_TYPE_TOUCH);
     }
-
-    // Static
     static isSupported() {
       return 'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0;
     }

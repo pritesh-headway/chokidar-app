@@ -22,8 +22,6 @@ class CreateBookingAmenitiesTable extends Migration
             $table->enum('booking_status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
-
-            // Foreign keys
             $table->foreign('amenity_id')->references('id')->on('amenities')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

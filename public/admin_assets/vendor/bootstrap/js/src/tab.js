@@ -43,7 +43,7 @@ const NOT_SELECTOR_DROPDOWN_TOGGLE = ':not(.dropdown-toggle)'
 const SELECTOR_TAB_PANEL = '.list-group, .nav, [role="tablist"]'
 const SELECTOR_OUTER = '.nav-item, .list-group-item'
 const SELECTOR_INNER = `.nav-link${NOT_SELECTOR_DROPDOWN_TOGGLE}, .list-group-item${NOT_SELECTOR_DROPDOWN_TOGGLE}, [role="tab"]${NOT_SELECTOR_DROPDOWN_TOGGLE}`
-const SELECTOR_DATA_TOGGLE = '[data-bs-toggle="tab"], [data-bs-toggle="pill"], [data-bs-toggle="list"]' // todo:v6: could be only `tab`
+const SELECTOR_DATA_TOGGLE = '[data-bs-toggle="tab"], [data-bs-toggle="pill"], [data-bs-toggle="list"]'
 const SELECTOR_INNER_ELEM = `${SELECTOR_INNER}, ${SELECTOR_DATA_TOGGLE}`
 
 const SELECTOR_DATA_TOGGLE_ACTIVE = `.${CLASS_NAME_ACTIVE}[data-bs-toggle="tab"], .${CLASS_NAME_ACTIVE}[data-bs-toggle="pill"], .${CLASS_NAME_ACTIVE}[data-bs-toggle="list"]`
@@ -59,29 +59,19 @@ class Tab extends BaseComponent {
 
     if (!this._parent) {
       return
-      // todo: should Throw exception on v6
-      // throw new TypeError(`${element.outerHTML} has not a valid parent ${SELECTOR_INNER_ELEM}`)
     }
-
-    // Set up initial aria attributes
     this._setInitialAttributes(this._parent, this._getChildren())
 
     EventHandler.on(this._element, EVENT_KEYDOWN, event => this._keydown(event))
   }
-
-  // Getters
   static get NAME() {
     return NAME
   }
-
-  // Public
-  show() { // Shows this elem and deactivate the active sibling if exists
+  show() {
     const innerElem = this._element
     if (this._elemIsActive(innerElem)) {
       return
     }
-
-    // Search for active tab on same parent to deactivate it
     const active = this._getActiveElem()
 
     const hideEvent = active ?
@@ -97,8 +87,6 @@ class Tab extends BaseComponent {
     this._deactivate(active, innerElem)
     this._activate(innerElem, active)
   }
-
-  // Private
   _activate(element, relatedElem) {
     if (!element) {
       return
@@ -106,7 +94,7 @@ class Tab extends BaseComponent {
 
     element.classList.add(CLASS_NAME_ACTIVE)
 
-    this._activate(SelectorEngine.getElementFromSelector(element)) // Search and activate/show the proper section
+    this._activate(SelectorEngine.getElementFromSelector(element))
 
     const complete = () => {
       if (element.getAttribute('role') !== 'tab') {
@@ -133,7 +121,7 @@ class Tab extends BaseComponent {
     element.classList.remove(CLASS_NAME_ACTIVE)
     element.blur()
 
-    this._deactivate(SelectorEngine.getElementFromSelector(element)) // Search and deactivate the shown section too
+    this._deactivate(SelectorEngine.getElementFromSelector(element))
 
     const complete = () => {
       if (element.getAttribute('role') !== 'tab') {
@@ -155,7 +143,7 @@ class Tab extends BaseComponent {
       return
     }
 
-    event.stopPropagation()// stopPropagation/preventDefault both added to support up/down keys without scrolling the page
+    event.stopPropagation()
     event.preventDefault()
     const isNext = [ARROW_RIGHT_KEY, ARROW_DOWN_KEY].includes(event.key)
     const nextActiveElement = getNextActiveElement(this._getChildren().filter(element => !isDisabled(element)), event.target, isNext, true)
@@ -166,7 +154,7 @@ class Tab extends BaseComponent {
     }
   }
 
-  _getChildren() { // collection of inner elements
+  _getChildren() {
     return SelectorEngine.find(SELECTOR_INNER_ELEM, this._parent)
   }
 
@@ -197,8 +185,6 @@ class Tab extends BaseComponent {
     }
 
     this._setAttributeIfNotExists(child, 'role', 'tab')
-
-    // set attributes to the related panel too
     this._setInitialAttributesOnTargetPanel(child)
   }
 
@@ -243,18 +229,12 @@ class Tab extends BaseComponent {
   _elemIsActive(elem) {
     return elem.classList.contains(CLASS_NAME_ACTIVE)
   }
-
-  // Try to get the inner element (usually the .nav-link)
   _getInnerElement(elem) {
     return elem.matches(SELECTOR_INNER_ELEM) ? elem : SelectorEngine.findOne(SELECTOR_INNER_ELEM, elem)
   }
-
-  // Try to get the outer element (usually the .nav-item)
   _getOuterElement(elem) {
     return elem.closest(SELECTOR_OUTER) || elem
   }
-
-  // Static
   static jQueryInterface(config) {
     return this.each(function () {
       const data = Tab.getOrCreateInstance(this)

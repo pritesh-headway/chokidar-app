@@ -62,8 +62,6 @@ Useful links to wrappers other than the popular frameworks mentioned above
 - [larapex-charts](https://github.com/ArielMejiaDev/larapex-charts) - Laravel wrapper for ApexCharts
 - [blazor-apexcharts](https://github.com/apexcharts/Blazor-ApexCharts) - Blazor wrapper for ApexCharts [demo](https://apexcharts.github.io/Blazor-ApexCharts/)
 - [svelte-apexcharts](https://github.com/galkatz373/svelte-apexcharts) - Svelte wrapper for ApexCharts
-
-
 ## Usage
 
 ```js
@@ -152,14 +150,12 @@ The tiny gauges are an important part of a dashboard and are useful in displayin
 Utilize sparklines to indicate trends in data, for example, occasional increments or declines, monetary cycles, or to feature the most extreme and least values:
 
 <p align="center"><a href="https://apexcharts.com/javascript-chart-demos/sparklines/"><img src="https://apexcharts.com/media/sparklines.png" alt="sparkline-chart" /></a></p>
-
-
-## Need Advanced Data Grid for your next project? 
-We partnered with Infragistics, creators of the fastest data grids on the planet! Ignite UI Grids can handle unlimited rows and columns of data while providing access to custom templates and real-time data updates. 
+## Need Advanced Data Grid for your next project?
+We partnered with Infragistics, creators of the fastest data grids on the planet! Ignite UI Grids can handle unlimited rows and columns of data while providing access to custom templates and real-time data updates.
 
 <p align="center"><a href="https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid" target="_blank"><img src="https://apexcharts.com/media/infragistics-data-grid.png" /></a></p>
 
-Featuring an intuitive API for easy theming and branding, you can quickly bind to data with minimal hand-on coding. The grid is available in most of your favorite frameworks:  
+Featuring an intuitive API for easy theming and branding, you can quickly bind to data with minimal hand-on coding. The grid is available in most of your favorite frameworks:
 
 <a target="_blank" href="https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid">Angular Data Grid</a> | <a target="_blank" href="https://www.infragistics.com/products/ignite-ui-react/react/components/grids">React Data Grid</a> | <a target="_blank" href="https://www.infragistics.com/products/ignite-ui-blazor/blazor/components/data-grid">Blazor Data Grid</a> | <a target="_blank" href="https://www.infragistics.com/products/ignite-ui-web-components/web-components/components/data-grid">Web Components DataGrid</a> | <a target="_blank" href="https://www.igniteui.com/grid/overview">jQuery Data Grid </a>
 

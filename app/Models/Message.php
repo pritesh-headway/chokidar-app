@@ -1,6 +1,4 @@
 <?php
-// app/Models/Message.php
-// app/Models/Message.php
 
 namespace App\Models;
 
@@ -12,8 +10,6 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = ['conversation_id', 'sender_id', 'receiver_id', 'message', 'is_read'];
-
-    // Relationships
     public function conversation()
     {
         return $this->belongsTo(Conversation::class);

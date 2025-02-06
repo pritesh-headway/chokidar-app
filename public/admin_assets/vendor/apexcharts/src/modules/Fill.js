@@ -136,7 +136,7 @@ class Fill {
 
     if (fillColor.indexOf('rgb') === -1) {
       if (fillColor.length < 9) {
-        // if the hex contains alpha and is of 9 digit, skip the opacity
+
         defaultColor = Utils.hexToRgba(fillColor, fillOpacity)
       }
     } else {
@@ -191,8 +191,6 @@ class Fill {
     } else {
       pathFill = defaultColor
     }
-
-    // override pattern/gradient if opts.solid is true
     if (opts.solid) {
       pathFill = defaultColor
     }
@@ -246,8 +244,6 @@ class Fill {
         }
       }
     }
-
-    // colors passed in arguments
     if (typeof opts.fillColors !== 'undefined') {
       fillColors = []
       if (Array.isArray(opts.fillColors)) {
@@ -328,8 +324,8 @@ class Fill {
       fillCnf.gradient.opacityFrom === undefined
         ? fillOpacity
         : Array.isArray(fillCnf.gradient.opacityFrom)
-        ? fillCnf.gradient.opacityFrom[i]
-        : fillCnf.gradient.opacityFrom
+          ? fillCnf.gradient.opacityFrom[i]
+          : fillCnf.gradient.opacityFrom
 
     if (gradientFrom.indexOf('rgba') > -1) {
       opacityFrom = Utils.getOpacityFromRGBA(gradientFrom)
@@ -338,8 +334,8 @@ class Fill {
       fillCnf.gradient.opacityTo === undefined
         ? fillOpacity
         : Array.isArray(fillCnf.gradient.opacityTo)
-        ? fillCnf.gradient.opacityTo[i]
-        : fillCnf.gradient.opacityTo
+          ? fillCnf.gradient.opacityTo[i]
+          : fillCnf.gradient.opacityTo
 
     if (
       fillCnf.gradient.gradientToColors === undefined ||

@@ -1,5 +1,3 @@
-// https://gn.googlesource.com/gn/+/refs/heads/main/docs/reference.md#grammar
-
 Prism.languages.gn = {
 	'comment': {
 		pattern: /#.*/,
@@ -22,7 +20,7 @@ Prism.languages.gn = {
 					},
 					'expression': {
 						pattern: /[\s\S]+/,
-						inside: null // see below
+						inside: null
 					}
 				}
 			},
@@ -33,7 +31,7 @@ Prism.languages.gn = {
 	'keyword': /\b(?:else|if)\b/,
 	'boolean': /\b(?:false|true)\b/,
 	'builtin-function': {
-		// a few functions get special highlighting to improve readability
+
 		pattern: /\b(?:assert|defined|foreach|import|pool|print|template|tool|toolchain)(?=\s*\()/i,
 		alias: 'keyword'
 	},

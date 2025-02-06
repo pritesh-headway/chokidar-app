@@ -1,5 +1,5 @@
 //
-// Headings
+
 //
 .h1 {
   @extend h1;
@@ -24,14 +24,10 @@
 .h6 {
   @extend h6;
 }
-
-
 .lead {
   @include font-size($lead-font-size);
   font-weight: $lead-font-weight;
 }
-
-// Type display classes
 @each $display, $font-size in $display-font-sizes {
   .display-#{$display} {
     @include font-size($font-size);
@@ -43,7 +39,7 @@
 }
 
 //
-// Emphasis
+
 //
 .small {
   @extend small;
@@ -54,17 +50,16 @@
 }
 
 //
-// Lists
+
 //
 
 .list-unstyled {
   @include list-unstyled();
 }
-
-// Inline turns list items into inline-block
 .list-inline {
   @include list-unstyled();
 }
+
 .list-inline-item {
   display: inline-block;
 
@@ -72,19 +67,13 @@
     margin-right: $list-inline-padding;
   }
 }
-
-
-//
-// Misc
 //
 
-// Builds on `abbr`
+//
 .initialism {
   @include font-size($initialism-font-size);
   text-transform: uppercase;
 }
-
-// Blockquotes
 .blockquote {
   margin-bottom: $blockquote-margin-y;
   @include font-size($blockquote-font-size);
@@ -101,6 +90,6 @@
   color: $blockquote-footer-color;
 
   &::before {
-    content: "\2014\00A0"; // em dash, nbsp
+    content: "\2014\00A0";
   }
 }

@@ -1,5 +1,5 @@
 <?php
-// database/migrations/xxxx_xx_xx_xxxxxx_create_service_providers_table.php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +15,7 @@ class CreateServiceProvidersTable extends Migration
             $table->string('mobile', 10);
             $table->text('address');
             $table->string('profile_image', 256);
-            $table->json('documents')->nullable(); // To store multi-documents like pdf, jpg
+            $table->json('documents')->nullable();
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
 

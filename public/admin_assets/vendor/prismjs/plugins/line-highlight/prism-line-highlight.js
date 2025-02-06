@@ -37,9 +37,6 @@
 	function callFunction(func) {
 		func();
 	}
-
-	// Some browsers round the line-height, others don't.
-	// We need to test for it to position the elements properly.
 	var isLineHeightRounded = (function () {
 		var res;
 		return function () {
@@ -51,8 +48,6 @@
 				d.style.border = '0';
 				d.innerHTML = '&nbsp;<br />&nbsp;';
 				document.body.appendChild(d);
-				// Browsers that round the line-height should have offsetHeight === 38
-				// The others should have 39.
 				res = d.offsetHeight === 38;
 				document.body.removeChild(d);
 			}
@@ -103,8 +98,6 @@
 		}
 
 		if (pre.id && Prism.util.isActive(pre, LINKABLE_LINE_NUMBERS_CLASS)) {
-			// Technically, the line numbers plugin is also necessary but this plugin doesn't control the classes of
-			// the line numbers plugin, so we can't assume that they are present.
 			return true;
 		}
 
@@ -170,8 +163,6 @@
 					line.setAttribute('data-range', currentRange);
 					line.className = (classes || '') + ' line-highlight';
 				});
-
-				// if the line-numbers plugin is enabled, then there is no reason for this plugin to display the line numbers
 				if (hasLineNumbers && Prism.plugins.lineNumbers) {
 					var startNode = Prism.plugins.lineNumbers.getLine(pre, start);
 					var endNode = Prism.plugins.lineNumbers.getLine(pre, end);
@@ -208,36 +199,24 @@
 				});
 
 				mutateActions.push(function () {
-					// allow this to play nicely with the line-numbers plugin
-					// need to attack to pre as when line-numbers is enabled, the code tag is relatively which screws up the positioning
 					parentElement.appendChild(line);
 				});
 			});
 
 			var id = pre.id;
 			if (hasLineNumbers && Prism.util.isActive(pre, LINKABLE_LINE_NUMBERS_CLASS) && id) {
-				// This implements linkable line numbers. Linkable line numbers use Line Highlight to create a link to a
-				// specific line. For this to work, the pre element has to:
-				//  1) have line numbers,
-				//  2) have the `linkable-line-numbers` class or an ascendant that has that class, and
-				//  3) have an id.
-
 				if (!hasClass(pre, LINKABLE_LINE_NUMBERS_CLASS)) {
-					// add class to pre
+
 					mutateActions.push(function () {
 						pre.classList.add(LINKABLE_LINE_NUMBERS_CLASS);
 					});
 				}
 
 				var start = parseInt(pre.getAttribute('data-start') || '1');
-
-				// iterate all line number spans
 				$$('.line-numbers-rows > span', pre).forEach(function (lineSpan, i) {
 					var lineNumber = i + start;
 					lineSpan.onclick = function () {
 						var hash = id + '.' + lineNumber;
-
-						// this will prevent scrolling since the span is obviously in view
 						scrollIntoView = false;
 						location.hash = hash;
 						setTimeout(function () {
@@ -252,12 +231,8 @@
 			};
 		}
 	};
-
-
 	function applyHash() {
 		var hash = location.hash.slice(1);
-
-		// Remove pre-existing temporary lines
 		$$('.temporary.line-highlight').forEach(function (line) {
 			line.parentNode.removeChild(line);
 		});
@@ -287,7 +262,7 @@
 		}
 	}
 
-	var fakeTimer = 0; // Hack to limit the number of times applyHash() runs
+	var fakeTimer = 0;
 
 	Prism.hooks.add('before-sanity-check', function (env) {
 		var pre = env.element.parentElement;
@@ -307,7 +282,7 @@
 			num += line.textContent.length;
 			line.parentNode.removeChild(line);
 		});
-		// Remove extra whitespace
+
 		if (num && /^(?: \n)+$/.test(env.code.slice(-num))) {
 			env.code = env.code.slice(0, -num);
 		}

@@ -19,7 +19,7 @@ class Formatters {
 
     if (w.config.xaxis.type === 'datetime') {
       if (w.config.xaxis.labels.formatter === undefined) {
-        // if user has not specified a custom formatter, use the default tooltip.x.format
+
         if (w.config.tooltip.x.formatter === undefined) {
           let datetimeObj = new DateTime(this.ctx)
           return datetimeObj.formatDate(
@@ -80,8 +80,6 @@ class Formatters {
     w.globals.legendFormatter = (val) => {
       return this.defaultGeneralFormatter(val)
     }
-
-    // formatter function will always overwrite format property
     if (w.config.xaxis.labels.formatter !== undefined) {
       w.globals.xLabelFormatter = w.config.xaxis.labels.formatter
     } else {
@@ -135,13 +133,9 @@ class Formatters {
     if (w.config.tooltip.z.formatter !== undefined) {
       w.globals.ttZFormatter = w.config.tooltip.z.formatter
     }
-
-    // legend formatter - if user wants to append any global values of series to legend text
     if (w.config.legend.formatter !== undefined) {
       w.globals.legendFormatter = w.config.legend.formatter
     }
-
-    // formatter function will always overwrite format property
     w.config.yaxis.forEach((yaxe, i) => {
       if (yaxe.labels.formatter !== undefined) {
         w.globals.yLabelFormatters[i] = yaxe.labels.formatter
@@ -167,8 +161,6 @@ class Formatters {
     const w = this.w
     if (w.config.chart.type === 'heatmap') {
       w.globals.yAxisScale[0].result = w.globals.seriesNames.slice()
-
-      //  get the longest string from the labels array and also apply label formatter to it
       let longest = w.globals.seriesNames.reduce(
         (a, b) => (a.length > b.length ? a : b),
         0

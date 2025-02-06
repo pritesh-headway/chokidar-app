@@ -16,8 +16,6 @@
 
 	var rangeChar = '(?:[^\\\\-]|' + escape.source + ')';
 	var range = RegExp(rangeChar + '-' + rangeChar);
-
-	// the name of a capturing group
 	var groupName = {
 		pattern: /(<|')[^<>']+(?=[>']$)/,
 		lookbehind: true,
@@ -57,7 +55,7 @@
 		'char-set': charSet,
 		'backreference': [
 			{
-				// a backreference which is not an octal escape
+
 				pattern: /\\(?![123][0-7]{2})[1-9]/,
 				alias: 'keyword'
 			},
@@ -76,10 +74,6 @@
 		'escape': escape,
 		'group': [
 			{
-				// https://docs.oracle.com/javase/10/docs/api/java/util/regex/Pattern.html
-				// https://docs.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference?view=netframework-4.7.2#grouping-constructs
-
-				// (), (?<name>), (?'name'), (?>), (?:), (?=), (?!), (?<=), (?<!), (?is-m), (?i-m:)
 				pattern: /\((?:\?(?:<[^<>']+>|'[^<>']+'|[>:]|<?[=!]|[idmnsuxU]+(?:-[idmnsuxU]+)?:?))?/,
 				alias: 'punctuation',
 				inside: {

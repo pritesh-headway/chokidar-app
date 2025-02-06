@@ -21,8 +21,6 @@
 			pattern: /^ ?\*{3}.+?\*{3}/,
 			alias: 'keyword'
 		};
-
-		// copy inside tokens
 		for (var token in inside) {
 			extendecInside[token] = inside[token];
 		}
@@ -43,8 +41,6 @@
 			inside: extendecInside
 		};
 	}
-
-
 	var docTag = {
 		pattern: /(\[Documentation\](?: {2}|\t)[ \t]*)(?![ \t]|#)(?:.|(?:\r\n?|\n)[ \t]*\.{3})+/,
 		lookbehind: true,

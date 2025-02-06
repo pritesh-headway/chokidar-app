@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('../dom/event-handler.js'), require('../dom/selector-engine.js'), require('./config.js')) :
-  typeof define === 'function' && define.amd ? define(['../dom/event-handler', '../dom/selector-engine', './config'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Focustrap = factory(global.EventHandler, global.SelectorEngine, global.Config));
-})(this, (function (EventHandler, SelectorEngine, Config) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['../dom/event-handler', '../dom/selector-engine', './config'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Focustrap = factory(global.EventHandler, global.SelectorEngine, global.Config));
+})(this, (function (EventHandler, SelectorEngine, Config) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -30,7 +31,7 @@
   const TAB_NAV_BACKWARD = 'backward';
   const Default = {
     autofocus: true,
-    trapElement: null // The element to trap focus inside of
+    trapElement: null
   };
 
   const DefaultType = {
@@ -49,8 +50,6 @@
       this._isActive = false;
       this._lastTabNavDirection = null;
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -60,8 +59,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     activate() {
       if (this._isActive) {
         return;
@@ -69,7 +66,7 @@
       if (this._config.autofocus) {
         this._config.trapElement.focus();
       }
-      EventHandler.off(document, EVENT_KEY); // guard against infinite focus loop
+      EventHandler.off(document, EVENT_KEY);
       EventHandler.on(document, EVENT_FOCUSIN, event => this._handleFocusin(event));
       EventHandler.on(document, EVENT_KEYDOWN_TAB, event => this._handleKeydown(event));
       this._isActive = true;
@@ -81,8 +78,6 @@
       this._isActive = false;
       EventHandler.off(document, EVENT_KEY);
     }
-
-    // Private
     _handleFocusin(event) {
       const {
         trapElement

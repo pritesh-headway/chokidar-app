@@ -29,14 +29,12 @@ class RangeBar extends Bar {
     for (let i = 0; i < series.length; i++) {
       let x,
         y,
-        xDivision, // xDivision is the GRIDWIDTH divided by number of datapoints (columns)
-        yDivision, // yDivision is the GRIDHEIGHT divided by number of datapoints (bars)
-        zeroH, // zeroH is the baseline where 0 meets y axis
-        zeroW // zeroW is the baseline where 0 meets x axis
+        xDivision,
+        yDivision,
+        zeroH,
+        zeroW
 
       let realIndex = w.globals.comboCharts ? seriesIndex[i] : i
-
-      // el to which series will be drawn
       let elSeries = graphics.group({
         class: `apexcharts-series`,
         seriesName: Utils.escapeString(w.globals.seriesNames[realIndex]),
@@ -66,8 +64,6 @@ class RangeBar extends Bar {
       barWidth = initPositions.barWidth
       xDivision = initPositions.xDivision
       zeroH = initPositions.zeroH
-
-      // eldatalabels
       let elDataLabelsWrap = graphics.group({
         class: 'apexcharts-datalabels',
         'data:realIndex': realIndex
@@ -102,8 +98,6 @@ class RangeBar extends Bar {
           let srty = (yDivision - barHeight * seriesLen) / 2
 
           if (typeof w.config.series[i].data[j] === 'undefined') {
-            // no data exists for further indexes, hence we need to get out the innr loop.
-            // As we are iterating over total datapoints, there is a possiblity the series might not have data for j index
             break
           }
 
@@ -231,8 +225,8 @@ class RangeBar extends Bar {
         barYPosition =
           barHeight * this.visibleI +
           (yDivision * (100 - parseInt(this.barOptions.barHeight, 10))) /
-            100 /
-            2 +
+          100 /
+          2 +
           barHeight * (this.visibleI + overlaps.indexOf(rangeName)) +
           yDivision * rowIndex
       }

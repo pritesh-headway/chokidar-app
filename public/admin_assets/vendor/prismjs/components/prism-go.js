@@ -7,11 +7,11 @@ Prism.languages.go = Prism.languages.extend('clike', {
 	'keyword': /\b(?:break|case|chan|const|continue|default|defer|else|fallthrough|for|func|go(?:to)?|if|import|interface|map|package|range|return|select|struct|switch|type|var)\b/,
 	'boolean': /\b(?:_|false|iota|nil|true)\b/,
 	'number': [
-		// binary and octal integers
+
 		/\b0(?:b[01_]+|o[0-7_]+)i?\b/i,
-		// hexadecimal integers and floats
+
 		/\b0x(?:[a-f\d_]+(?:\.[a-f\d_]*)?|\.[a-f\d_]+)(?:p[+-]?\d+(?:_\d+)*)?i?(?!\w)/i,
-		// decimal integers and floats
+
 		/(?:\b\d[\d_]*(?:\.[\d_]*)?|\B\.\d[\d_]*)(?:e[+-]?[\d_]+)?i?(?!\w)/i
 	],
 	'operator': /[*\/%^!=]=?|\+[=+]?|-[=-]?|\|[=|]?|&(?:=|&|\^=?)?|>(?:>=?|=)?|<(?:<=?|=|-)?|:=|\.\.\./,

@@ -1,6 +1,6 @@
 (function (Prism) {
 	Prism.languages.ignore = {
-		// https://git-scm.com/docs/gitignore
+
 		'comment': /^#.*/m,
 		'entry': {
 			pattern: /\S(?:.*(?:(?:\\ )|\S))?/,

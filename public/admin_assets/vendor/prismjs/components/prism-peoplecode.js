@@ -1,12 +1,12 @@
 Prism.languages.peoplecode = {
 	'comment': RegExp([
-		// C-style multiline comments
+
 		/\/\*[\s\S]*?\*\//.source,
-		// REM comments
+
 		/\bREM[^;]*;/.source,
-		// Nested <* *> comments
+
 		/<\*(?:[^<*]|\*(?!>)|<(?!\*)|<\*(?:(?!\*>)[\s\S])*\*>)*\*>/.source,
-		// /+ +/ comments
+
 		/\/\+[\s\S]*?\+\//.source,
 	].join('|')),
 	'string': {

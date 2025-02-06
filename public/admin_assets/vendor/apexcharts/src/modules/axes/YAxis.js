@@ -56,11 +56,7 @@ export default class YAxis {
     elYaxis.add(elYaxisTexts)
 
     let tickAmount = w.globals.yAxisScale[realIndex].result.length - 1
-
-    // labelsDivider is simply svg height/number of ticks
     let labelsDivider = w.globals.gridHeight / tickAmount
-
-    // initial label position = 0;
     let l = w.globals.translateY
     let lbFormatter = w.globals.yLabelFormatters[realIndex]
 
@@ -201,8 +197,6 @@ export default class YAxis {
 
     return elYaxis
   }
-
-  // This actually becomes horizontal axis (for bar charts)
   drawYaxisInversed(realIndex) {
     let w = this.w
     let graphics = new Graphics(this.ctx)
@@ -219,11 +213,7 @@ export default class YAxis {
     elXaxis.add(elXaxisTexts)
 
     let tickAmount = w.globals.yAxisScale[realIndex].result.length - 1
-
-    // labelsDivider is simply svg width/number of ticks
     let labelsDivider = w.globals.gridWidth / tickAmount + 0.1
-
-    // initial label position;
     let l = labelsDivider + w.config.xaxis.labels.offsetX
 
     let lbFormatter = w.globals.xLabelFormatter
@@ -330,8 +320,6 @@ export default class YAxis {
         0,
         axisBorder.height
       )
-
-      // in horizontal bars, we append axisBorder to elGridBorders element to avoid z-index issues
       if (this.elgrid && this.elgrid.elGridBorders) {
         this.elgrid.elGridBorders.add(elHorzLine)
       } else {
@@ -417,10 +405,9 @@ export default class YAxis {
       let titleRotatingCenter = graphics.rotateAroundCenter(yAxisTitle)
       yAxisTitle.setAttribute(
         'transform',
-        `rotate(${
-          yAxisOpposite
-            ? w.config.yaxis[realIndex].title.rotate * -1
-            : w.config.yaxis[realIndex].title.rotate
+        `rotate(${yAxisOpposite
+          ? w.config.yaxis[realIndex].title.rotate * -1
+          : w.config.yaxis[realIndex].title.rotate
         } ${titleRotatingCenter.x} ${titleRotatingCenter.y})`
       )
     }
@@ -478,8 +465,6 @@ export default class YAxis {
       padd
     }
   }
-
-  // sets the x position of the y-axis by counting the labels width, title width and any offset
   setYAxisXPosition(yaxisLabelCoords, yTitleCoords) {
     let w = this.w
 
@@ -534,7 +519,7 @@ export default class YAxis {
     yaxis = Utils.listToArray(yaxis)
     yaxis.forEach((y, index) => {
       const yaxe = w.config.yaxis[index]
-      // proceed only if user has specified alignment
+
       if (yaxe && !yaxe.floating && yaxe.labels.align !== undefined) {
         const yAxisInner = w.globals.dom.baseEl.querySelector(
           `.apexcharts-yaxis[rel='${index}'] .apexcharts-yaxis-texts-g`

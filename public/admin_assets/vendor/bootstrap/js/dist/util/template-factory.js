@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./sanitizer.js'), require('./index.js'), require('../dom/selector-engine.js'), require('./config.js')) :
-  typeof define === 'function' && define.amd ? define(['./sanitizer', './index', '../dom/selector-engine', './config'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.TemplateFactory = factory(global.Sanitizer, global.Index, global.SelectorEngine, global.Config));
-})(this, (function (sanitizer_js, index_js, SelectorEngine, Config) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./sanitizer', './index', '../dom/selector-engine', './config'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.TemplateFactory = factory(global.Sanitizer, global.Index, global.SelectorEngine, global.Config));
+})(this, (function (sanitizer_js, index_js, SelectorEngine, Config) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -24,7 +25,7 @@
   const Default = {
     allowList: sanitizer_js.DefaultAllowlist,
     content: {},
-    // { selector : text ,  selector2 : text2 , }
+
     extraClass: '',
     html: false,
     sanitize: true,
@@ -54,8 +55,6 @@
       super();
       this._config = this._getConfig(config);
     }
-
-    // Getters
     static get Default() {
       return Default;
     }
@@ -65,8 +64,6 @@
     static get NAME() {
       return NAME;
     }
-
-    // Public
     getContent() {
       return Object.values(this._config.content).map(config => this._resolvePossibleFunction(config)).filter(Boolean);
     }
@@ -94,8 +91,6 @@
       }
       return template;
     }
-
-    // Private
     _typeCheckConfig(config) {
       super._typeCheckConfig(config);
       this._checkContent(config.content);

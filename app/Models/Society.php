@@ -20,14 +20,6 @@ class Society extends Model
         'type',
         'status',
     ];
-
-    // // Define the relationship with the User model
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
-
-    // Define the relationship: A society can have many users
     public function users()
     {
         return $this->hasMany(User::class);

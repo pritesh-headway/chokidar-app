@@ -1,5 +1,3 @@
-// https://ocaml.org/manual/lex.html
-
 Prism.languages.ocaml = {
 	'comment': {
 		pattern: /\(\*[\s\S]*?\*\)/,
@@ -20,11 +18,11 @@ Prism.languages.ocaml = {
 		}
 	],
 	'number': [
-		// binary and octal
+
 		/\b(?:0b[01][01_]*|0o[0-7][0-7_]*)\b/i,
-		// hexadecimal
+
 		/\b0x[a-f0-9][a-f0-9_]*(?:\.[a-f0-9_]*)?(?:p[+-]?\d[\d_]*)?(?!\w)/i,
-		// decimal
+
 		/\b\d[\d_]*(?:\.[\d_]*)?(?:e[+-]?\d[\d_]*)?(?!\w)/i,
 	],
 	'directive': {
@@ -43,8 +41,6 @@ Prism.languages.ocaml = {
 		pattern: /`\w+/,
 		alias: 'symbol'
 	},
-	// For the list of keywords and operators,
-	// see: http://caml.inria.fr/pub/docs/manual-ocaml/lex.html#sec84
 	'keyword': /\b(?:as|assert|begin|class|constraint|do|done|downto|else|end|exception|external|for|fun|function|functor|if|in|include|inherit|initializer|lazy|let|match|method|module|mutable|new|nonrec|object|of|open|private|rec|sig|struct|then|to|try|type|val|value|virtual|when|where|while|with)\b/,
 	'boolean': /\b(?:false|true)\b/,
 
@@ -52,7 +48,7 @@ Prism.languages.ocaml = {
 		pattern: /\[[<>|]|[>|]\]|\{<|>\}/,
 		alias: 'punctuation'
 	},
-	// Custom operators are allowed
+
 	'operator': /\.[.~]|:[=>]|[=<>@^|&+\-*\/$%!?~][!$%&*+\-.\/:<=>?@^|~]*|\b(?:and|asr|land|lor|lsl|lsr|lxor|mod|or)\b/,
 	'punctuation': /;;|::|[(){}\[\].,:;#]|\b_\b/
 };

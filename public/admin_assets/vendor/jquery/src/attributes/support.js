@@ -1,33 +1,24 @@
-define( [
+define([
 	"../var/document",
 	"../var/support"
-], function( document, support ) {
+], function (document, support) {
 
-"use strict";
+	"use strict";
 
-( function() {
-	var input = document.createElement( "input" ),
-		select = document.createElement( "select" ),
-		opt = select.appendChild( document.createElement( "option" ) );
+	(function () {
+		var input = document.createElement("input"),
+			select = document.createElement("select"),
+			opt = select.appendChild(document.createElement("option"));
 
-	input.type = "checkbox";
+		input.type = "checkbox";
+		support.checkOn = input.value !== "";
+		support.optSelected = opt.selected;
+		input = document.createElement("input");
+		input.value = "t";
+		input.type = "radio";
+		support.radioValue = input.value === "t";
+	})();
 
-	// Support: Android <=4.3 only
-	// Default value for a checkbox should be "on"
-	support.checkOn = input.value !== "";
+	return support;
 
-	// Support: IE <=11 only
-	// Must access selectedIndex to make default options select
-	support.optSelected = opt.selected;
-
-	// Support: IE <=11 only
-	// An input loses its value after becoming a radio
-	input = document.createElement( "input" );
-	input.value = "t";
-	input.type = "radio";
-	support.radioValue = input.value === "t";
-} )();
-
-return support;
-
-} );
+});

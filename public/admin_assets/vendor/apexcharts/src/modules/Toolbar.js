@@ -86,8 +86,8 @@ export default class Toolbar {
             typeof this.t[z] === 'string'
               ? this.t[z]
               : z === 'zoom'
-              ? icoZoom
-              : icoSelect,
+                ? icoZoom
+                : icoSelect,
           title: this.localeValues[
             z === 'zoom' ? 'selectionZoom' : 'selection'
           ],
@@ -185,7 +185,7 @@ export default class Toolbar {
     ]
 
     if (!this.w.globals.allSeriesHasEqualX) {
-      // if it is a multi series, and all series have variable x values, export CSV won't work
+
       menuItems.splice(2, 1)
     }
     for (let i = 0; i < menuItems.length; i++) {
@@ -344,8 +344,6 @@ export default class Toolbar {
       this.minX = w.globals.minY
       this.maxX = w.globals.maxY
     }
-
-    // avoid zooming out beyond 1000 which may result in NaN values being printed on x-axis
     if (
       w.config.xaxis.type === 'datetime' &&
       new Date(this.minX).getUTCFullYear() < 1000
@@ -381,7 +379,7 @@ export default class Toolbar {
     }
 
     if (w.config.xaxis.convertedCatToNumeric) {
-      // in category charts, avoid zooming out beyond min and max
+
       if (newMinX < 1) {
         newMinX = 1
         newMaxX = w.globals.dataPoints
@@ -415,8 +413,6 @@ export default class Toolbar {
     }
 
     if (!w.config.chart.group) {
-      // if chart in a group, prevent yaxis update here
-      // fix issue #650
       options.yaxis = yaxis
     }
 
@@ -480,17 +476,12 @@ export default class Toolbar {
 
     charts.forEach((ch) => {
       let w = ch.w
-
-      // forget lastXAxis min/max as reset button isn't resetting the x-axis completely if zoomX is called before
       w.globals.lastXAxis.min = undefined
       w.globals.lastXAxis.max = undefined
 
       ch.updateHelpers.revertDefaultAxisMinMax()
 
       if (typeof w.config.chart.events.beforeResetZoom === 'function') {
-        // here, user get an option to control xaxis and yaxis when resetZoom is called
-        // at this point, whatever is returned from w.config.chart.events.beforeResetZoom
-        // is set as the new xaxis/yaxis min/max
         const resetZoomRange = w.config.chart.events.beforeResetZoom(ch, w)
 
         if (resetZoomRange) {
@@ -506,9 +497,6 @@ export default class Toolbar {
       }
 
       w.globals.zoomed = false
-
-      // if user has some series collapsed before hitting zoom reset button,
-      // those series should stay collapsed
       let series = ch.ctx.series.emptyCollapsedSeries(
         Utils.clone(w.globals.initialSeries)
       )

@@ -78,8 +78,6 @@ export default class Markers {
         }
 
         let dataPointIndex = j
-
-        // a small hack as we have 2 points for the first val to connect it
         if (j === 1 && q === 0) dataPointIndex = 0
         if (j === 1 && q === 1) dataPointIndex = 1
 
@@ -139,7 +137,7 @@ export default class Markers {
             elPointsWrap.add(point)
           }
         } else {
-          // dynamic array creation - multidimensional
+
           if (typeof w.globals.pointsArray[seriesIndex] === 'undefined')
             w.globals.pointsArray[seriesIndex] = []
 
@@ -162,9 +160,6 @@ export default class Markers {
     let pSize = w.globals.markers.size[seriesIndex]
 
     const m = w.config.markers
-
-    // discrete markers is an option where user can specify a particular marker with different shape, size and color
-
     if (dataPointIndex !== null && m.discrete.length) {
       m.discrete.map((marker) => {
         if (

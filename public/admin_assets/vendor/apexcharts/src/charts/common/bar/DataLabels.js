@@ -452,7 +452,7 @@ export default class BarDataLabels {
     x,
     y,
     val,
-    i, // = realIndex
+    i,
     j,
     textRects,
     barHeight,
@@ -513,7 +513,7 @@ export default class BarDataLabels {
         this.barCtx.isRangeBar &&
         this.barCtx.barOptions.dataLabels.hideOverflowingLabels
       ) {
-        // hide the datalabel if it cannot fit into the rect
+
         const txRect = graphics.getTextRects(
           text,
           parseFloat(dataLabelsConfig.style.fontSize)
@@ -527,8 +527,6 @@ export default class BarDataLabels {
         w.config.chart.stacked &&
         this.barCtx.barOptions.dataLabels.hideOverflowingLabels
       ) {
-        // if there is not enough space to draw the label in the bar/column rect, check hideOverflowingLabels property to prevent overflowing on wrong rect
-        // Note: This issue is only seen in stacked charts
         if (this.barCtx.isHorizontal) {
           if (textRects.width / 1.6 > Math.abs(barWidth)) {
             text = ''

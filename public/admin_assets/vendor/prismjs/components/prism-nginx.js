@@ -34,9 +34,6 @@
 					pattern: /^\S+/,
 					greedy: true
 				},
-
-				// other patterns
-
 				'boolean': {
 					pattern: /(\s)(?:off|on)(?!\S)/,
 					lookbehind: true

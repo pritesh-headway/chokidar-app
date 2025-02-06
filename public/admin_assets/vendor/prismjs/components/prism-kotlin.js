@@ -1,7 +1,7 @@
 (function (Prism) {
 	Prism.languages.kotlin = Prism.languages.extend('clike', {
 		'keyword': {
-			// The lookbehind prevents wrong highlighting of e.g. kotlin.properties.get
+
 			pattern: /(^|[^.])\b(?:abstract|actual|annotation|as|break|by|catch|class|companion|const|constructor|continue|crossinline|data|do|dynamic|else|enum|expect|external|final|finally|for|fun|get|if|import|in|infix|init|inline|inner|interface|internal|is|lateinit|noinline|null|object|open|operator|out|override|package|private|protected|public|reified|return|sealed|set|super|suspend|tailrec|this|throw|to|try|typealias|val|var|vararg|when|where|while)\b/,
 			lookbehind: true
 		},
@@ -34,7 +34,7 @@
 	};
 
 	Prism.languages.insertBefore('kotlin', 'string', {
-		// https://kotlinlang.org/spec/expressions.html#string-interpolation-expressions
+
 		'string-literal': [
 			{
 				pattern: /"""(?:[^$]|\$(?:(?!\{)|\{[^{}]*\}))*?"""/,
@@ -61,7 +61,7 @@
 			}
 		],
 		'char': {
-			// https://kotlinlang.org/spec/expressions.html#character-literals
+
 			pattern: /'(?:[^'\\\r\n]|\\(?:.|u[a-fA-F0-9]{0,4}))'/,
 			greedy: true
 		}

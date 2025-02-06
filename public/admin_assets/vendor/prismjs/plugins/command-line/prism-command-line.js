@@ -11,8 +11,6 @@
 	var startsWith = ''.startsWith
 		? function (s, p) { return s.startsWith(p); }
 		: function (s, p) { return s.indexOf(p) === 0; };
-
-	// Support for IE11 that has no endsWith()
 	/** @type {(str: string, suffix: string) => boolean} */
 	var endsWith = ''.endsWith
 		? function (str, suffix) {
@@ -48,8 +46,6 @@
 		var vars = env.vars = env.vars || {};
 		return vars['command-line'] = vars['command-line'] || {};
 	}
-
-
 	Prism.hooks.add('before-highlight', function (env) {
 		var commandLine = getCommandLineInfo(env);
 
@@ -57,16 +53,12 @@
 			commandLine.complete = true;
 			return;
 		}
-
-		// Works only for <code> wrapped inside <pre> (not inline).
 		var pre = env.element.parentElement;
-		if (!pre || !/pre/i.test(pre.nodeName) || // Abort only if neither the <pre> nor the <code> have the class
+		if (!pre || !/pre/i.test(pre.nodeName) ||
 			(!CLASS_PATTERN.test(pre.className) && !CLASS_PATTERN.test(env.element.className))) {
 			commandLine.complete = true;
 			return;
 		}
-
-		// The element might be highlighted multiple times, so we just remove the previous prompt
 		var existingPrompt = env.element.querySelector('.' + PROMPT_CLASS);
 		if (existingPrompt) {
 			existingPrompt.remove();
@@ -80,7 +72,7 @@
 
 		var outputSections = pre.getAttribute('data-output');
 		var outputFilter = pre.getAttribute('data-filter-output');
-		if (outputSections !== null) { // The user specified the output lines. -- cwells
+		if (outputSections !== null) {
 			outputSections.split(',').forEach(function (section) {
 				var range = section.split('-');
 				var outputStart = parseInt(range[0], 10);
@@ -93,19 +85,19 @@
 					if (outputEnd > codeLines.length) {
 						outputEnd = codeLines.length;
 					}
-					// Convert start and end to 0-based to simplify the arrays. -- cwells
+
 					outputStart--;
 					outputEnd--;
-					// Save the output line in an array and clear it in the code so it's not highlighted. -- cwells
+
 					for (var j = outputStart; j <= outputEnd; j++) {
 						outputLines[j] = codeLines[j];
 						codeLines[j] = '';
 					}
 				}
 			});
-		} else if (outputFilter) { // Treat lines beginning with this string as output. -- cwells
+		} else if (outputFilter) {
 			for (var i = 0; i < codeLines.length; i++) {
-				if (startsWith(codeLines[i], outputFilter)) { // This line is output. -- cwells
+				if (startsWith(codeLines[i], outputFilter)) {
 					outputLines[i] = codeLines[i].slice(outputFilter.length);
 					codeLines[i] = '';
 				}
@@ -115,23 +107,14 @@
 		var continuationLineIndicies = commandLine.continuationLineIndicies = new Set();
 		var lineContinuationStr = pre.getAttribute('data-continuation-str');
 		var continuationFilter = pre.getAttribute('data-filter-continuation');
-
-		// Identify code lines where the command has continued onto subsequent
-		// lines and thus need a different prompt. Need to do this after the output
-		// lines have been removed to ensure we don't pick up a continuation string
-		// in an output line.
 		for (var j = 0; j < codeLines.length; j++) {
 			var line = codeLines[j];
 			if (!line) {
 				continue;
 			}
-
-			// Record the next line as a continuation if this one ends in a continuation str.
 			if (lineContinuationStr && endsWith(line, lineContinuationStr)) {
 				continuationLineIndicies.add(j + 1);
 			}
-			// Record this line as a continuation if marked with a continuation prefix
-			// (that we will remove).
 			if (j > 0 && continuationFilter && startsWith(line, continuationFilter)) {
 				codeLines[j] = line.slice(continuationFilter.length);
 				continuationLineIndicies.add(j);
@@ -147,15 +130,11 @@
 		if (commandLine.complete) {
 			return;
 		}
-
-		// Reinsert the output lines into the highlighted code. -- cwells
 		var codeLines = env.highlightedCode.split('\n');
 		var outputLines = commandLine.outputLines || [];
 		for (var i = 0, l = codeLines.length; i < l; i++) {
-			// Add spans to allow distinction of input/output text for styling
+
 			if (outputLines.hasOwnProperty(i)) {
-				// outputLines were removed from codeLines so missed out on escaping
-				// of markup so do it here.
 				codeLines[i] = '<span class="token output">'
 					+ Prism.util.encode(outputLines[i]) + '</span>';
 			} else {
@@ -168,7 +147,7 @@
 
 	Prism.hooks.add('complete', function (env) {
 		if (!hasCommandLineInfo(env)) {
-			// the previous hooks never ran
+
 			return;
 		}
 
@@ -179,18 +158,16 @@
 		}
 
 		var pre = env.element.parentElement;
-		if (CLASS_PATTERN.test(env.element.className)) { // Remove the class "command-line" from the <code>
+		if (CLASS_PATTERN.test(env.element.className)) {
 			env.element.className = env.element.className.replace(CLASS_PATTERN, ' ');
 		}
-		if (!CLASS_PATTERN.test(pre.className)) { // Add the class "command-line" to the <pre>
+		if (!CLASS_PATTERN.test(pre.className)) {
 			pre.className += ' command-line';
 		}
 
 		function getAttribute(key, defaultValue) {
 			return (pre.getAttribute(key) || defaultValue).replace(/"/g, '&quot');
 		}
-
-		// Create the "rows" that will become the command-line prompts. -- cwells
 		var promptLines = '';
 		var rowCount = commandLine.numberOfLines || 0;
 		var promptText = getAttribute('data-prompt', '');
@@ -206,8 +183,6 @@
 		var continuationLineIndicies = commandLine.continuationLineIndicies || new Set();
 		var continuationPromptText = getAttribute('data-continuation-prompt', '>');
 		var continuationPromptLine = '<span data-continuation-prompt="' + continuationPromptText + '"></span>';
-
-		// Assemble all the appropriate prompt/continuation lines
 		for (var j = 0; j < rowCount; j++) {
 			if (continuationLineIndicies.has(j)) {
 				promptLines += continuationPromptLine;
@@ -215,13 +190,9 @@
 				promptLines += promptLine;
 			}
 		}
-
-		// Create the wrapper element. -- cwells
 		var prompt = document.createElement('span');
 		prompt.className = PROMPT_CLASS;
 		prompt.innerHTML = promptLines;
-
-		// Remove the prompt from the output lines. -- cwells
 		var outputLines = commandLine.outputLines || [];
 		for (var i = 0, l = outputLines.length; i < l; i++) {
 			if (outputLines.hasOwnProperty(i)) {

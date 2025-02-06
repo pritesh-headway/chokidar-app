@@ -39,8 +39,6 @@
             <i class="fas fa-fw fa-calculator"></i>
             <span>Contact_us requests</span></a>
     </li>
-
-
     <li class="nav-item {{ request()->is('viewdata/list') ? 'active' : '' }}">
         <a class="nav-link" href="#">
             <i class="fas fa-fw fa-eye"></i>

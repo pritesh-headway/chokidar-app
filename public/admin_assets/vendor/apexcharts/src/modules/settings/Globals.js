@@ -2,7 +2,7 @@ import Utils from './../../utils/Utils'
 
 export default class Globals {
   initGlobalVars(gl) {
-    gl.series = [] // the MAIN series array (y values)
+    gl.series = []
     gl.seriesCandleO = []
     gl.seriesCandleH = []
     gl.seriesCandleM = []
@@ -20,11 +20,9 @@ export default class Globals {
     gl.seriesLog = []
     gl.seriesColors = []
     gl.stackedSeriesTotals = []
-    gl.seriesXvalues = [] // we will need this in tooltip (it's x position)
-    // when we will have unequal x values, we will need
-    // some way to get x value depending on mouse pointer
-    gl.seriesYvalues = [] // we will need this when deciding which series
-    // user hovered on
+    gl.seriesXvalues = []
+    gl.seriesYvalues = []
+
     gl.labels = []
     gl.hasGroups = false
     gl.groups = []
@@ -71,8 +69,8 @@ export default class Globals {
 
   globalVars(config) {
     return {
-      chartID: null, // chart ID - apexcharts-cuid
-      cuid: null, // chart ID - random numbers excluding "apexcharts" part
+      chartID: null,
+      cuid: null,
       events: {
         beforeMount: [],
         mounted: [],
@@ -109,30 +107,30 @@ export default class Globals {
       },
       animationEnded: false,
       isTouchDevice: 'ontouchstart' in window || navigator.msMaxTouchPoints,
-      isDirty: false, // chart has been updated after the initial render. This is different than dataChanged property. isDirty means user manually called some method to update
-      isExecCalled: false, // whether user updated the chart through the exec method
-      initialConfig: null, // we will store the first config user has set to go back when user finishes interactions like zooming and come out of it
+      isDirty: false,
+      isExecCalled: false,
+      initialConfig: null,
       initialSeries: [],
       lastXAxis: [],
       lastYAxis: [],
       columnSeries: null,
-      labels: [], // store the text to draw on x axis
-      // Don't mutate the labels, many things including tooltips depends on it!
-      timescaleLabels: [], // store the timescaleLabels Labels in another variable
-      noLabelsProvided: false, // if user didn't provide any categories/labels or x values, fallback to 1,2,3,4...
+      labels: [],
+
+      timescaleLabels: [],
+      noLabelsProvided: false,
       allSeriesCollapsed: false,
-      collapsedSeries: [], // when user collapses a series, it goes into this array
-      collapsedSeriesIndices: [], // this stores the index of the collapsedSeries instead of whole object for quick access
-      ancillaryCollapsedSeries: [], // when user collapses an "alwaysVisible" series, it goes into this array
-      ancillaryCollapsedSeriesIndices: [], // this stores the index of the ancillaryCollapsedSeries whose y-axis is always visible
-      risingSeries: [], // when user re-opens a collapsed series, it goes here
-      dataFormatXNumeric: false, // boolean value to indicate user has passed numeric x values
+      collapsedSeries: [],
+      collapsedSeriesIndices: [],
+      ancillaryCollapsedSeries: [],
+      ancillaryCollapsedSeriesIndices: [],
+      risingSeries: [],
+      dataFormatXNumeric: false,
       capturedSeriesIndex: -1,
       capturedDataPointIndex: -1,
       selectedDataPoints: [],
-      goldenPadding: 35, // this value is used at a lot of places for spacing purpose
-      invalidLogScale: false, // if a user enabled log scale but the data provided is not valid to generate a log scale, turn on this flag
-      ignoreYAxisIndexes: [], // when series are being collapsed in multiple y axes, ignore certain index
+      goldenPadding: 35,
+      invalidLogScale: false,
+      ignoreYAxisIndexes: [],
       yAxisSameScaleIndices: [],
       maxValsInArrayIndex: 0,
       radialSize: 0,
@@ -149,48 +147,48 @@ export default class Globals {
         config.chart.toolbar.tools.selection,
       yaxis: null,
       mousedown: false,
-      lastClientPosition: {}, // don't reset this variable this the chart is destroyed. It is used to detect right or left mousemove in panning
+      lastClientPosition: {},
       visibleXRange: undefined,
-      yValueDecimal: 0, // are there floating numbers in the series. If yes, this represent the len of the decimals
+      yValueDecimal: 0,
       total: 0,
-      SVGNS: 'http://www.w3.org/2000/svg', // svg namespace
-      svgWidth: 0, // the whole svg width
-      svgHeight: 0, // the whole svg height
-      noData: false, // whether there is any data to display or not
-      locale: {}, // the current locale values will be preserved here for global access
-      dom: {}, // for storing all dom nodes in this particular property
+      SVGNS: 'http://www.w3.org/2000/svg',
+      svgWidth: 0,
+      svgHeight: 0,
+      noData: false,
+      locale: {},
+      dom: {},
       memory: {
         methodsToExec: []
       },
       shouldAnimate: true,
-      skipLastTimelinelabel: false, // when last label is cropped, skip drawing it
-      skipFirstTimelinelabel: false, // when first label is cropped, skip drawing it
-      delayedElements: [], // element which appear after animation has finished
-      axisCharts: true, // chart type = line or area or bar
-      // (refer them also as plot charts in the code)
-      isDataXYZ: false, // bool: data was provided in a {[x,y,z]} pattern
-      resized: false, // bool: user has resized
-      resizeTimer: null, // timeout function to make a small delay before
-      // drawing when user resized
-      comboCharts: false, // bool: whether it's a combination of line/column
-      dataChanged: false, // bool: has data changed dynamically
-      previousPaths: [], // array: when data is changed, it will animate from
-      // previous paths
+      skipLastTimelinelabel: false,
+      skipFirstTimelinelabel: false,
+      delayedElements: [],
+      axisCharts: true,
+
+      isDataXYZ: false,
+      resized: false,
+      resizeTimer: null,
+
+      comboCharts: false,
+      dataChanged: false,
+      previousPaths: [],
+
       allSeriesHasEqualX: true,
-      pointsArray: [], // store the points positions here to draw later on hover
-      // format is - [[x,y],[x,y]... [x,y]]
-      dataLabelsRects: [], // store the positions of datalabels to prevent collision
+      pointsArray: [],
+
+      dataLabelsRects: [],
       lastDrawnDataLabelsIndexes: [],
-      hasNullValues: false, // bool: whether series contains null values
-      easing: null, // function: animation effect to apply
-      zoomed: false, // whether user has zoomed or not
-      gridWidth: 0, // drawable width of actual graphs (series paths)
-      gridHeight: 0, // drawable height of actual graphs (series paths)
+      hasNullValues: false,
+      easing: null,
+      zoomed: false,
+      gridWidth: 0,
+      gridHeight: 0,
       rotateXLabels: false,
       defaultLabels: false,
-      xLabelFormatter: undefined, // formatter for x axis labels
+      xLabelFormatter: undefined,
       yLabelFormatters: [],
-      xaxisTooltipFormatter: undefined, // formatter for x axis tooltip
+      xaxisTooltipFormatter: undefined,
       ttKeyFormatter: undefined,
       ttVal: undefined,
       ttZFormatter: undefined,

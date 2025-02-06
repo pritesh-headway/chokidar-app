@@ -39,17 +39,15 @@ class BoxCandleStick extends Bar {
 
       let x,
         y,
-        xDivision, // xDivision is the GRIDWIDTH divided by number of datapoints (columns)
-        yDivision, // yDivision is the GRIDHEIGHT divided by number of datapoints (bars)
-        zeroH, // zeroH is the baseline where 0 meets y axis
-        zeroW // zeroW is the baseline where 0 meets x axis
+        xDivision,
+        yDivision,
+        zeroH,
+        zeroW
 
-      let yArrj = [] // hold y values of current iterating series
-      let xArrj = [] // hold x values of current iterating series
+      let yArrj = []
+      let xArrj = []
 
       let realIndex = w.globals.comboCharts ? seriesIndex[i] : i
-
-      // el to which series will be drawn
       let elSeries = graphics.group({
         class: `apexcharts-series`,
         seriesName: Utils.escapeString(w.globals.seriesNames[realIndex]),
@@ -83,8 +81,6 @@ class BoxCandleStick extends Bar {
       zeroH = initPositions.zeroH
 
       xArrj.push(x + barWidth / 2)
-
-      // eldatalabels
       let elDataLabelsWrap = graphics.group({
         class: 'apexcharts-datalabels',
         'data:realIndex': realIndex
@@ -124,8 +120,6 @@ class BoxCandleStick extends Bar {
 
         y = paths.y
         x = paths.x
-
-        // push current X
         if (j > 0) {
           xArrj.push(x + barWidth / 2)
         }
@@ -166,8 +160,6 @@ class BoxCandleStick extends Bar {
           })
         })
       }
-
-      // push all x val arrays into main xArr
       w.globals.seriesXvalues[realIndex] = xArrj
       w.globals.seriesYvalues[realIndex] = yArrj
 
@@ -247,43 +239,43 @@ class BoxCandleStick extends Bar {
     if (this.isBoxPlot) {
       pathTo = [
         graphics.move(barXPosition, y1) +
-          graphics.line(barXPosition + barWidth / 2, y1) +
-          graphics.line(barXPosition + barWidth / 2, l1) +
-          graphics.line(barXPosition + barWidth / 4, l1) +
-          graphics.line(barXPosition + barWidth - barWidth / 4, l1) +
-          graphics.line(barXPosition + barWidth / 2, l1) +
-          graphics.line(barXPosition + barWidth / 2, y1) +
-          graphics.line(barXPosition + barWidth, y1) +
-          graphics.line(barXPosition + barWidth, m) +
-          graphics.line(barXPosition, m) +
-          graphics.line(barXPosition, y1 + strokeWidth / 2),
+        graphics.line(barXPosition + barWidth / 2, y1) +
+        graphics.line(barXPosition + barWidth / 2, l1) +
+        graphics.line(barXPosition + barWidth / 4, l1) +
+        graphics.line(barXPosition + barWidth - barWidth / 4, l1) +
+        graphics.line(barXPosition + barWidth / 2, l1) +
+        graphics.line(barXPosition + barWidth / 2, y1) +
+        graphics.line(barXPosition + barWidth, y1) +
+        graphics.line(barXPosition + barWidth, m) +
+        graphics.line(barXPosition, m) +
+        graphics.line(barXPosition, y1 + strokeWidth / 2),
         graphics.move(barXPosition, m) +
-          graphics.line(barXPosition + barWidth, m) +
-          graphics.line(barXPosition + barWidth, y2) +
-          graphics.line(barXPosition + barWidth / 2, y2) +
-          graphics.line(barXPosition + barWidth / 2, l2) +
-          graphics.line(barXPosition + barWidth - barWidth / 4, l2) +
-          graphics.line(barXPosition + barWidth / 4, l2) +
-          graphics.line(barXPosition + barWidth / 2, l2) +
-          graphics.line(barXPosition + barWidth / 2, y2) +
-          graphics.line(barXPosition, y2) +
-          graphics.line(barXPosition, m) +
-          'z'
+        graphics.line(barXPosition + barWidth, m) +
+        graphics.line(barXPosition + barWidth, y2) +
+        graphics.line(barXPosition + barWidth / 2, y2) +
+        graphics.line(barXPosition + barWidth / 2, l2) +
+        graphics.line(barXPosition + barWidth - barWidth / 4, l2) +
+        graphics.line(barXPosition + barWidth / 4, l2) +
+        graphics.line(barXPosition + barWidth / 2, l2) +
+        graphics.line(barXPosition + barWidth / 2, y2) +
+        graphics.line(barXPosition, y2) +
+        graphics.line(barXPosition, m) +
+        'z'
       ]
     } else {
-      // candlestick
+
       pathTo = [
         graphics.move(barXPosition, y2) +
-          graphics.line(barXPosition + barWidth / 2, y2) +
-          graphics.line(barXPosition + barWidth / 2, l1) +
-          graphics.line(barXPosition + barWidth / 2, y2) +
-          graphics.line(barXPosition + barWidth, y2) +
-          graphics.line(barXPosition + barWidth, y1) +
-          graphics.line(barXPosition + barWidth / 2, y1) +
-          graphics.line(barXPosition + barWidth / 2, l2) +
-          graphics.line(barXPosition + barWidth / 2, y1) +
-          graphics.line(barXPosition, y1) +
-          graphics.line(barXPosition, y2 - strokeWidth / 2)
+        graphics.line(barXPosition + barWidth / 2, y2) +
+        graphics.line(barXPosition + barWidth / 2, l1) +
+        graphics.line(barXPosition + barWidth / 2, y2) +
+        graphics.line(barXPosition + barWidth, y2) +
+        graphics.line(barXPosition + barWidth, y1) +
+        graphics.line(barXPosition + barWidth / 2, y1) +
+        graphics.line(barXPosition + barWidth / 2, l2) +
+        graphics.line(barXPosition + barWidth / 2, y1) +
+        graphics.line(barXPosition, y1) +
+        graphics.line(barXPosition, y2 - strokeWidth / 2)
       ]
     }
 
@@ -338,7 +330,7 @@ class BoxCandleStick extends Bar {
     if (w.globals.isXNumeric) {
       y =
         (w.globals.seriesX[realIndex][j] - w.globals.minX) /
-          this.invertedXRatio -
+        this.invertedXRatio -
         barHeight / 2
     }
 
@@ -366,28 +358,28 @@ class BoxCandleStick extends Bar {
 
     pathTo = [
       graphics.move(x1, barYPosition) +
-        graphics.line(x1, barYPosition + barHeight / 2) +
-        graphics.line(l1, barYPosition + barHeight / 2) +
-        graphics.line(l1, barYPosition + barHeight / 2 - barHeight / 4) +
-        graphics.line(l1, barYPosition + barHeight / 2 + barHeight / 4) +
-        graphics.line(l1, barYPosition + barHeight / 2) +
-        graphics.line(x1, barYPosition + barHeight / 2) +
-        graphics.line(x1, barYPosition + barHeight) +
-        graphics.line(m, barYPosition + barHeight) +
-        graphics.line(m, barYPosition) +
-        graphics.line(x1 + strokeWidth / 2, barYPosition),
+      graphics.line(x1, barYPosition + barHeight / 2) +
+      graphics.line(l1, barYPosition + barHeight / 2) +
+      graphics.line(l1, barYPosition + barHeight / 2 - barHeight / 4) +
+      graphics.line(l1, barYPosition + barHeight / 2 + barHeight / 4) +
+      graphics.line(l1, barYPosition + barHeight / 2) +
+      graphics.line(x1, barYPosition + barHeight / 2) +
+      graphics.line(x1, barYPosition + barHeight) +
+      graphics.line(m, barYPosition + barHeight) +
+      graphics.line(m, barYPosition) +
+      graphics.line(x1 + strokeWidth / 2, barYPosition),
       graphics.move(m, barYPosition) +
-        graphics.line(m, barYPosition + barHeight) +
-        graphics.line(x2, barYPosition + barHeight) +
-        graphics.line(x2, barYPosition + barHeight / 2) +
-        graphics.line(l2, barYPosition + barHeight / 2) +
-        graphics.line(l2, barYPosition + barHeight - barHeight / 4) +
-        graphics.line(l2, barYPosition + barHeight / 4) +
-        graphics.line(l2, barYPosition + barHeight / 2) +
-        graphics.line(x2, barYPosition + barHeight / 2) +
-        graphics.line(x2, barYPosition) +
-        graphics.line(m, barYPosition) +
-        'z'
+      graphics.line(m, barYPosition + barHeight) +
+      graphics.line(x2, barYPosition + barHeight) +
+      graphics.line(x2, barYPosition + barHeight / 2) +
+      graphics.line(l2, barYPosition + barHeight / 2) +
+      graphics.line(l2, barYPosition + barHeight - barHeight / 4) +
+      graphics.line(l2, barYPosition + barHeight / 4) +
+      graphics.line(l2, barYPosition + barHeight / 2) +
+      graphics.line(x2, barYPosition + barHeight / 2) +
+      graphics.line(x2, barYPosition) +
+      graphics.line(m, barYPosition) +
+      'z'
     ]
 
     pathFrom = pathFrom + graphics.move(x1, barYPosition)

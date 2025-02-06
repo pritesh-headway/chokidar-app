@@ -10,14 +10,14 @@
 			},
 			'expression': {
 				pattern: /[\s\S]+/,
-				inside: null // see below
+				inside: null
 			}
 		}
 	};
 
 	Prism.languages.groovy = Prism.languages.extend('clike', {
 		'string': {
-			// https://groovy-lang.org/syntax.html#_dollar_slashy_string
+
 			pattern: /'''(?:[^\\]|\\[\s\S])*?'''|'(?:\\.|[^\\'\r\n])*'/,
 			greedy: true
 		},
@@ -37,8 +37,6 @@
 			greedy: true
 		},
 		'interpolation-string': {
-			// TODO: Slash strings (e.g. /foo/) can contain line breaks but this will cause a lot of trouble with
-			// simple division (see JS regex), so find a fix maybe?
 			pattern: /"""(?:[^\\]|\\[\s\S])*?"""|(["/])(?:\\.|(?!\1)[^\\\r\n])*\1|\$\/(?:[^/$]|\$(?:[/$]|(?![/$]))|\/(?!\$))*\/\$/,
 			greedy: true,
 			inside: {

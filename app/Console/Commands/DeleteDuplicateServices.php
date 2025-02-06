@@ -13,17 +13,15 @@ class DeleteDuplicateServices extends Command
 
     public function handle()
     {
-        // Fetch services with duplicate service names
+
         $duplicateServices = Service::select('service_name', DB::raw('count(*) as count'))
             ->groupBy('service_name')
             ->having('count', '>', 1)
             ->get();
-
-        // Loop through each duplicate service name
         foreach ($duplicateServices as $service) {
-            // Delete all but the first record for each duplicate service_name
+
             Service::where('service_name', $service->service_name)
-                ->skip(1) // Skip the first record
+                ->skip(1)
                 ->delete();
         }
 

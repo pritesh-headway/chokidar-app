@@ -143,7 +143,7 @@ $taxs = \App\Models\Tax::where('status', '1')->get();
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
-        $('.alert-container').html(alertHTML); // Insert alert into container
+        $('.alert-container').html(alertHTML);
     }
     $('#catForm').on('submit', function(e) {
         e.preventDefault();

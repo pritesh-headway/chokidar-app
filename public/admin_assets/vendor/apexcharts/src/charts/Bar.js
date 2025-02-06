@@ -92,17 +92,15 @@ class Bar {
     for (let i = 0, bc = 0; i < series.length; i++, bc++) {
       let x,
         y,
-        xDivision, // xDivision is the GRIDWIDTH divided by number of datapoints (columns)
-        yDivision, // yDivision is the GRIDHEIGHT divided by number of datapoints (bars)
-        zeroH, // zeroH is the baseline where 0 meets y axis
-        zeroW // zeroW is the baseline where 0 meets x axis
+        xDivision,
+        yDivision,
+        zeroH,
+        zeroW
 
-      let yArrj = [] // hold y values of current iterating series
-      let xArrj = [] // hold x values of current iterating series
+      let yArrj = []
+      let xArrj = []
 
       let realIndex = w.globals.comboCharts ? seriesIndex[i] : i
-
-      // el to which series will be drawn
       let elSeries = graphics.group({
         class: `apexcharts-series`,
         rel: i + 1,
@@ -142,8 +140,6 @@ class Bar {
       if (!this.horizontal) {
         xArrj.push(x + barWidth / 2)
       }
-
-      // eldatalabels
       let elDataLabelsWrap = graphics.group({
         class: 'apexcharts-datalabels',
         'data:realIndex': realIndex
@@ -203,8 +199,6 @@ class Bar {
 
         y = paths.y
         x = paths.x
-
-        // push current X
         if (j > 0) {
           xArrj.push(x + barWidth / 2)
         }
@@ -233,8 +227,6 @@ class Bar {
           type: 'bar'
         })
       }
-
-      // push all x val arrays into main xArr
       w.globals.seriesXvalues[realIndex] = xArrj
       w.globals.seriesYvalues[realIndex] = yArrj
 
@@ -469,8 +461,6 @@ class Bar {
           (w.globals.seriesX[sxI][j] - w.globals.minX) / this.xRatio -
           (barWidth * this.seriesLen) / 2
       }
-
-      // re-calc barXPosition as x changed
       barXPosition = x + barWidth * this.visibleI
     } else {
       if (w.config.plotOptions.bar.hideZeroBarsWhenGrouped) {

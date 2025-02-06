@@ -30,15 +30,9 @@ export default class Core {
     this.w = ctx.w
     this.el = el
   }
-
-  // get data and store into appropriate vars
-
   setupElements() {
     let gl = this.w.globals
     let cnf = this.w.config
-
-    // const graphics = new Graphics(this.ctx)
-
     let ct = cnf.chart.type
     let axisChartsArrTypes = [
       'line',
@@ -167,11 +161,11 @@ export default class Core {
 
     gl.series.map((serie, st) => {
       let comboCount = 0
-      // if user has specified a particular type for particular series
+
       if (typeof ser[st].type !== 'undefined') {
         if (ser[st].type === 'column' || ser[st].type === 'bar') {
           if (gl.series.length > 1 && cnf.plotOptions.bar.horizontal) {
-            // horizontal bars not supported in mixed charts, hence show a warning
+
             console.warn(
               'Horizontal bars are not supported in a mixed/combo chart. Please turn off `plotOptions.bar.horizontal`'
             )
@@ -213,7 +207,7 @@ export default class Core {
           rangeAreaSeries.i.push(st)
           comboCount++
         } else {
-          // user has specified type, but it is not valid (other than line/area/column)
+
           console.warn(
             'You have specified an unrecognized chart type. Available types for this property are line/area/column/bar/scatter/bubble'
           )
@@ -404,12 +398,12 @@ export default class Core {
     })
 
     if (heightUnit !== '%') {
-      // fixes https://github.com/apexcharts/apexcharts.js/issues/2059
+
       let offsetY = cnf.chart.sparkline.enabled
         ? 0
         : gl.axisCharts
-        ? cnf.chart.parentHeightOffset
-        : 0
+          ? cnf.chart.parentHeightOffset
+          : 0
 
       gl.dom.Paper.node.parentNode.parentNode.style.minHeight =
         gl.svgHeight + offsetY + 'px'
@@ -430,8 +424,6 @@ export default class Core {
     }
     Graphics.setAttrs(gl.dom.elGraphical.node, scalingAttrs)
   }
-
-  // To prevent extra spacings in the bottom of the chart, we need to recalculate the height for pie/donut/radialbar charts
   resizeNonAxisCharts() {
     const w = this.w
 
@@ -475,8 +467,6 @@ export default class Core {
     if (gl.dom.elLegendForeign) {
       gl.dom.elLegendForeign.setAttribute('height', newHeight)
     }
-
-    // fix apexcharts/apexcharts.js/issues/3105 (when % is provided in height, it keeps increasing)
     if (w.config.chart.height && String(w.config.chart.height).indexOf('%') > 0)
       return
 
@@ -510,7 +500,7 @@ export default class Core {
   }
 
   isMultipleY() {
-    // user has supplied an array in yaxis property. So, turn on multipleYAxis flag
+
     if (
       this.w.config.yaxis.constructor === Array &&
       this.w.config.yaxis.length > 1
@@ -584,19 +574,14 @@ export default class Core {
 
   setupBrushHandler() {
     const w = this.w
-
-    // only for brush charts
     if (!w.config.chart.brush.enabled) {
       return
     }
-
-    // if user has not defined a custom function for selection - we handle the brush chart
-    // otherwise we leave it to the user to define the functionality for selection
     if (typeof w.config.chart.events.selection !== 'function') {
       let targets = w.config.chart.brush.targets || [
         w.config.chart.brush.target
       ]
-      // retro compatibility with single target option
+
       targets.forEach((target) => {
         let targetChart = ApexCharts.getChartByID(target)
         targetChart.w.globals.brushSource = this.ctx

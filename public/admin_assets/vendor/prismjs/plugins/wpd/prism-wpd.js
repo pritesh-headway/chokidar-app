@@ -5,7 +5,7 @@
 	}
 
 	if (Prism.languages.css) {
-		// check whether the selector is an advanced pattern before extending it
+
 		if (Prism.languages.css.selector.pattern) {
 			Prism.languages.css.selector.inside['pseudo-class'] = /:[\w-]+/;
 			Prism.languages.css.selector.inside['pseudo-element'] = /::[\w-]+/;
@@ -79,19 +79,19 @@
 					}
 				} else if (env.language == 'markup') {
 					if (env.type == 'tag-id') {
-						// Check language
+
 						language = getLanguage(env.content) || language;
 
 						if (language) {
 							href += language + '/elements/';
 						} else {
-							return; // Abort
+							return;
 						}
 					} else if (env.type == 'attr-name') {
 						if (language) {
 							href += language + '/attributes/';
 						} else {
-							return; // Abort
+							return;
 						}
 					}
 				}
@@ -114,8 +114,6 @@
 		} else if (Tags.MathML[tag]) {
 			return 'mathml';
 		}
-
-		// Not in dictionary, perform check
 		if (Tags.HTML[tagL] !== 0 && typeof document !== 'undefined') {
 			var htmlInterface = (document.createElement(tag).toString().match(/\[object HTML(.+)Element\]/) || [])[1];
 
@@ -137,8 +135,6 @@
 		}
 
 		Tags.SVG[tag] = 0;
-
-		// Lame way to detect MathML, but browsers don’t expose interface names there :(
 		if (Tags.MathML[tag] !== 0) {
 			if (tag.indexOf('m') === 0) {
 				Tags.MathML[tag] = 1;

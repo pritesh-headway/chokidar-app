@@ -50,7 +50,7 @@ class Crosshairs {
 
       let xcrosshairs = graphics.drawRect()
       if (w.config.xaxis.crosshairs.width === 1) {
-        // to prevent drawing 2 lines, convert rect to line
+
         xcrosshairs = graphics.drawLine()
       }
 
@@ -116,8 +116,6 @@ class Crosshairs {
 
       w.globals.dom.elGraphical.add(ycrosshairs)
     }
-
-    // draw an invisible crosshair to help in positioning the yaxis tooltip
     let ycrosshairsHidden = graphics.drawLine(
       -offX,
       0,

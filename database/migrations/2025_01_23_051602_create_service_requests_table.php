@@ -16,8 +16,6 @@ class CreateServiceRequestsTable extends Migration
             $table->enum('request_status', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
-
-            // Foreign keys
             $table->foreign('member_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->foreign('provider_id')->references('id')->on('service_providers')->onDelete('cascade');

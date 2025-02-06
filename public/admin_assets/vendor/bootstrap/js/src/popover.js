@@ -40,7 +40,7 @@ const DefaultType = {
  */
 
 class Popover extends Tooltip {
-  // Getters
+
   static get Default() {
     return Default
   }
@@ -52,13 +52,9 @@ class Popover extends Tooltip {
   static get NAME() {
     return NAME
   }
-
-  // Overrides
   _isWithContent() {
     return this._getTitle() || this._getContent()
   }
-
-  // Private
   _getContentForTemplate() {
     return {
       [SELECTOR_TITLE]: this._getTitle(),
@@ -69,8 +65,6 @@ class Popover extends Tooltip {
   _getContent() {
     return this._resolvePossibleFunction(this._config.content)
   }
-
-  // Static
   static jQueryInterface(config) {
     return this.each(function () {
       const data = Popover.getOrCreateInstance(this, config)

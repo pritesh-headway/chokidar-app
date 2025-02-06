@@ -4,7 +4,7 @@
 
 class Utils {
   static bind(fn, me) {
-    return function() {
+    return function () {
       return fn.apply(me, arguments)
     }
   }
@@ -14,8 +14,6 @@ class Utils {
       item && typeof item === 'object' && !Array.isArray(item) && item != null
     )
   }
-
-  // Type checking that works across different window objects
   static is(type, val) {
     return Object.prototype.toString.call(val) === '[object ' + type + ']'
   }
@@ -28,15 +26,12 @@ class Utils {
     }
     return array
   }
-
-  // to extend defaults with user options
-  // credit: http://stackoverflow.com/questions/27936772/deep-object-merging-in-es6-es7#answer-34749873
   static extend(target, source) {
     if (typeof Object.assign !== 'function') {
-      ;(function() {
-        Object.assign = function(target) {
+      ; (function () {
+        Object.assign = function (target) {
           'use strict'
-          // We must check against these specific cases.
+
           if (target === undefined || target === null) {
             throw new TypeError('Cannot convert undefined or null to object')
           }
@@ -86,8 +81,6 @@ class Utils {
     arrToExtend = extendedArr
     return arrToExtend
   }
-
-  // If month counter exceeds 12, it starts again from 1
   static monthMod(month) {
     return month % 12
   }
@@ -100,7 +93,7 @@ class Utils {
       }
       return cloneResult
     } else if (Utils.is('Null', source)) {
-      // fixes an issue where null values were converted to {}
+
       return null
     } else if (Utils.is('Date', source)) {
       return source
@@ -194,8 +187,6 @@ class Utils {
       return a.length > b.length ? a : b
     }, 0)
   }
-
-  // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb#answer-12342275
   static hexToRgba(hex = '#999999', opacity = 0.6) {
     if (hex.substring(0, 1) !== '#') {
       hex = '#999999'
@@ -223,9 +214,9 @@ class Utils {
     )
     return rgb && rgb.length === 4
       ? '#' +
-          ('0' + parseInt(rgb[1], 10).toString(16)).slice(-2) +
-          ('0' + parseInt(rgb[2], 10).toString(16)).slice(-2) +
-          ('0' + parseInt(rgb[3], 10).toString(16)).slice(-2)
+      ('0' + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+      ('0' + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+      ('0' + parseInt(rgb[3], 10).toString(16)).slice(-2)
       : ''
   }
 
@@ -266,9 +257,6 @@ class Utils {
         .slice(1)
     )
   }
-
-  // beautiful color shading blending code
-  // http://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
   shadeColor(p, color) {
     if (Utils.isColorHex(color)) {
       return this.shadeHexColor(p, color)
@@ -377,24 +365,22 @@ class Utils {
 
     let msie = ua.indexOf('MSIE ')
     if (msie > 0) {
-      // IE 10 or older => return version number
+
       return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10)
     }
 
     let trident = ua.indexOf('Trident/')
     if (trident > 0) {
-      // IE 11 => return version number
+
       let rv = ua.indexOf('rv:')
       return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10)
     }
 
     let edge = ua.indexOf('Edge/')
     if (edge > 0) {
-      // Edge (IE 12+) => return version number
+
       return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10)
     }
-
-    // other browser
     return false
   }
 }

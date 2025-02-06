@@ -1,4 +1,4 @@
-// Copied from https://github.com/jeluard/prism-clojure
+
 Prism.languages.clojure = {
 	'comment': {
 		pattern: /;.*/,

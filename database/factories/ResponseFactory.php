@@ -1,6 +1,5 @@
 <?php
 
-// database/factories/ResponseFactory.php
 namespace Database\Factories;
 
 use App\Models\Forum;

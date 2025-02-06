@@ -359,7 +359,7 @@ let defaultOptions = {
    * Called when dropzone initialized
    * You can add event listeners here
    */
-  init() {},
+  init() { },
 
   /**
    * Can be an **object** of additional parameters to transfer to the server, **or** a `Function`
@@ -413,14 +413,14 @@ let defaultOptions = {
    * a text.
    */
   fallback() {
-    // This code should pass in IE7... :(
+
     let messageElement;
     this.element.className = `${this.element.className} dz-browser-not-supported`;
 
     for (let child of this.element.getElementsByTagName("div")) {
       if (/(^| )dz-message($| )/.test(child.className)) {
         messageElement = child;
-        child.className = "dz-message"; // Removes the 'dz-default' class
+        child.className = "dz-message";
         break;
       }
     }
@@ -464,8 +464,6 @@ let defaultOptions = {
     };
 
     let srcRatio = file.width / file.height;
-
-    // Automatically calculate dimensions if not specified
     if (width == null && height == null) {
       width = info.srcWidth;
       height = info.srcHeight;
@@ -474,15 +472,13 @@ let defaultOptions = {
     } else if (height == null) {
       height = width / srcRatio;
     }
-
-    // Make sure images aren't upscaled
     width = Math.min(width, info.srcWidth);
     height = Math.min(height, info.srcHeight);
 
     let trgRatio = width / height;
 
     if (info.srcWidth > width || info.srcHeight > height) {
-      // Image is bigger and needs rescaling
+
       if (resizeMethod === "crop") {
         if (srcRatio > trgRatio) {
           info.srcHeight = file.height;
@@ -492,7 +488,7 @@ let defaultOptions = {
           info.srcHeight = info.srcWidth / trgRatio;
         }
       } else if (resizeMethod === "contain") {
-        // Method 'contain'
+
         if (srcRatio > trgRatio) {
           height = width / srcRatio;
         } else {
@@ -562,12 +558,10 @@ let defaultOptions = {
    want to add an additional event handler, register it on the dropzone object
    and don't overwrite those options.
    */
-
-  // Those are self explanatory and simply concern the DragnDrop.
   drop(e) {
     return this.element.classList.remove("dz-drag-hover");
   },
-  dragstart(e) {},
+  dragstart(e) { },
   dragend(e) {
     return this.element.classList.remove("dz-drag-hover");
   },
@@ -581,16 +575,10 @@ let defaultOptions = {
     return this.element.classList.remove("dz-drag-hover");
   },
 
-  paste(e) {},
-
-  // Called whenever there are no files left in the dropzone anymore, and the
-  // dropzone should be displayed as if in the initial state.
+  paste(e) { },
   reset() {
     return this.element.classList.remove("dz-started");
   },
-
-  // Called when a file is added to the queue
-  // Receives `file`
   addedfile(file) {
     if (this.element === this.previewsContainer) {
       this.element.classList.add("dz-started");
@@ -600,7 +588,7 @@ let defaultOptions = {
       file.previewElement = Dropzone.createElement(
         this.options.previewTemplate.trim()
       );
-      file.previewTemplate = file.previewElement; // Backwards compatibility
+      file.previewTemplate = file.previewElement;
 
       this.previewsContainer.appendChild(file.previewElement);
       for (var node of file.previewElement.querySelectorAll("[data-dz-name]")) {
@@ -644,17 +632,12 @@ let defaultOptions = {
       }
     }
   },
-
-  // Called whenever a file is removed.
   removedfile(file) {
     if (file.previewElement != null && file.previewElement.parentNode != null) {
       file.previewElement.parentNode.removeChild(file.previewElement);
     }
     return this._updateMaxFilesReachedClass();
   },
-
-  // Called when a thumbnail has been generated
-  // Receives `file` and `dataUrl`
   thumbnail(file, dataUrl) {
     if (file.previewElement) {
       file.previewElement.classList.remove("dz-file-preview");
@@ -671,9 +654,6 @@ let defaultOptions = {
       );
     }
   },
-
-  // Called whenever an error occurs
-  // Receives `file` and `message`
   error(file, message) {
     if (file.previewElement) {
       file.previewElement.classList.add("dz-error");
@@ -688,11 +668,7 @@ let defaultOptions = {
     }
   },
 
-  errormultiple() {},
-
-  // Called when a file gets processed. Since there is a cue, not all added
-  // files are processed immediately.
-  // Receives `file`
+  errormultiple() { },
   processing(file) {
     if (file.previewElement) {
       file.previewElement.classList.add("dz-processing");
@@ -702,11 +678,7 @@ let defaultOptions = {
     }
   },
 
-  processingmultiple() {},
-
-  // Called whenever the upload progress gets updated.
-  // Receives `file`, `progress` (percentage 0-100) and `bytesSent`.
-  // To get the total number of bytes of the file, use `file.size`
+  processingmultiple() { },
   uploadprogress(file, progress, bytesSent) {
     if (file.previewElement) {
       for (let node of file.previewElement.querySelectorAll(
@@ -718,37 +690,22 @@ let defaultOptions = {
       }
     }
   },
+  totaluploadprogress() { },
+  sending() { },
 
-  // Called whenever the total upload progress gets updated.
-  // Called with totalUploadProgress (0-100), totalBytes and totalBytesSent
-  totaluploadprogress() {},
-
-  // Called just before the file is sent. Gets the `xhr` object as second
-  // parameter, so you can modify it (for example to add a CSRF token) and a
-  // `formData` object to add additional information.
-  sending() {},
-
-  sendingmultiple() {},
-
-  // When the complete upload is finished and successful
-  // Receives `file`
+  sendingmultiple() { },
   success(file) {
     if (file.previewElement) {
       return file.previewElement.classList.add("dz-success");
     }
   },
 
-  successmultiple() {},
-
-  // When the upload is canceled.
+  successmultiple() { },
   canceled(file) {
     return this.emit("error", file, this.options.dictUploadCanceled);
   },
 
-  canceledmultiple() {},
-
-  // When the upload is finished, either with success or an error.
-  // Receives `file`
+  canceledmultiple() { },
   complete(file) {
     if (file._removeLink) {
       file._removeLink.innerHTML = this.options.dictRemoveFile;
@@ -758,15 +715,15 @@ let defaultOptions = {
     }
   },
 
-  completemultiple() {},
+  completemultiple() { },
 
-  maxfilesexceeded() {},
+  maxfilesexceeded() { },
 
-  maxfilesreached() {},
+  maxfilesreached() { },
 
-  queuecomplete() {},
+  queuecomplete() { },
 
-  addedfiles() {},
+  addedfiles() { },
 };
 
 export default defaultOptions;

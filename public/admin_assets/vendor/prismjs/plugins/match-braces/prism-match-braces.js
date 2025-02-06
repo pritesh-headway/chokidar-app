@@ -18,20 +18,13 @@
 		'[': ']',
 		'{': '}',
 	};
-
-	// The names for brace types.
-	// These names have two purposes: 1) they can be used for styling and 2) they are used to pair braces. Only braces
-	// of the same type are paired.
 	var NAMES = {
 		'(': 'brace-round',
 		'[': 'brace-square',
 		'{': 'brace-curly',
 	};
-
-	// A map for brace aliases.
-	// This is useful for when some braces have a prefix/suffix as part of the punctuation token.
 	var BRACE_ALIAS_MAP = {
-		'${': '{', // JS template punctuation (e.g. `foo ${bar + 1}`)
+		'${': '{',
 	};
 
 	var LEVEL_WARP = 12;
@@ -93,8 +86,6 @@
 		if (!pre || pre.tagName != 'PRE') {
 			return;
 		}
-
-		// find the braces to match
 		/** @type {string[]} */
 		var toMatch = [];
 		if (Prism.util.isActive(code, 'match-braces')) {
@@ -102,14 +93,14 @@
 		}
 
 		if (toMatch.length == 0) {
-			// nothing to match
+
 			return;
 		}
 
 		if (!pre.__listenerAdded) {
-			// code blocks might be highlighted more than once
+
 			pre.addEventListener('mousedown', function removeBraceSelected() {
-				// the code element might have been replaced
+
 				var code = pre.querySelector('code');
 				var className = mapClassName('brace-selected');
 				Array.prototype.slice.call(code.querySelectorAll('.' + className)).forEach(function (e) {

@@ -15,13 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('title', 255);
             $table->string('amenity_image', 256);
-            $table->text('amenity_images'); // Can store JSON or comma-separated URLs
+            $table->text('amenity_images');
             $table->enum('status', ['active', 'deactive'])->default('active');
-            $table->timestamps(); // created_at and updated_at
+            $table->timestamps();
         });
     }
-
-
     /**
      * Reverse the migrations.
      */

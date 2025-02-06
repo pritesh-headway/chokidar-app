@@ -37,7 +37,7 @@
 			alias: 'comment'
 		},
 		'expression': {
-			// Allow for 3 levels of depth
+
 			pattern: /(^|[^^])\((?:[^()]|\((?:[^()]|\((?:[^()])*\))*\))*\)/,
 			greedy: true,
 			lookbehind: true,

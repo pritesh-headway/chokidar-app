@@ -1,13 +1,5 @@
-// Typescript declarations for Apex class and module.
-// Note: When you have a class and a module with the same name; the module is merged
-// with the class.  This is necessary since apexcharts exports the main ApexCharts class only.
 //
-// This is a sparse typed declarations of chart interfaces.  See Apex Chart documentation
-// for comprehensive API:  https://apexcharts.com/docs/options
 //
-// There is on-going work to provide a comprehensive typed definition for this component.
-// See https://github.com/DefinitelyTyped/DefinitelyTyped/pull/28733
-
 declare class ApexCharts {
   constructor(el: any, options: any)
   render(): Promise<void>
@@ -42,7 +34,7 @@ declare class ApexCharts {
   clearAnnotations(options?: any): void
   dataURI(options?: { scale?: number, width?: number }): Promise<{ imgURI: string } | { blob: Blob }>
   static exec(chartID: string, fn: string, ...args: Array<any>): any
-  static getChartByID(chartID: string): ApexCharts|undefined
+  static getChartByID(chartID: string): ApexCharts | undefined
   static initOnLoad(): void
   exports: {
     cleanup(): string
@@ -100,22 +92,22 @@ type ApexChart = {
   width?: string | number
   height?: string | number
   type?:
-    | 'line'
-    | 'area'
-    | 'bar'
-    | 'pie'
-    | 'donut'
-    | 'radialBar'
-    | 'scatter'
-    | 'bubble'
-    | 'heatmap'
-    | 'candlestick'
-    | 'boxPlot'
-    | 'radar'
-    | 'polarArea'
-    | 'rangeBar'
-    | 'rangeArea'
-    | 'treemap'
+  | 'line'
+  | 'area'
+  | 'bar'
+  | 'pie'
+  | 'donut'
+  | 'radialBar'
+  | 'scatter'
+  | 'bubble'
+  | 'heatmap'
+  | 'candlestick'
+  | 'boxPlot'
+  | 'radar'
+  | 'polarArea'
+  | 'rangeBar'
+  | 'rangeArea'
+  | 'treemap'
   foreColor?: string
   fontFamily?: string
   background?: string
@@ -313,21 +305,21 @@ type ApexAxisChartSeries = {
   type?: string
   color?: string
   data:
-    | (number | null)[]
-    | {
-        x: any;
-        y: any;
-        fill?: ApexFill;
-        fillColor?: string;
-        strokeColor?: string;
-        meta?: any;
-        goals?: any;
-        barHeightOffset?: number;
-        columnWidthOffset?: number;
-      }[]
-    | [number, number | null][]
-    | [number, (number | null)[]][]
-    | number[][];
+  | (number | null)[]
+  | {
+    x: any;
+    y: any;
+    fill?: ApexFill;
+    fillColor?: string;
+    strokeColor?: string;
+    meta?: any;
+    goals?: any;
+    barHeightOffset?: number;
+    columnWidthOffset?: number;
+  }[]
+  | [number, number | null][]
+  | [number, (number | null)[]][]
+  | number[][];
 }[]
 
 type ApexNonAxisChartSeries = number[]
@@ -444,8 +436,6 @@ type PointAnnotations = {
     offsetY?: number
   }
 }
-
-
 type TextAnnotations = {
   x?: number
   y?: number
@@ -492,9 +482,9 @@ type ApexLocale = {
       zoomOut?: string
       pan?: string
       reset?: string
-			exportToSVG?: string
-			exportToPNG?: string
-			exportToCSV?: string
+      exportToSVG?: string
+      exportToPNG?: string
+      exportToCSV?: string
     }
   }
 }
@@ -953,7 +943,7 @@ type ApexTooltip = {
   }
   fixed?: {
     enabled?: boolean
-    position?: string // topRight; topLeft; bottomRight; bottomLeft
+    position?: string
     offsetX?: number
     offsetY?: number
   }
@@ -989,7 +979,7 @@ type ApexXAxis = {
     offsetX?: number
     offsetY?: number
     format?: string
-    formatter?(value: string, timestamp?: number, opts?:any): string | string[]
+    formatter?(value: string, timestamp?: number, opts?: any): string | string[]
     datetimeUTC?: boolean
     datetimeFormatter?: {
       year?: string
@@ -1001,14 +991,14 @@ type ApexXAxis = {
     }
   }
   group?: {
-      groups?: { title: string, cols: number }[],
-      style?:  {
-        colors?: string | string[]
-        fontSize?: string
-        fontFamily?: string
-        fontWeight?: string | number
-        cssClass?: string
-      }
+    groups?: { title: string, cols: number }[],
+    style?: {
+      colors?: string | string[]
+      fontSize?: string
+      fontFamily?: string
+      fontWeight?: string | number
+      cssClass?: string
+    }
   }
   axisBorder?: {
     show?: boolean

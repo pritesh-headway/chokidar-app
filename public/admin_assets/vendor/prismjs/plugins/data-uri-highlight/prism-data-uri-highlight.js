@@ -32,13 +32,11 @@
 			}
 		}
 	};
-
-	// Tokens that may contain URLs
 	var candidates = ['url', 'attr-value', 'string'];
 
 	Prism.plugins.dataURIHighlight = {
 		processGrammar: function (grammar) {
-			// Abort if grammar has already been processed
+
 			if (!grammar || grammar['data-uri']) {
 				return;
 			}
@@ -73,7 +71,7 @@
 	};
 
 	Prism.hooks.add('before-highlight', function (env) {
-		// Prepare the needed grammars for this code block
+
 		if (dataURI.pattern.test(env.code)) {
 			for (var p in dataURI.inside) {
 				if (dataURI.inside.hasOwnProperty(p)) {

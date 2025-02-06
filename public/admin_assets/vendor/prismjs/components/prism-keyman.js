@@ -10,17 +10,15 @@ Prism.languages.keyman = {
 	'virtual-key': {
 		pattern: /\[\s*(?:(?:ALT|CAPS|CTRL|LALT|LCTRL|NCAPS|RALT|RCTRL|SHIFT)\s+)*(?:[TKU]_[\w?]+|[A-E]\d\d?|"[^"\r\n]*"|'[^'\r\n]*')\s*\]/i,
 		greedy: true,
-		alias: 'function' // alias for styles
+		alias: 'function'
 	},
-
-	// https://help.keyman.com/developer/language/guide/headers
 	'header-keyword': {
 		pattern: /&\w+/,
-		alias: 'bold' // alias for styles
+		alias: 'bold'
 	},
 	'header-statement': {
 		pattern: /\b(?:bitmap|bitmaps|caps always off|caps on only|copyright|hotkey|language|layout|message|name|shift frees caps|version)\b/i,
-		alias: 'bold' // alias for styles
+		alias: 'bold'
 	},
 
 	'rule-keyword': {
@@ -36,8 +34,6 @@ Prism.languages.keyman = {
 		pattern: /\$(?:keyman|keymanonly|keymanweb|kmfl|weaver):/i,
 		alias: 'property'
 	},
-
-	// U+####, x###, d### characters and numbers
 	'number': /\b(?:U\+[\dA-F]+|d\d+|x[\da-f]+|\d+)\b/i,
 	'operator': /[+>\\$]|\.\./,
 	'punctuation': /[()=,]/

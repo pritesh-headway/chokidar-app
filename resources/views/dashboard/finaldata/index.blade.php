@@ -99,7 +99,7 @@
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
-        $('.alert-container').html(alertHTML); // Insert alert into container
+        $('.alert-container').html(alertHTML);
     }
     $('#catForm').on('submit', function(e) {
         e.preventDefault();
@@ -154,7 +154,7 @@
     $(".FlangevalDiv").css('display', 'none');
 
     $('.toggleRadio').on('change', function() {
-        // Check if the current radio button is checked
+
         if ($(this).is(':checked') && $(this).val() === 'Flange') {
             $(".flangeShow").css('display', 'block');
             $(".FlangevalDiv").css('display', 'block');
@@ -175,7 +175,7 @@
         if (window.history.length > 1) {
             window.history.back();
         } else {
-            window.location.href = '/'; // Redirect to a default page
+            window.location.href = '/';
         }
     }
 </script>

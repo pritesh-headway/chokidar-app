@@ -301,15 +301,15 @@
 
 		var autoloaderPath = script.getAttribute('data-autoloader-path');
 		if (autoloaderPath != null) {
-			// data-autoloader-path is set, so just use it
+
 			languages_path = autoloaderPath.trim().replace(/\/?$/, '/');
 		} else {
 			var src = script.src;
 			if (autoloaderFile.test(src)) {
-				// the script is the original autoloader script in the usual Prism project structure
+
 				languages_path = src.replace(autoloaderFile, 'components/');
 			} else if (prismFile.test(src)) {
-				// the script is part of a bundle like a custom prism.js from the download page
+
 				languages_path = src.replace(prismFile, '$1components/');
 			}
 		}
@@ -320,8 +320,6 @@
 		use_minified: true,
 		loadLanguages: loadLanguages
 	};
-
-
 	/**
 	 * Lazily loads an external script.
 	 *
@@ -369,18 +367,16 @@
 	 */
 	function isLoaded(lang) {
 		if (lang.indexOf('!') >= 0) {
-			// forced reload
+
 			return false;
 		}
 
-		lang = lang_aliases[lang] || lang; // resolve alias
+		lang = lang_aliases[lang] || lang;
 
 		if (lang in Prism.languages) {
-			// the given language is already loaded
+
 			return true;
 		}
-
-		// this will catch extensions like CSS extras that don't add a grammar to Prism.languages
 		var data = lang_data[lang];
 		return data && !data.error && data.loading === false;
 	}
@@ -465,13 +461,13 @@
 			});
 
 			if (!force && isLoaded(lang)) {
-				// the language is already loaded and we aren't forced to reload
+
 				languageCallback(lang, 'success');
 			} else if (!force && data.error) {
-				// the language failed to load before and we don't reload
+
 				languageCallback(lang, 'error');
 			} else if (force || !data.loading) {
-				// the language isn't currently loading and/or we are forced to reload
+
 				data.loading = true;
 				data.error = false;
 
@@ -523,7 +519,7 @@
 
 		var deps = getDependencies(element);
 		if (/^diff-./i.test(language)) {
-			// the "diff-xxxx" format is used by the Diff Highlight plugin
+
 			deps.push('diff');
 			deps.push(language.substr('diff-'.length));
 		} else {
@@ -531,7 +527,7 @@
 		}
 
 		if (!deps.every(isLoaded)) {
-			// the language or some dependencies aren't loaded
+
 			loadLanguages(deps, function () {
 				Prism.highlightElement(element);
 			});

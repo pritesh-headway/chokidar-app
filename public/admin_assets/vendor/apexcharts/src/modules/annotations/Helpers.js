@@ -88,7 +88,7 @@ export default class Helpers {
     )
 
     if (anno.id) {
-      // don't escapeString for this ID as it causes duplicate rects
+
       elRect.node.classList.add(anno.id)
     }
 
@@ -175,7 +175,7 @@ export default class Helpers {
       yP = w.globals.gridHeight - yPos
 
       if (anno.marker && (anno.y === undefined || anno.y === null)) {
-        // point annotation
+
         yP = 0
       }
 
@@ -232,7 +232,7 @@ export default class Helpers {
     }
 
     if ((anno.x === undefined || anno.x === null) && anno.marker) {
-      // point annotation in a horizontal chart
+
       x1 = w.globals.gridWidth
     }
 

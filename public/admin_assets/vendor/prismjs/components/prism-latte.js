@@ -2,7 +2,7 @@
 	Prism.languages.latte = {
 		'comment': /^\{\*[\s\S]*/,
 		'latte-tag': {
-			// https://latte.nette.org/en/tags
+
 			pattern: /(^\{(?:\/(?=[a-z]))?)(?:[=_]|[a-z]\w*\b(?!\())/i,
 			lookbehind: true,
 			alias: 'important'

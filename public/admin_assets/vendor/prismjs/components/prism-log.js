@@ -1,11 +1,7 @@
-// This is a language definition for generic log files.
-// Since there is no one log format, this language definition has to support all formats to some degree.
 //
-// Based on https://github.com/MTDL9/vim-log-highlighting
-
 Prism.languages.log = {
 	'string': {
-		// Single-quoted strings must not be confused with plain text. E.g. Can't isn't Susan's Chris' toy
+
 		pattern: /"(?:[^"\\\r\n]|\\.)*"|'(?![st] | \w)(?:[^'\\\r\n]|\\.)*'/,
 		greedy: true,
 	},

@@ -11,14 +11,12 @@ class NoticeFactory extends Factory
 
     public function definition()
     {
-        // Define the available documents
+
         $availableDocuments = [
             'notice1.jpg',
             'notice2.jpg',
             'notice3.webp',
         ];
-
-        // Randomly select between 1 and 3 documents
         $documents = $this->faker->randomElements($availableDocuments, rand(1, 3));
 
         return [
@@ -27,9 +25,9 @@ class NoticeFactory extends Factory
             'date' => $this->faker->date(),
             'time' => $this->faker->time(),
             'status' => $this->faker->randomElement(['active', 'deactive']),
-            // Generate document URLs based on the selected files
+
             'documents' => json_encode(array_map(function ($document) {
-                return env('APP_URL') . '/public/storage/notice_documents/' . $document;  // Create full URL
+                return env('APP_URL') . '/public/storage/notice_documents/' . $document;
             }, $documents)),
         ];
     }

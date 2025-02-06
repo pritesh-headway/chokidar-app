@@ -551,8 +551,6 @@
     * Tests: Improved dection of empty patterns ([#3058](https://github.com/PrismJS/prism/issues/3058)) [`d216e602`](https://github.com/PrismJS/prism/commit/d216e602)
 * __Website__
     * Highlight Keywords: More documentation ([#3049](https://github.com/PrismJS/prism/issues/3049)) [`247fd9a3`](https://github.com/PrismJS/prism/commit/247fd9a3)
-
-
 ## 1.24.1 (2021-07-03)
 
 ### Updated components
@@ -564,8 +562,6 @@
 
 * __Toolbar__
     * Fixed styles being applies to nested elements ([#2980](https://github.com/PrismJS/prism/issues/2980)) [`748ecddc`](https://github.com/PrismJS/prism/commit/748ecddc)
-
-
 ## 1.24.0 (2021-06-27)
 
 ### New components
@@ -740,8 +736,6 @@
     * Improved basic usage section ([#2777](https://github.com/PrismJS/prism/issues/2777)) [`a1209930`](https://github.com/PrismJS/prism/commit/a1209930)
     * Updated URL in Autolinker example ([#2751](https://github.com/PrismJS/prism/issues/2751)) [`ec9767d6`](https://github.com/PrismJS/prism/commit/ec9767d6)
     * Added React native tutorial ([#2683](https://github.com/PrismJS/prism/issues/2683)) [`1506f345`](https://github.com/PrismJS/prism/commit/1506f345)
-
-
 ## 1.23.0 (2020-12-31)
 
 ### New components
@@ -2483,8 +2477,6 @@
 * Ini: Fix test after [#1047](https://github.com/PrismJS/prism/issues/1047) [[`25cdd3f`](https://github.com/PrismJS/prism/commit/25cdd3f)]
 * Reduce risk of XSS ([#1051](https://github.com/PrismJS/prism/issues/1051)) [[`17e33bc`](https://github.com/PrismJS/prism/commit/17e33bc)]
 * env.code can be modified by before-sanity-check hook even when using language-none. Fix [#1066](https://github.com/PrismJS/prism/issues/1066) [[`83bafbd`](https://github.com/PrismJS/prism/commit/83bafbd)]
-
-
 ## 1.5.1 (2016-06-05)
 
 ### Updated components

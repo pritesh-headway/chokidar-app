@@ -129,16 +129,12 @@ class Legend {
       mStyle.background = fillcolor[i]
       mStyle.color = fillcolor[i]
       mStyle.setProperty('background', fillcolor[i], 'important')
-
-      // override fill color with custom legend.markers.fillColors
       if (
         w.config.legend.markers.fillColors &&
         w.config.legend.markers.fillColors[i]
       ) {
         mStyle.background = w.config.legend.markers.fillColors[i]
       }
-
-      // override with data color
       if (w.globals.seriesColors[i] !== undefined) {
         mStyle.background = w.globals.seriesColors[i]
         mStyle.color = w.globals.seriesColors[i]
@@ -356,8 +352,6 @@ class Legend {
 
     let offsetX = 20
     let offsetY = 0
-
-    // the whole legend box is set to bottom
     if (w.config.legend.position === 'bottom') {
       offsetY = -lRect.clwh / 1.8
     } else if (w.config.legend.position === 'top') {
@@ -407,7 +401,7 @@ class Legend {
         series.toggleSeriesOnHover(e, e.target)
       }
     } else {
-      // for heatmap handling
+
       if (hoverOverLegend) {
         let seriesCnt = parseInt(e.target.getAttribute('rel'), 10) - 1
         this.ctx.events.fireEvent('legendHover', [this.ctx, seriesCnt, this.w])
@@ -449,8 +443,6 @@ class Legend {
           this.w
         ])
       }
-
-      // for now - just prevent click on heatmap legend - and allow hover only
       const clickAllowed =
         w.config.chart.type !== 'treemap' &&
         w.config.chart.type !== 'heatmap' &&

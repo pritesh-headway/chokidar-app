@@ -24,7 +24,7 @@
 		},
 		'command': [
 			{
-				// FOR command
+
 				pattern: /((?:^|[&(])[ \t]*)for(?: \/[a-z?](?:[ :](?:"[^"]*"|[^\s"/]\S*))?)* \S+ in \([^)]+\) do/im,
 				lookbehind: true,
 				inside: {
@@ -37,7 +37,7 @@
 				}
 			},
 			{
-				// IF command
+
 				pattern: /((?:^|[&(])[ \t]*)if(?: \/[a-z?](?:[ :](?:"[^"]*"|[^\s"/]\S*))?)* (?:not )?(?:cmdextversion \d+|defined \w+|errorlevel \d+|exist \S+|(?:"[^"]*"|(?!")(?:(?!==)\S)+)?(?:==| (?:equ|geq|gtr|leq|lss|neq) )(?:"[^"]*"|[^\s"]\S*))/im,
 				lookbehind: true,
 				inside: {
@@ -50,7 +50,7 @@
 				}
 			},
 			{
-				// ELSE command
+
 				pattern: /((?:^|[&()])[ \t]*)else\b/im,
 				lookbehind: true,
 				inside: {
@@ -58,7 +58,7 @@
 				}
 			},
 			{
-				// SET command
+
 				pattern: /((?:^|[&(])[ \t]*)set(?: \/[a-z](?:[ :](?:"[^"]*"|[^\s"/]\S*))?)* (?:[^^&)\r\n]|\^(?:\r\n|[\s\S]))*/im,
 				lookbehind: true,
 				inside: {
@@ -75,7 +75,7 @@
 				}
 			},
 			{
-				// Other commands
+
 				pattern: /((?:^|[&(])[ \t]*@?)\w+\b(?:"(?:[\\"]"|[^"])*"(?!")|[^"^&)\r\n]|\^(?:\r\n|[\s\S]))*/m,
 				lookbehind: true,
 				inside: {

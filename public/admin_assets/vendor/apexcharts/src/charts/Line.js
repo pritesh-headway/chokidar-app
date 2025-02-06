@@ -54,8 +54,6 @@ class Line {
 
     series = coreUtils.getLogSeries(series)
     this.yRatio = coreUtils.getLogYRatios(this.yRatio)
-
-    // push all series in an array, so we can draw in reverse order (for stacked charts)
     let allSeries = []
 
     for (let i = 0; i < series.length; i++) {
@@ -65,8 +63,8 @@ class Line {
 
       this._initSerieVariables(series, i, realIndex)
 
-      let yArrj = [] // hold y values of current iterating series
-      let xArrj = [] // hold x values of current iterating series
+      let yArrj = []
+      let xArrj = []
 
       let x = w.globals.padHorizontal + this.categoryAxisCorrection
       let y = 1
@@ -89,8 +87,6 @@ class Line {
       let prevY = this.zeroY
       let prevY2 = this.zeroY
       let lineYPosition = 0
-
-      // the first value in the current series is not null or undefined
       let firstPrevY = this.lineHelpers.determineFirstPrevY({
         i,
         series,
@@ -100,8 +96,6 @@ class Line {
       prevY = firstPrevY.prevY
       yArrj.push(prevY)
       pY = prevY
-
-      // y2 are needed for range-area charts
       let firstPrevY2
 
       if (type === 'rangeArea') {
@@ -195,8 +189,6 @@ class Line {
   _initSerieVariables(series, i, realIndex) {
     const w = this.w
     const graphics = new Graphics(this.ctx)
-
-    // width divided into equal parts
     this.xDivision =
       w.globals.gridWidth /
       (w.globals.dataPoints - (w.config.xaxis.tickPlacement === 'on' ? 1 : 0))
@@ -212,8 +204,6 @@ class Line {
     this.isReversed =
       w.config.yaxis[this.yaxisIndex] &&
       w.config.yaxis[this.yaxisIndex].reversed
-
-    // zeroY is the 0 value in y series which can be used in negative charts
     this.zeroY =
       w.globals.gridHeight -
       this.baseLineY[this.yaxisIndex] -
@@ -229,20 +219,14 @@ class Line {
     }
 
     this.categoryAxisCorrection = this.xDivision / 2
-
-    // el to which series will be drawn
     this.elSeries = graphics.group({
       class: `apexcharts-series`,
       seriesName: Utils.escapeString(w.globals.seriesNames[realIndex])
     })
-
-    // points
     this.elPointsMain = graphics.group({
       class: 'apexcharts-series-markers-wrap',
       'data:realIndex': realIndex
     })
-
-    // eldatalabels
     this.elDataLabelsWrap = graphics.group({
       class: 'apexcharts-datalabels',
       'data:realIndex': realIndex
@@ -264,7 +248,7 @@ class Line {
     let linePath, areaPath, pathFromLine, pathFromArea
 
     if (series[i][0] === null) {
-      // when the first value itself is null, we need to move the pointer to a location where a null value is not found
+
       for (let s = 0; s < series[i].length; s++) {
         if (series[i][s] !== null) {
           prevX = this.xDivision * s
@@ -311,11 +295,7 @@ class Line {
     const w = this.w
     const graphics = new Graphics(this.ctx)
     const fill = new Fill(this.ctx)
-
-    // push all current y values array to main PrevY Array
     this.prevSeriesY.push(paths.yArrj)
-
-    // push all x val arrays into main xArr
     w.globals.seriesXvalues[realIndex] = paths.xArrj
     w.globals.seriesYvalues[realIndex] = paths.yArrj
 
@@ -323,7 +303,7 @@ class Line {
     if (forecast.count > 0 && type !== 'rangeArea') {
       const forecastCutoff =
         w.globals.seriesXvalues[realIndex][
-          w.globals.seriesXvalues[realIndex].length - forecast.count - 1
+        w.globals.seriesXvalues[realIndex].length - forecast.count - 1
         ]
       const elForecastMask = graphics.drawRect(
         forecastCutoff,
@@ -343,8 +323,6 @@ class Line {
       )
       w.globals.dom.elNonForecastMask.appendChild(elNonForecastMask.node)
     }
-
-    // these elements will be shown after area path animation completes
     if (!this.pointsChart) {
       w.globals.delayedElements.push({
         el: this.elPointsMain.node,
@@ -402,8 +380,6 @@ class Line {
           w.config.fill = prevFill
         }
       }
-
-      // range-area paths are drawn using linePaths
       for (let p = 0; p < paths.linePaths.length; p++) {
         let pathFill = lineFill
         if (type === 'rangeArea') {
@@ -510,7 +486,7 @@ class Line {
           i > 0 &&
           w.globals.collapsedSeries.length < w.config.series.length - 1
         ) {
-          // a collapsed series in a stacked bar chart may provide wrong result for the next series, hence find the prevIndex of prev series which is not collapsed - fixes apexcharts.js#1372
+
           const prevIndex = (pi) => {
             let pii = pi
             for (let cpi = 0; cpi < w.globals.series.length; cpi++) {
@@ -524,7 +500,7 @@ class Line {
           }
           lineYPosition = this.prevSeriesY[prevIndex(i - 1)][j + 1]
         } else {
-          // the first series will not have prevY values
+
           lineYPosition = this.zeroY
         }
       } else {
@@ -549,14 +525,10 @@ class Line {
             (this.isReversed
               ? seriesRangeEnd[i][j + 1] / yRatio[this.yaxisIndex]
               : 0) *
-              2
+            2
         }
       }
-
-      // push current X
       xArrj.push(x)
-
-      // push current Y that will be used as next series's bottom position
       yArrj.push(y)
 
       let pointsPos = this.lineHelpers.calculatePoints({
@@ -642,7 +614,7 @@ class Line {
         this.elPointsMain.add(elPointsWrap)
       }
     } else {
-      // scatter / bubble chart points creation
+
       this.scatter.draw(this.elSeries, j, {
         realIndex,
         pointsPos,
@@ -694,9 +666,6 @@ class Line {
         curve = w.config.stroke.curve[i]
       }
     }
-
-    // logic of smooth curve derived from chartist
-    // CREDITS: https://gionkunz.github.io/chartist-js/
     if (curve === 'smooth') {
       let length = (x - pX) * 0.35
       if (w.globals.hasNullValues) {
@@ -730,7 +699,7 @@ class Line {
       pY = y
 
       if (j === series[i].length - 2) {
-        // last loop, close path
+
         areaPath =
           areaPath +
           graphics.curve(pX, pY, x, y, x, areaBottomY) +
@@ -779,7 +748,7 @@ class Line {
       }
 
       if (j === series[i].length - 2) {
-        // last loop, close path
+
         areaPath =
           areaPath + graphics.line(x, areaBottomY) + graphics.move(x, y) + 'z'
 
@@ -809,7 +778,7 @@ class Line {
       (series[i][j] === null && w.config.markers.showNullDataPoints) ||
       series[i].length === 1
     ) {
-      // fixes apexcharts.js#1282, #1252
+
       let elPointsWrap = this.markers.plotChartMarkers(
         pointsPos,
         realIndex,

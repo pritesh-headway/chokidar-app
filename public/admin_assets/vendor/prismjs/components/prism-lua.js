@@ -1,6 +1,6 @@
 Prism.languages.lua = {
 	'comment': /^#!.+|--(?:\[(=*)\[[\s\S]*?\]\1\]|.*)/m,
-	// \z may be used to skip the following space
+
 	'string': {
 		pattern: /(["'])(?:(?!\1)[^\\\r\n]|\\z(?:\r\n|\s)|\\(?:\r\n|[^z]))*\1|\[(=*)\[[\s\S]*?\]\2\]/,
 		greedy: true
@@ -11,7 +11,7 @@ Prism.languages.lua = {
 	'operator': [
 		/[-+*%^&|#]|\/\/?|<[<=]?|>[>=]?|[=~]=?/,
 		{
-			// Match ".." but don't break "..."
+
 			pattern: /(^|[^.])\.\.(?!\.)/,
 			lookbehind: true
 		}

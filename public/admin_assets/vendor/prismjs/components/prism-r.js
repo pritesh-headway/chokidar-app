@@ -5,8 +5,6 @@ Prism.languages.r = {
 		greedy: true
 	},
 	'percent-operator': {
-		// Includes user-defined operators
-		// and %%, %*%, %/%, %in%, %o%, %x%
 		pattern: /%[^%\s]*%/,
 		alias: 'operator'
 	},

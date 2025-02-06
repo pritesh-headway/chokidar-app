@@ -1,7 +1,4 @@
 (function (Prism) {
-
-	// see https://github.com/cooklang/spec/blob/main/EBNF.md
-
 	var single_token_suffix = /(?:(?!\s)[\d$+<=a-zA-Z\x80-\uFFFF])+/.source;
 	var multi_token_infix = /[^{}@#]+/.source;
 	var multi_token_suffix = /\{[^}#@]*\}/.source;
@@ -39,25 +36,21 @@
 			'punctuation': /[{}]/,
 		}
 	};
-
-
 	Prism.languages.cooklang = {
 		'comment': {
-			// [- comment -]
-			// -- comment
 			pattern: /\[-[\s\S]*?-\]|--.*/,
 			greedy: true,
 		},
-		'meta': { // >> key: value
+		'meta': {
 			pattern: />>.*:.*/,
 			inside: {
-				'property': { // key:
+				'property': {
 					pattern: /(>>\s*)[^\s:](?:[^:]*[^\s:])?/,
 					lookbehind: true,
 				}
 			}
 		},
-		'cookware-group': { // #...{...}, #...
+		'cookware-group': {
 			pattern: new RegExp('#(?:'
 				+ multi_token
 				+ '|'
@@ -90,7 +83,7 @@
 				}
 			},
 		},
-		'ingredient-group': { // @...{...}, @...
+		'ingredient-group': {
 			pattern: new RegExp('@(?:'
 				+ multi_token
 				+ '|'
@@ -111,8 +104,8 @@
 				'amount-group': amount_group_impl,
 			}
 		},
-		'timer-group': { // ~timer{...}
-			// eslint-disable-next-line regexp/sort-alternatives
+		'timer-group': {
+
 			pattern: /~(?!\s)[^@#~{}]*\{[^{}]*\}/,
 			inside: {
 				'timer': {
@@ -120,7 +113,7 @@
 					lookbehind: true,
 					alias: 'variable',
 				},
-				'duration-group': { // {...}
+				'duration-group': {
 					pattern: /\{[^{}]*\}/,
 					inside: {
 						'punctuation': /[{}]/,

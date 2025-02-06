@@ -1,6 +1,6 @@
 Prism.languages.gedcom = {
 	'line-value': {
-		// Preceded by level, optional pointer, and tag
+
 		pattern: /(^[\t ]*\d+ +(?:@\w[\w!"$%&'()*+,\-./:;<=>?[\\\]^`{|}~\x80-\xfe #]*@ +)?\w+ ).+/m,
 		lookbehind: true,
 		inside: {
@@ -11,7 +11,7 @@ Prism.languages.gedcom = {
 		}
 	},
 	'record': {
-		// Preceded by level and optional pointer
+
 		pattern: /(^[\t ]*\d+ +(?:@\w[\w!"$%&'()*+,\-./:;<=>?[\\\]^`{|}~\x80-\xfe #]*@ +)?)\w+/m,
 		lookbehind: true,
 		alias: 'tag'

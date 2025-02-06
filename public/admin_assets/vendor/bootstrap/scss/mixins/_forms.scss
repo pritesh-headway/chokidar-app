@@ -1,29 +1,26 @@
-// This mixin uses an `if()` technique to be compatible with Dart Sass
-// See https://github.com/sass/sass/issues/1873#issuecomment-152293725 for more details
-
-// scss-docs-start form-validation-mixins
 @mixin form-validation-state-selector($state) {
-  @if ($state == "valid" or $state == "invalid") {
+  @if ($state =="valid" or $state =="invalid") {
+
     .was-validated #{if(&, "&", "")}:#{$state},
     #{if(&, "&", "")}.is-#{$state} {
       @content;
     }
-  } @else {
+  }
+
+  @else {
     #{if(&, "&", "")}.is-#{$state} {
       @content;
     }
   }
 }
 
-@mixin form-validation-state(
-  $state,
+@mixin form-validation-state($state,
   $color,
   $icon,
   $tooltip-color: color-contrast($color),
   $tooltip-bg-color: rgba($color, $form-feedback-tooltip-opacity),
   $focus-box-shadow: 0 0 $input-btn-focus-blur $input-focus-width rgba($color, $input-btn-focus-color-opacity),
-  $border-color: $color
-) {
+  $border-color: $color) {
   .#{$state}-feedback {
     display: none;
     width: 100%;
@@ -38,7 +35,7 @@
     top: 100%;
     z-index: 5;
     display: none;
-    max-width: 100%; // Contain to parent when possible
+    max-width: 100%;
     padding: $form-feedback-tooltip-padding-y $form-feedback-tooltip-padding-x;
     margin-top: .1rem;
     @include font-size($form-feedback-tooltip-font-size);
@@ -49,8 +46,9 @@
   }
 
   @include form-validation-state-selector($state) {
-    ~ .#{$state}-feedback,
-    ~ .#{$state}-tooltip {
+
+    ~.#{$state}-feedback,
+    ~.#{$state}-tooltip {
       display: block;
     }
   }
@@ -74,7 +72,6 @@
     }
   }
 
-  // stylelint-disable-next-line selector-no-qualifying-type
   textarea.form-control {
     @include form-validation-state-selector($state) {
       @if $enable-validation-icons {
@@ -89,6 +86,7 @@
       border-color: $border-color;
 
       @if $enable-validation-icons {
+
         &:not([multiple]):not([size]),
         &:not([multiple])[size="1"] {
           --#{$prefix}form-select-bg-icon: #{escape-svg($icon)};
@@ -125,29 +123,32 @@
         box-shadow: $focus-box-shadow;
       }
 
-      ~ .form-check-label {
+      ~.form-check-label {
         color: $color;
       }
     }
   }
+
   .form-check-inline .form-check-input {
-    ~ .#{$state}-feedback {
+    ~.#{$state}-feedback {
       margin-left: .5em;
     }
   }
 
   .input-group {
-    > .form-control:not(:focus),
-    > .form-select:not(:focus),
-    > .form-floating:not(:focus-within) {
+
+    >.form-control:not(:focus),
+    >.form-select:not(:focus),
+    >.form-floating:not(:focus-within) {
       @include form-validation-state-selector($state) {
-        @if $state == "valid" {
+        @if $state =="valid" {
           z-index: 3;
-        } @else if $state == "invalid" {
+        }
+
+        @else if $state =="invalid" {
           z-index: 4;
         }
       }
     }
   }
 }
-// scss-docs-end form-validation-mixins

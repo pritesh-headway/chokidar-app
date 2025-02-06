@@ -12,7 +12,7 @@ Prism.languages.wiki = Prism.languages.extend('markup', {
 		}
 	},
 	'emphasis': {
-		// TODO Multi-line
+
 		pattern: /('{2,5}).+?\1/,
 		inside: {
 			'bold-italic': {
@@ -41,8 +41,6 @@ Prism.languages.wiki = Prism.languages.extend('markup', {
 	],
 	'variable': [
 		/__[A-Z]+__/,
-		// FIXME Nested structures should be handled
-		// {{formatnum:{{#expr:{{{3}}}}}}}
 		/\{{3}.+?\}{3}/,
 		/\{\{.+?\}\}/
 	],
@@ -50,10 +48,6 @@ Prism.languages.wiki = Prism.languages.extend('markup', {
 		/^#redirect/im,
 		/~{3,5}/
 	],
-	// Handle table attrs:
-	// {|
-	// ! style="text-align:left;"| Item
-	// |}
 	'table-tag': {
 		pattern: /((?:^|[|!])[|!])[^|\r\n]+\|(?!\|)/m,
 		lookbehind: true,
@@ -69,7 +63,7 @@ Prism.languages.wiki = Prism.languages.extend('markup', {
 });
 
 Prism.languages.insertBefore('wiki', 'tag', {
-	// Prevent highlighting inside <nowiki>, <source> and <pre> tags
+
 	'nowiki': {
 		pattern: /<(nowiki|pre|source)\b[^>]*>[\s\S]*?<\/\1>/i,
 		inside: {

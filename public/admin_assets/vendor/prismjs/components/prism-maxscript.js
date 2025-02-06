@@ -1,8 +1,6 @@
 (function (Prism) {
 
 	var keywords = /\b(?:about|and|animate|as|at|attributes|by|case|catch|collect|continue|coordsys|do|else|exit|fn|for|from|function|global|if|in|local|macroscript|mapped|max|not|of|off|on|or|parameters|persistent|plugin|rcmenu|return|rollout|set|struct|then|throw|to|tool|try|undo|utility|when|where|while|with)\b/i;
-
-
 	Prism.languages.maxscript = {
 		'comment': {
 			pattern: /\/\*[\s\S]*?(?:\*\/|$)|--.*/,
@@ -22,26 +20,26 @@
 		'function-call': {
 			pattern: RegExp(
 				'((?:' + (
-					// start of line
+
 					/^/.source +
 					'|' +
-					// operators and other language constructs
+
 					/[;=<>+\-*/^({\[]/.source +
 					'|' +
-					// keywords as part of statements
+
 					/\b(?:and|by|case|catch|collect|do|else|if|in|not|or|return|then|to|try|where|while|with)\b/.source
 				) + ')[ \t]*)' +
 
 				'(?!' + keywords.source + ')' + /[a-z_]\w*\b/.source +
 
 				'(?=[ \t]*(?:' + (
-					// variable
+
 					'(?!' + keywords.source + ')' + /[a-z_]/.source +
 					'|' +
-					// number
+
 					/\d|-\.?\d/.source +
 					'|' +
-					// other expressions or literals
+
 					/[({'"$@#?]/.source
 				) + '))',
 				'im'

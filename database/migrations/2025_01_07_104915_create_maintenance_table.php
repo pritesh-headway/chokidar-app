@@ -15,14 +15,12 @@ class CreateMaintenanceTable extends Migration
             $table->enum('maintenance_status', ['PENDING', 'COMPLETED'])->default('PENDING');
             $table->string('block', 50);
             $table->string('photo', 256)->nullable();
-            $table->unsignedBigInteger('user_id');  // Foreign key from users table
+            $table->unsignedBigInteger('user_id');
             $table->integer('amount');
             $table->date('date');
             $table->text('description');
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
-
-            // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

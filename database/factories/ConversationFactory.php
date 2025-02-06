@@ -1,6 +1,4 @@
 <?php
-// database/factories/ConversationFactory.php
-// database/factories/ConversationFactory.php
 
 namespace Database\Factories;
 
@@ -14,11 +12,9 @@ class ConversationFactory extends Factory
 
     public function definition()
     {
-        // Pick a random sender and receiver, ensuring they are different users
+
         $sender = User::inRandomOrder()->first();
         $receiver = User::inRandomOrder()->first();
-
-        // Ensure sender and receiver are different
         while ($sender->id === $receiver->id) {
             $receiver = User::inRandomOrder()->first();
         }

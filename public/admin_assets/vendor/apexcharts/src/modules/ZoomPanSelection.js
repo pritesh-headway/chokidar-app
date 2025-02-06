@@ -94,8 +94,6 @@ export default class ZoomPanSelection extends Toolbar {
       )
     })
   }
-
-  // remove the event listeners which were previously added on hover area
   destroy() {
     if (this.slDraggableRect) {
       this.slDraggableRect.draggable(false)
@@ -148,14 +146,14 @@ export default class ZoomPanSelection extends Toolbar {
       e.type === 'touchmove' || e.type === 'touchstart'
         ? e.touches[0].clientX
         : e.type === 'touchend'
-        ? e.changedTouches[0].clientX
-        : e.clientX
+          ? e.changedTouches[0].clientX
+          : e.clientX
     me.clientY =
       e.type === 'touchmove' || e.type === 'touchstart'
         ? e.touches[0].clientY
         : e.type === 'touchend'
-        ? e.changedTouches[0].clientY
-        : e.clientY
+          ? e.changedTouches[0].clientY
+          : e.clientY
 
     if (e.type === 'mousedown' && e.which === 1) {
       let gridRectDim = me.gridRect.getBoundingClientRect()
@@ -197,11 +195,11 @@ export default class ZoomPanSelection extends Toolbar {
       e.type === 'touchend' ||
       e.type === 'mouseleave'
     ) {
-      // we will be calling getBoundingClientRect on each mousedown/mousemove/mouseup
+
       let gridRectDim = me.gridRect.getBoundingClientRect()
 
       if (me.w.globals.mousedown) {
-        // user released the drag, now do all the calculations
+
         me.endX = me.clientX - gridRectDim.left
         me.endY = me.clientY - gridRectDim.top
         me.dragX = Math.abs(me.endX - me.startX)
@@ -276,7 +274,7 @@ export default class ZoomPanSelection extends Toolbar {
           const width =
             w.globals.gridWidth -
             (w.globals.maxX - w.config.chart.selection.xaxis.max) /
-              xyRatios.xRatio -
+            xyRatios.xRatio -
             x
           let selectionRect = {
             x,
@@ -311,11 +309,8 @@ export default class ZoomPanSelection extends Toolbar {
       let scalingAttrs = {
         transform: 'translate(' + translateX + ', ' + translateY + ')'
       }
-
-      // change styles based on zoom or selection
-      // zoom is Enabled and user has dragged, so draw blue rect
       if (w.globals.zoomEnabled && this.dragged) {
-        if (width < 0) width = 1 // fixes apexcharts.js#1168
+        if (width < 0) width = 1
         zoomRect.attr({
           x,
           y,
@@ -329,8 +324,6 @@ export default class ZoomPanSelection extends Toolbar {
         })
         Graphics.setAttrs(zoomRect.node, scalingAttrs)
       }
-
-      // selection is enabled
       if (w.globals.selectionEnabled) {
         selectionRect.attr({
           x,
@@ -378,20 +371,16 @@ export default class ZoomPanSelection extends Toolbar {
     let selectionRect = {}
 
     if (Math.abs(selectionWidth + startX) > w.globals.gridWidth) {
-      // user dragged the mouse outside drawing area to the right
+
       selectionWidth = w.globals.gridWidth - startX
     } else if (me.clientX - gridRectDim.left < 0) {
-      // user dragged the mouse outside drawing area to the left
+
       selectionWidth = startX
     }
-
-    // inverse selection X
     if (startX > me.clientX - gridRectDim.left) {
       inversedX = true
       selectionWidth = Math.abs(selectionWidth)
     }
-
-    // inverse selection Y
     if (startY > me.clientY - gridRectDim.top) {
       inversedY = true
       selectionHeight = Math.abs(selectionHeight)
@@ -436,8 +425,6 @@ export default class ZoomPanSelection extends Toolbar {
     if (type === 'resizing') {
       timerInterval = 30
     }
-
-    // update selection when selection rect is dragged
     const getSelAttr = (attr) => {
       return parseFloat(selRect.node.getAttribute(attr))
     }
@@ -448,13 +435,11 @@ export default class ZoomPanSelection extends Toolbar {
       height: getSelAttr('height')
     }
     w.globals.selection = draggedProps
-    // update selection ends
-
     if (
       typeof w.config.chart.events.selection === 'function' &&
       w.globals.selectionEnabled
     ) {
-      // a small debouncer is required when resizing to avoid freezing the chart
+
       clearTimeout(this.w.globals.selectionResizeTimer)
       this.w.globals.selectionResizeTimer = window.setTimeout(() => {
         const gridRectDim = this.gridRect.getBoundingClientRect()
@@ -525,8 +510,6 @@ export default class ZoomPanSelection extends Toolbar {
       xHighestValue =
         w.globals.yAxisScale[0].niceMin + me.endX * xyRatios.invertedYRatio
     }
-
-    // TODO: we will consider the 1st y axis values here for getting highest and lowest y
     let yHighestValue = []
     let yLowestValue = []
 
@@ -598,8 +581,6 @@ export default class ZoomPanSelection extends Toolbar {
         }
 
         if (!w.config.chart.group) {
-          // if chart in a group, prevent yaxis update here
-          // fix issue #650
           options.yaxis = yaxis
         }
         me.ctx.updateHelpers._updateOptions(
@@ -640,14 +621,10 @@ export default class ZoomPanSelection extends Toolbar {
   panDragging({ context }) {
     const w = this.w
     let me = context
-
-    // check to make sure there is data to compare against
     if (typeof w.globals.lastClientPosition.x !== 'undefined') {
-      // get the change from last position to this position
+
       const deltaX = w.globals.lastClientPosition.x - me.clientX
       const deltaY = w.globals.lastClientPosition.y - me.clientY
-
-      // check which direction had the highest amplitude and then figure out direction by checking if the value is greater or less than zero
       if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 0) {
         this.moveDirection = 'left'
       } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < 0) {
@@ -658,8 +635,6 @@ export default class ZoomPanSelection extends Toolbar {
         this.moveDirection = 'down'
       }
     }
-
-    // set the new last position to the current for next time (to get the position of drag)
     w.globals.lastClientPosition = {
       x: me.clientX,
       y: me.clientY
@@ -668,8 +643,6 @@ export default class ZoomPanSelection extends Toolbar {
     let xLowestValue = w.globals.isRangeBar ? w.globals.minY : w.globals.minX
 
     let xHighestValue = w.globals.isRangeBar ? w.globals.maxY : w.globals.maxX
-
-    // on a category, we don't pan continuosly as it causes bugs
     if (!w.config.xaxis.convertedCatToNumeric) {
       me.panScrolled(xLowestValue, xHighestValue)
     }
@@ -752,8 +725,6 @@ export default class ZoomPanSelection extends Toolbar {
     }
 
     if (!w.config.chart.group) {
-      // if chart in a group, prevent yaxis update here
-      // fix issue #650
       options.yaxis = yaxis
     }
 

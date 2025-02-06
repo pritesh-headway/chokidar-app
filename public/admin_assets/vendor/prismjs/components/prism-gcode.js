@@ -11,6 +11,6 @@ Prism.languages.gcode = {
 		lookbehind: true,
 		alias: 'number'
 	},
-	// T0:0:0
+
 	'punctuation': /[:*]/
 };

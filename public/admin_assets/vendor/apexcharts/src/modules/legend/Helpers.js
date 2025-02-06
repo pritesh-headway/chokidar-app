@@ -26,13 +26,11 @@ export default class Helpers {
   toggleDataSeries(seriesCnt, isHidden) {
     const w = this.w
     if (w.globals.axisCharts || w.config.chart.type === 'radialBar') {
-      w.globals.resized = true // we don't want initial animations again
+      w.globals.resized = true
 
       let seriesEl = null
 
       let realIndex = null
-
-      // yes, make it null. 1 series will rise at a time
       w.globals.risingSeries = []
 
       if (w.globals.axisCharts) {
@@ -65,7 +63,7 @@ export default class Helpers {
         this.hideSeries({ seriesEl, realIndex })
       }
     } else {
-      // for non-axis charts i.e pie / donuts
+
       let seriesEl = w.globals.dom.Paper.select(
         ` .apexcharts-series[rel='${seriesCnt + 1}'] path`
       )

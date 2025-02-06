@@ -91,8 +91,6 @@ class Range {
                 }
               }
             }
-
-            // there is a combo chart and the specified series in not either candlestick, boxplot, or rangeArea/rangeBar; find the max there
             if (
               cnf.series[i].type &&
               (cnf.series[i].type !== 'candlestick' ||
@@ -148,7 +146,7 @@ class Range {
 
     if (cnf.chart.type === 'bar') {
       if (minY < 0 && maxY < 0) {
-        // all negative values in a bar chart, hence make the max to 0
+
         maxY = 0
       }
       if (minY === Number.MIN_VALUE) {
@@ -173,7 +171,7 @@ class Range {
     let lowestYInAllSeries = Number.MAX_VALUE
 
     if (gl.isMultipleYAxis) {
-      // we need to get minY and maxY for multiple y axis
+
       for (let i = 0; i < gl.series.length; i++) {
         const minYMaxYArr = this.getMinYMaxY(i, lowestYInAllSeries, null, i + 1)
         gl.minYArr.push(minYMaxYArr.minY)
@@ -181,8 +179,6 @@ class Range {
         lowestYInAllSeries = minYMaxYArr.lowestY
       }
     }
-
-    // and then, get the minY and maxY from all series
     const minYMaxY = this.getMinYMaxY(
       0,
       lowestYInAllSeries,
@@ -196,9 +192,6 @@ class Range {
     if (cnf.chart.stacked) {
       this._setStackedMinMax()
     }
-
-    // if the numbers are too big, reduce the range
-    // for eg, if number is between 100000-110000, putting 0 as the lowest value is not so good idea. So change the gl.minY for line/area/candlesticks/boxPlot
     if (
       cnf.chart.type === 'line' ||
       cnf.chart.type === 'area' ||
@@ -209,7 +202,7 @@ class Range {
       if (
         gl.minY === Number.MIN_VALUE &&
         lowestYInAllSeries !== -Number.MAX_VALUE &&
-        lowestYInAllSeries !== gl.maxY // single value possibility
+        lowestYInAllSeries !== gl.maxY
       ) {
         let diff = gl.maxY - lowestYInAllSeries
         if (
@@ -217,7 +210,7 @@ class Range {
           cnf.yaxis[0].min !== undefined ||
           cnf.yaxis[0].max !== undefined
         ) {
-          // if minY is already 0/low value, we don't want to go negatives here - so this check is essential.
+
           diff = 0
         }
 
@@ -235,25 +228,23 @@ class Range {
     }
 
     cnf.yaxis.forEach((yaxe, index) => {
-      // override all min/max values by user defined values (y axis)
+
       if (yaxe.max !== undefined) {
         if (typeof yaxe.max === 'number') {
           gl.maxYArr[index] = yaxe.max
         } else if (typeof yaxe.max === 'function') {
-          // fixes apexcharts.js/issues/2098
+
           gl.maxYArr[index] = yaxe.max(
             gl.isMultipleYAxis ? gl.maxYArr[index] : gl.maxY
           )
         }
-
-        // gl.maxY is for single y-axis chart, it will be ignored in multi-yaxis
         gl.maxY = gl.maxYArr[index]
       }
       if (yaxe.min !== undefined) {
         if (typeof yaxe.min === 'number') {
           gl.minYArr[index] = yaxe.min
         } else if (typeof yaxe.min === 'function') {
-          // fixes apexcharts.js/issues/2098
+
           gl.minYArr[index] = yaxe.min(
             gl.isMultipleYAxis
               ? gl.minYArr[index] === Number.MIN_VALUE
@@ -262,12 +253,10 @@ class Range {
               : gl.minY
           )
         }
-        // gl.minY is for single y-axis chart, it will be ignored in multi-yaxis
+
         gl.minY = gl.minYArr[index]
       }
     })
-
-    // for horizontal bar charts, we need to check xaxis min/max as user may have specified there
     if (gl.isBarHorizontal) {
       const minmax = ['min', 'max']
       minmax.forEach((m) => {
@@ -276,8 +265,6 @@ class Range {
         }
       })
     }
-
-    // for multi y-axis we need different scales for each
     if (gl.isMultipleYAxis) {
       this.scales.setMultipleYScales()
       gl.minY = lowestYInAllSeries
@@ -327,7 +314,7 @@ class Range {
         }
       }
     }
-    // minX maxX starts here
+
     if (gl.isXNumeric) {
       getInitialMinXMaxX()
     }
@@ -346,13 +333,9 @@ class Range {
 
       if (cnf.xaxis.tickAmount === undefined) {
         ticks = Math.round(gl.svgWidth / 150)
-
-        // no labels provided and total number of dataPoints is less than 30
         if (cnf.xaxis.type === 'numeric' && gl.dataPoints < 30) {
           ticks = gl.dataPoints - 1
         }
-
-        // this check is for when ticks exceeds total datapoints and that would result in duplicate labels
         if (ticks > gl.dataPoints && gl.dataPoints !== 0) {
           ticks = gl.dataPoints - 1
         }
@@ -367,16 +350,12 @@ class Range {
         ticks = cnf.xaxis.tickAmount
       }
       gl.xTickAmount = ticks
-
-      // override all min/max values by user defined values (x axis)
       if (cnf.xaxis.max !== undefined && typeof cnf.xaxis.max === 'number') {
         gl.maxX = cnf.xaxis.max
       }
       if (cnf.xaxis.min !== undefined && typeof cnf.xaxis.min === 'number') {
         gl.minX = cnf.xaxis.min
       }
-
-      // if range is provided, adjust the new minX
       if (cnf.xaxis.range !== undefined) {
         gl.minX = gl.maxX - cnf.xaxis.range
       }
@@ -403,12 +382,10 @@ class Range {
             gl.labels.length,
             ticks - 1
           )
-
-          // this is the only place seriesX is again mutated
           gl.seriesX = gl.labels.slice()
         }
       }
-      // we will still store these labels as the count for this will be different (to draw grid and labels placement)
+
       if (isXNumeric) {
         gl.labels = gl.xAxisScale.result.slice()
       }
@@ -417,11 +394,7 @@ class Range {
     if (gl.isBarHorizontal && gl.labels.length) {
       gl.xTickAmount = gl.labels.length
     }
-
-    // single dataPoint
     this._handleSingleDataPoint()
-
-    // minimum x difference to calculate bar width in numeric bars
     this._getMinXDiff()
 
     return {
@@ -431,7 +404,7 @@ class Range {
   }
 
   setZRange() {
-    // minZ, maxZ starts here
+
     let gl = this.w.globals
 
     if (!gl.isDataXYZ) return
@@ -487,19 +460,15 @@ class Range {
     const gl = this.w.globals
 
     if (gl.isXNumeric) {
-      // get the least x diff if numeric x axis is present
+
       gl.seriesX.forEach((sX, i) => {
         if (sX.length === 1) {
-          // a small hack to prevent overlapping multiple bars when there is just 1 datapoint in bar series.
-          // fix #811
           sX.push(
             gl.seriesX[gl.maxValsInArrayIndex][
-              gl.seriesX[gl.maxValsInArrayIndex].length - 1
+            gl.seriesX[gl.maxValsInArrayIndex].length - 1
             ]
           )
         }
-
-        // fix #983 (clone the array to avoid side effects)
         const seriesX = sX.slice()
         seriesX.sort((a, b) => a - b)
 
@@ -512,7 +481,7 @@ class Range {
           }
         })
         if (gl.dataPoints === 1 || gl.minXDiff === Number.MAX_VALUE) {
-          // fixes apexcharts.js #1221
+
           gl.minXDiff = 0.5
         }
       })
@@ -521,7 +490,7 @@ class Range {
 
   _setStackedMinMax() {
     const gl = this.w.globals
-    // for stacked charts, we calculate each series's parallel values. i.e, series[0][j] + series[1][j] .... [series[i.length][j]] and get the max out of it
+
     let stackedPoss = []
     let stackedNegs = []
 
@@ -531,22 +500,20 @@ class Range {
         let negs = 0
         for (let i = 0; i < gl.series.length; i++) {
           if (gl.series[i][j] !== null && Utils.isNumber(gl.series[i][j])) {
-            // 0.0001 fixes #185 when values are very small
+
             gl.series[i][j] > 0
               ? (poss = poss + parseFloat(gl.series[i][j]) + 0.0001)
               : (negs = negs + parseFloat(gl.series[i][j]))
           }
 
           if (i === gl.series.length - 1) {
-            // push all the totals to the array for future use
+
             stackedPoss.push(poss)
             stackedNegs.push(negs)
           }
         }
       }
     }
-
-    // get the max/min out of the added parallel values
     for (let z = 0; z < stackedPoss.length; z++) {
       gl.maxY = Math.max(gl.maxY, stackedPoss[z])
       gl.minY = Math.min(gl.minY, stackedNegs[z])

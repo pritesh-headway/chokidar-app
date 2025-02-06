@@ -42,14 +42,12 @@ const allowedAttribute = (attribute, allowedAttributeList) => {
 
     return true
   }
-
-  // Check if a regular expression validates the attribute.
   return allowedAttributeList.filter(attributeRegex => attributeRegex instanceof RegExp)
     .some(regex => regex.test(attributeName))
 }
 
 export const DefaultAllowlist = {
-  // Global attributes allowed on any supplied element below.
+
   '*': ['class', 'dir', 'id', 'lang', 'role', ARIA_ATTRIBUTE_PATTERN],
   a: ['target', 'href', 'title', 'rel'],
   area: [],

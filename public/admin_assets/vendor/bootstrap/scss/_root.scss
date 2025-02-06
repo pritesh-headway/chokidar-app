@@ -1,11 +1,7 @@
 :root,
 [data-bs-theme="light"] {
-  // Note: Custom variable values only support SassScript inside `#{}`.
 
-  // Colors
   //
-  // Generate palettes for full colors, grays, and theme colors.
-
   @each $color, $value in $colors {
     --#{$prefix}#{$color}: #{$value};
   }
@@ -38,20 +34,14 @@
   --#{$prefix}black-rgb: #{to-rgb($black)};
   --#{$prefix}body-color-rgb: #{to-rgb($body-color)};
   --#{$prefix}body-bg-rgb: #{to-rgb($body-bg)};
-
-  // Fonts
-
-  // Note: Use `inspect` for lists so that quoted items keep the quotes.
-  // See https://github.com/sass/sass/issues/2383#issuecomment-336349172
   --#{$prefix}font-sans-serif: #{inspect($font-family-sans-serif)};
   --#{$prefix}font-monospace: #{inspect($font-family-monospace)};
   --#{$prefix}gradient: #{$gradient};
 
-  // Root and body
-  // scss-docs-start root-body-variables
-  @if $font-size-root != null {
+  @if $font-size-root !=null {
     --#{$prefix}root-font-size: #{$font-size-root};
   }
+
   --#{$prefix}body-font-family: #{inspect($font-family-base)};
   @include rfs($font-size-base, --#{$prefix}body-font-size);
   --#{$prefix}body-font-weight: #{$font-weight-base};
@@ -71,14 +61,14 @@
   --#{$prefix}tertiary-bg: #{$body-tertiary-bg};
   --#{$prefix}tertiary-bg-rgb: #{to-rgb($body-tertiary-bg)};
 
-  @if $body-text-align != null {
+  @if $body-text-align !=null {
     --#{$prefix}body-text-align: #{$body-text-align};
   }
+
   --#{$prefix}body-bg: #{$body-bg};
   --#{$prefix}body-bg-rgb: #{to-rgb($body-bg)};
-  // scss-docs-end root-body-variables
 
-  @if $headings-color != null {
+  @if $headings-color !=null {
     --#{$prefix}heading-color: #{$headings-color};
   }
 
@@ -89,14 +79,12 @@
   --#{$prefix}link-hover-color: #{$link-hover-color};
   --#{$prefix}link-hover-color-rgb: #{to-rgb($link-hover-color)};
 
-  @if $link-hover-decoration != null {
+  @if $link-hover-decoration !=null {
     --#{$prefix}link-hover-decoration: #{$link-hover-decoration};
   }
 
   --#{$prefix}code-color: #{$code-color};
   --#{$prefix}highlight-bg: #{$mark-bg};
-
-  // scss-docs-start root-border-var
   --#{$prefix}border-width: #{$border-width};
   --#{$prefix}border-style: #{$border-style};
   --#{$prefix}border-color: #{$border-color};
@@ -108,20 +96,14 @@
   --#{$prefix}border-radius-xl: #{$border-radius-xl};
   --#{$prefix}border-radius-2xl: #{$border-radius-2xl};
   --#{$prefix}border-radius-pill: #{$border-radius-pill};
-  // scss-docs-end root-border-var
-
   --#{$prefix}box-shadow: #{$box-shadow};
   --#{$prefix}box-shadow-sm: #{$box-shadow-sm};
   --#{$prefix}box-shadow-lg: #{$box-shadow-lg};
   --#{$prefix}box-shadow-inset: #{$box-shadow-inset};
 
   --#{$prefix}emphasis-color: #{$emphasis-color};
-
-  // scss-docs-start form-control-vars
   --#{$prefix}form-control-bg: var(--#{$prefix}body-bg);
   --#{$prefix}form-control-disabled-bg: var(--#{$prefix}secondary-bg);
-  // scss-docs-end form-control-vars
-
   --#{$prefix}highlight-bg: #{$mark-bg};
 
   @each $name, $value in $grid-breakpoints {
@@ -131,7 +113,7 @@
 
 @if $enable-dark-mode {
   @include color-mode(dark, true) {
-    // scss-docs-start root-dark-mode-vars
+
     --#{$prefix}body-color: #{$body-color-dark};
     --#{$prefix}body-color-rgb: #{to-rgb($body-color-dark)};
     --#{$prefix}body-bg: #{$body-bg-dark};
@@ -190,6 +172,6 @@
 
     --#{$prefix}border-color: #{$border-color-dark};
     --#{$prefix}border-color-translucent: #{$border-color-translucent-dark};
-    // scss-docs-end root-dark-mode-vars
+
   }
 }

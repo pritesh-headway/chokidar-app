@@ -1,7 +1,7 @@
-// Apex Chart
 .apexcharts-tooltip {
     border-radius: .5rem !important;
     box-shadow: $box-shadow-sm !important;
+
     .apexcharts-tooltip-series-group {
         background: $white !important;
         color: $dark;
@@ -23,10 +23,6 @@
     border-radius: 50%;
 }
 
-// .apexcharts-tooltip-series-group.apexcharts-active,
-// .apexcharts-tooltip-series-group:last-child {
-//     padding-bottom: 50px !important;
-// }
 .apexcharts-tooltip.apexcharts-theme-light {
     border: 1px solid $gray-200 !important;
     background-color: $gray-100 !important;

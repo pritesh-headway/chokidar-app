@@ -1,6 +1,3 @@
-// GitHub: https://github.com/apache/avro
-// Docs: https://avro.apache.org/docs/current/idl.html
-
 Prism.languages['avro-idl'] = {
 	'comment': {
 		pattern: /\/\/.*|\/\*[\s\S]*?\*\//,

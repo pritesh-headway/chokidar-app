@@ -138,30 +138,9 @@ const feather = require('feather-icons')
 
 ```js
 feather.icons.x
-// {
-//    name: 'x',
-//    contents: '<line ... /><line ... />`,
-//    tags: ['cancel', 'close', 'delete', 'remove'],
-//    attrs: {
-//      class: 'feather feather-x',
-//      xmlns: 'http://www.w3.org/2000/svg',
-//      width: 24,
-//      height: 24,
-//      viewBox: '0 0 24 24',
-//      fill: 'none',
-//      stroke: 'currentColor',
-//      'stroke-width': 2,
-//      'stroke-linecap': 'round',
-//      'stroke-linejoin': 'round',
-//    },
-//    toSvg: [Function],
-// }
-
 feather.icons.x.toSvg()
-// <svg class="feather feather-x" ...><line ... /><line ... /></svg>
-
 feather.icons.x.toSvg({ class: 'foo bar', 'stroke-width': 1, color: 'red' })
-// <svg class="feather feather-x foo bar" stroke-width="1" color="red" ...><line ... /><line ... /></svg>
+
 ```
 
 See the [API Reference](#api-reference) for more information about the available properties and methods of the `feather` object.
@@ -232,27 +211,8 @@ An object with data about every icon.
 
 ```js
 feather.icons.x
-// {
-//    name: 'x',
-//    contents: '<line ... /><line ... />',
-//    tags: ['cancel', 'close', 'delete', 'remove'],
-//    attrs: {
-//      class: 'feather feather-x',
-//      xmlns: 'http://www.w3.org/2000/svg',
-//      width: 24,
-//      height: 24,
-//      viewBox: '0 0 24 24',
-//      fill: 'none',
-//      stroke: 'currentColor',
-//      'stroke-width': 2,
-//      'stroke-linecap': 'round',
-//      'stroke-linejoin': 'round',
-//    },
-//    toSvg: [Function],
-// }
-
 feather.icons.x.toString()
-// '<line ... /><line ... />'
+
 ```
 
 > **Note:** `x` in the above example can be replaced with any valid icon name. See the complete list of icon names at [feathericons.com](https://feathericons.com). Icons with multi-word names (e.g. `arrow-right`) **cannot** be accessed using dot notation (e.g. `feather.icons.x`). Instead, use bracket notation (e.g. `feather.icons['arrow-right']`).
@@ -283,13 +243,9 @@ Returns an SVG string.
 
 ```js
 feather.icons.circle.toSvg()
-// '<svg class="feather feather-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>'
-
 feather.icons.circle.toSvg({ 'stroke-width': 1 })
-// '<svg class="feather feather-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>'
-
 feather.icons.circle.toSvg({ class: 'foo bar' })
-// '<svg class="feather feather-circle foo bar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>'
+
 ```
 
 [View Source](https://github.com/colebemis/feather/blob/master/src/icon.js)
@@ -371,13 +327,9 @@ Returns an SVG string.
 
 ```js
 feather.toSvg('circle')
-// '<svg class="feather feather-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>'
-
 feather.toSvg('circle', { 'stroke-width': 1 })
-// '<svg class="feather feather-circle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>'
-
 feather.toSvg('circle', { class: 'foo bar' })
-// '<svg class="feather feather-circle foo bar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>'
+
 ```
 
 [View Source](https://github.com/colebemis/feather/blob/master/src/to-svg.js)

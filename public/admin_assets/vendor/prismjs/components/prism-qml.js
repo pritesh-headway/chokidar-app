@@ -5,14 +5,10 @@
 
 	var jsExpr = /(?:[^\\()[\]{}"'/]|<string>|\/(?![*/])|<comment>|\(<expr>*\)|\[<expr>*\]|\{<expr>*\}|\\[\s\S])/
 		.source.replace(/<string>/g, function () { return jsString; }).replace(/<comment>/g, function () { return jsComment; });
-
-	// the pattern will blow up, so only a few iterations
 	for (var i = 0; i < 2; i++) {
 		jsExpr = jsExpr.replace(/<expr>/g, function () { return jsExpr; });
 	}
 	jsExpr = jsExpr.replace(/<expr>/g, '[^\\s\\S]');
-
-
 	Prism.languages.qml = {
 		'comment': {
 			pattern: /\/\/.*|\/\*[\s\S]*?\*\//,

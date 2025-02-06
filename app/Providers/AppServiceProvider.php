@@ -24,21 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
-        // Components::resolve('logo', \Filament\Forms\Components\Logo::class);
-        // Register Filament components if needed
-
-
-        // $this->registerPolicies();
-
-        // Define a gate for super-admin
         Gate::define('isSuperAdmin', function ($user) {
-            return $user->role_id === 1; // Assuming 1 is the ID for super-admin
+            return $user->role_id === 1;
         });
-
-        // Define a gate for admin
         Gate::define('isAdmin', function ($user) {
-            return $user->role_id === 2; // Assuming 2 is the ID for admin
+            return $user->role_id === 2;
         });
 
         DB::listen(function ($query) {

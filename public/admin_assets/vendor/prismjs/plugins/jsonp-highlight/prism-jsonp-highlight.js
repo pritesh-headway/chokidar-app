@@ -49,7 +49,7 @@
 				}
 			}
 		} else if (typeof adapter === 'string') {
-			// eslint-disable-next-line no-redeclare
+
 			for (var i = 0, item; (item = adapters[i++]);) {
 				if (item.name === adapter) {
 					return item.adapter;
@@ -99,9 +99,6 @@
 			var files = rsp.data.files;
 			var filename = el.getAttribute('data-filename');
 			if (filename == null) {
-				// Maybe in the future we can somehow render all files
-				// But the standard <script> include for gists does that nicely already,
-				// so that might be getting beyond the scope of this plugin
 				for (var key in files) {
 					if (files.hasOwnProperty(key)) {
 						filename = key;
@@ -123,8 +120,6 @@
 		}
 		return null;
 	}, 'bitbucket');
-
-
 	var jsonpCallbackCounter = 0;
 	/**
 	 * Makes a JSONP request.
@@ -160,8 +155,6 @@
 			document.head.removeChild(script);
 			delete window[callbackName];
 		}
-
-		// the JSONP callback function
 		window[callbackName] = function (response) {
 			cleanup();
 			onSuccess(response);
@@ -186,8 +179,6 @@
 
 	var SELECTOR = 'pre[data-jsonp]:not([' + STATUS_ATTR + '="' + STATUS_LOADED + '"])'
 		+ ':not([' + STATUS_ATTR + '="' + STATUS_LOADING + '"])';
-
-
 	Prism.hooks.add('before-highlightall', function (env) {
 		env.selector += ', ' + SELECTOR;
 	});
@@ -195,20 +186,12 @@
 	Prism.hooks.add('before-sanity-check', function (env) {
 		var pre = /** @type {HTMLPreElement} */ (env.element);
 		if (pre.matches(SELECTOR)) {
-			env.code = ''; // fast-path the whole thing and go to complete
-
-			// mark as loading
+			env.code = '';
 			pre.setAttribute(STATUS_ATTR, STATUS_LOADING);
-
-			// add code element with loading message
 			var code = pre.appendChild(document.createElement('CODE'));
 			code.textContent = LOADING_MESSAGE;
-
-			// set language
 			var language = env.language;
 			code.className = 'language-' + language;
-
-			// preload the language
 			var autoloader = Prism.plugins.autoloader;
 			if (autoloader) {
 				autoloader.loadLanguages(language);
@@ -220,7 +203,7 @@
 				if (typeof window[adapterName] === 'function') {
 					adapter = window[adapterName];
 				} else {
-					// mark as failed
+
 					pre.setAttribute(STATUS_ATTR, STATUS_FAILED);
 
 					code.textContent = MISSING_ADAPTER_MESSAGE(adapterName);
@@ -234,7 +217,7 @@
 				src,
 				pre.getAttribute('data-callback'),
 				function (response) {
-					// interpret the received data using the adapter(s)
+
 					var data = null;
 					if (adapter) {
 						data = adapter(response, pre);
@@ -248,12 +231,12 @@
 					}
 
 					if (data === null) {
-						// mark as failed
+
 						pre.setAttribute(STATUS_ATTR, STATUS_FAILED);
 
 						code.textContent = UNKNOWN_FAILURE_MESSAGE;
 					} else {
-						// mark as loaded
+
 						pre.setAttribute(STATUS_ATTR, STATUS_LOADED);
 
 						code.textContent = data;
@@ -261,7 +244,7 @@
 					}
 				},
 				function () {
-					// mark as failed
+
 					pre.setAttribute(STATUS_ATTR, STATUS_FAILED);
 
 					code.textContent = TIMEOUT_MESSAGE(src);
@@ -269,8 +252,6 @@
 			);
 		}
 	});
-
-
 	Prism.plugins.jsonphighlight = {
 		/**
 		 * The timeout after which an error message will be displayed.

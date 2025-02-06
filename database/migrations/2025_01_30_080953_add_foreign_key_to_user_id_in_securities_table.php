@@ -12,7 +12,7 @@ class AddForeignKeyToUserIdInSecuritiesTable extends Migration
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('cascade'); // If a user is deleted, the associated security guard record will also be deleted
+                ->onDelete('cascade');
         });
     }
 

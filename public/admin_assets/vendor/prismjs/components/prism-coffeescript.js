@@ -1,6 +1,4 @@
 (function (Prism) {
-
-	// Ignore comments starting with { to privilege string interpolation highlighting
 	var comment = /#(?!\{).+/;
 	var interpolation = {
 		pattern: /#\{[^}]+\}/,
@@ -10,15 +8,13 @@
 	Prism.languages.coffeescript = Prism.languages.extend('javascript', {
 		'comment': comment,
 		'string': [
-
-			// Strings are multiline
 			{
 				pattern: /'(?:\\[\s\S]|[^\\'])*'/,
 				greedy: true
 			},
 
 			{
-				// Strings are multiline
+
 				pattern: /"(?:\\[\s\S]|[^\\"])*"/,
 				greedy: true,
 				inside: {
@@ -38,8 +34,6 @@
 			pattern: /###[\s\S]+?###/,
 			alias: 'comment'
 		},
-
-		// Block regexp can contain comments and interpolation
 		'block-regex': {
 			pattern: /\/{3}[\s\S]*?\/{3}/,
 			alias: 'regex',
@@ -65,8 +59,6 @@
 				}
 			}
 		},
-
-		// Block strings
 		'multiline-string': [
 			{
 				pattern: /'''[\s\S]*?'''/,
@@ -86,7 +78,7 @@
 	});
 
 	Prism.languages.insertBefore('coffeescript', 'keyword', {
-		// Object property
+
 		'property': /(?!\d)\w+(?=\s*:(?!:))/
 	});
 

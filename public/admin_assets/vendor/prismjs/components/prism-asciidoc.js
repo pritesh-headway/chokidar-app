@@ -14,14 +14,14 @@
 				pattern: /'(?:[^'\\]|\\.)*'/,
 				inside: {
 					'punctuation': /^'|'$/
-					// See rest below
+
 				}
 			},
 			'string': /"(?:[^"\\]|\\.)*"/,
 			'variable': /\w+(?==)/,
 			'punctuation': /^\[|\]$|,/,
 			'operator': /=/,
-			// The negative look-ahead prevents blank matches
+
 			'attr-value': /(?!^\s+$).+/
 		}
 	};
@@ -42,7 +42,7 @@
 					pattern: /(^|[^\\])[|!]=*/,
 					lookbehind: true
 				}
-				// See rest below
+
 			}
 		},
 
@@ -50,27 +50,25 @@
 			pattern: /^(\+{4,})$[\s\S]*?^\1$/m,
 			inside: {
 				'punctuation': /^\++|\++$/
-				// See rest below
+
 			}
 		},
-		// Literal blocks and listing blocks
+
 		'literal-block': {
 			pattern: /^(-{4,}|\.{4,})$[\s\S]*?^\1$/m,
 			inside: {
 				'punctuation': /^(?:-+|\.+)|(?:-+|\.+)$/
-				// See rest below
+
 			}
 		},
-		// Sidebar blocks, quote blocks, example blocks and open blocks
+
 		'other-block': {
 			pattern: /^(--|\*{4,}|_{4,}|={4,})$[\s\S]*?^\1$/m,
 			inside: {
 				'punctuation': /^(?:-+|\*+|_+|=+)|(?:-+|\*+|_+|=+)$/
-				// See rest below
+
 			}
 		},
-
-		// list-punctuation and list-label must appear before indented-block
 		'list-punctuation': {
 			pattern: /(^[ \t]*)(?:-|\*{1,5}|\.{1,5}|(?:[a-z]|\d+)\.|[xvi]+\))(?= )/im,
 			lookbehind: true,
@@ -92,7 +90,7 @@
 			alias: 'important',
 			inside: {
 				'punctuation': /^(?:\.|=+)|(?:=+|-+|~+|\^+|\++)$/
-				// See rest below
+
 			}
 		},
 		'attribute-entry': {
@@ -196,10 +194,6 @@
 			alias: 'punctuation'
 		}
 	};
-
-
-	// Allow some nesting. There is no recursion though, so cloning should not be needed.
-
 	function copyFromAsciiDoc(keys) {
 		keys = keys.split(' ');
 
@@ -221,9 +215,6 @@
 	asciidoc['other-block'].inside.rest = copyFromAsciiDoc('table list-punctuation indented-block comment attribute-entry attributes hr page-break admonition list-label macro inline replacement entity line-continuation');
 
 	asciidoc['title'].inside.rest = copyFromAsciiDoc('macro inline replacement entity');
-
-
-	// Plugin to make entity title show the real entity, idea by Roman Komarov
 	Prism.hooks.add('wrap', function (env) {
 		if (env.type === 'entity') {
 			env.attributes['title'] = env.content.replace(/&amp;/, '&');

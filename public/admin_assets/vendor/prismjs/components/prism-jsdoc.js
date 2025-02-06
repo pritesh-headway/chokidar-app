@@ -7,7 +7,7 @@
 
 	Prism.languages.jsdoc = Prism.languages.extend('javadoclike', {
 		'parameter': {
-			// @param {string} foo - foo bar
+
 			pattern: RegExp(parameterPrefix + /(?:(?!\s)[$\w\xA0-\uFFFF.])+(?=\s|$)/.source),
 			lookbehind: true,
 			inside: {
@@ -18,7 +18,7 @@
 
 	Prism.languages.insertBefore('jsdoc', 'keyword', {
 		'optional-parameter': {
-			// @param {string} [baz.foo="bar"] foo bar
+
 			pattern: RegExp(parameterPrefix + /\[(?:(?!\s)[$\w\xA0-\uFFFF.])+(?:=[^[\]]+)?\](?=\s|$)/.source),
 			lookbehind: true,
 			inside: {

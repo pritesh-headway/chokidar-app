@@ -1,6 +1,3 @@
-// https://www.stata.com/manuals/u.pdf
-// https://www.stata.com/manuals/p.pdf
-
 Prism.languages.stata = {
 	'comment': [
 		{
@@ -24,7 +21,7 @@ Prism.languages.stata = {
 					'punctuation': /^\$\{|\}$/,
 					'expression': {
 						pattern: /[\s\S]+/,
-						inside: null // see below
+						inside: null
 					}
 				}
 			},
@@ -53,8 +50,6 @@ Prism.languages.stata = {
 		alias: 'language-python',
 		inside: Prism.languages.python
 	},
-
-
 	'command': {
 		pattern: /(^[ \t]*(?:\.[ \t]+)?(?:(?:bayes|bootstrap|by|bysort|capture|collect|fmm|fp|frame|jackknife|mfp|mi|nestreg|noisily|permute|quietly|rolling|simulate|statsby|stepwise|svy|version|xi)\b[^:\r\n]*:[ \t]*|(?:capture|noisily|quietly|version)[ \t]+)?)[a-zA-Z]\w*/m,
 		lookbehind: true,
@@ -63,8 +58,6 @@ Prism.languages.stata = {
 	},
 	'variable': /\$\w+|[‘`']\w[^’`'\r\n]*[’`']/,
 	'keyword': /\b(?:bayes|bootstrap|by|bysort|capture|clear|collect|fmm|fp|frame|if|in|jackknife|mi[ \t]+estimate|mfp|nestreg|noisily|of|permute|quietly|rolling|simulate|sort|statsby|stepwise|svy|varlist|version|xi)\b/,
-
-
 	'boolean': /\b(?:off|on)\b/,
 	'number': /\b\d+(?:\.\d+)?\b|\B\.\d+/,
 	'function': /\b[a-z_]\w*(?=\()/i,

@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->date('date');
             $table->enum('complaint_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('photos');
-            $table->string('image')->nullable();  // Add image column
+            $table->string('image')->nullable();
             $table->enum('status', ['active', 'deactive'])->default('active');
             $table->timestamps();
         });

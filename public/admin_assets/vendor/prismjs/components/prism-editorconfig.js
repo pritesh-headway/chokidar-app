@@ -1,12 +1,12 @@
 Prism.languages.editorconfig = {
-	// https://editorconfig-specification.readthedocs.io
+
 	'comment': /[;#].*/,
 	'section': {
 		pattern: /(^[ \t]*)\[.+\]/m,
 		lookbehind: true,
 		alias: 'selector',
 		inside: {
-			'regex': /\\\\[\[\]{},!?.*]/, // Escape special characters with '\\'
+			'regex': /\\\\[\[\]{},!?.*]/,
 			'operator': /[!?]|\.\.|\*{1,2}/,
 			'punctuation': /[\[\]{},]/
 		}

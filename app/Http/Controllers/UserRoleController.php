@@ -9,7 +9,7 @@ use App\Models\Role;
 
 class UserRoleController extends Controller
 {
-    // Store a new user role
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -24,8 +24,6 @@ class UserRoleController extends Controller
 
         return response()->json(['message' => 'Role assigned successfully.', 'data' => $userRole], 201);
     }
-
-    // Delete a user role
     public function destroy(Request $request, $id)
     {
         $userRole = UserRole::findOrFail($id);
@@ -34,8 +32,6 @@ class UserRoleController extends Controller
 
         return response()->json(['message' => 'User role deleted successfully.']);
     }
-
-    // Update a user role
     public function update(Request $request, $id)
     {
         $validated = $request->validate([

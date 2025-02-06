@@ -20,11 +20,11 @@ Prism.languages.less = Prism.languages.extend('css', {
 			'punctuation': /[:()]/
 		}
 	},
-	// selectors and mixins are considered the same
+
 	'selector': {
 		pattern: /(?:@\{[\w-]+\}|[^{};\s@])(?:@\{[\w-]+\}|\((?:[^(){}]|\([^(){}]*\))*\)|[^(){};@\s]|\s+(?!\s))*?(?=\s*\{)/,
 		inside: {
-			// mixin parameters
+
 			'variable': /@+[\w-]+/
 		}
 	},
@@ -35,15 +35,13 @@ Prism.languages.less = Prism.languages.extend('css', {
 
 Prism.languages.insertBefore('less', 'property', {
 	'variable': [
-		// Variable declaration (the colon must be consumed!)
+
 		{
 			pattern: /@[\w-]+\s*:/,
 			inside: {
 				'punctuation': /:/
 			}
 		},
-
-		// Variable usage
 		/@@?[\w-]+/
 	],
 	'mixin-usage': {

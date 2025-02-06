@@ -1,10 +1,6 @@
 (function (Prism) {
-
-	// Many of the following regexes will contain negated lookaheads like `[ \t]+(?![ \t])`. This is a trick to ensure
-	// that quantifiers behave *atomically*. Atomic quantifiers are necessary to prevent exponential backtracking.
-
 	var spaceAfterBackSlash = /\\[\r\n](?:\s|\\[\r\n]|#.*(?!.))*(?![\s#]|\\[\r\n])/.source;
-	// At least one space, comment, or line break
+
 	var space = /(?:[ \t]+(?![ \t])(?:<SP_BS>)?|<SP_BS>)/.source
 		.replace(/<SP_BS>/g, function () { return spaceAfterBackSlash; });
 
@@ -62,19 +58,19 @@
 				},
 				'keyword': [
 					{
-						// https://docs.docker.com/engine/reference/builder/#healthcheck
+
 						pattern: re(/(^(?:ONBUILD<SP>)?HEALTHCHECK<SP>(?:<OPT><SP>)*)(?:CMD|NONE)\b/.source, 'i'),
 						lookbehind: true,
 						greedy: true
 					},
 					{
-						// https://docs.docker.com/engine/reference/builder/#from
+
 						pattern: re(/(^(?:ONBUILD<SP>)?FROM<SP>(?:<OPT><SP>)*(?!--)[^ \t\\]+<SP>)AS/.source, 'i'),
 						lookbehind: true,
 						greedy: true
 					},
 					{
-						// https://docs.docker.com/engine/reference/builder/#onbuild
+
 						pattern: re(/(^ONBUILD<SP>)\w+/.source, 'i'),
 						lookbehind: true,
 						greedy: true

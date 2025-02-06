@@ -10,8 +10,6 @@ class Filters {
     this.ctx = ctx
     this.w = ctx.w
   }
-
-  // create a re-usable filter which can be appended other filter effects and applied to multiple elements
   getDefaultFilter(el, i) {
     const w = this.w
     el.unfilter(true)
@@ -35,9 +33,6 @@ class Filters {
 
   addNormalFilter(el, i) {
     const w = this.w
-
-    // revert shadow if it was there
-    // but, ignore marker as marker don't have dropshadow yet
     if (
       w.config.chart.dropShadow.enabled &&
       !el.node.classList.contains('apexcharts-marker')
@@ -45,8 +40,6 @@ class Filters {
       this.dropShadow(el, w.config.chart.dropShadow, i)
     }
   }
-
-  // appends dropShadow to the filter object which can be chained with other filter effects
   addLightenFilter(el, i, attrs) {
     const w = this.w
     const { intensity } = attrs
@@ -70,8 +63,6 @@ class Filters {
 
     this._scaleFilterSize(el.filterer.node)
   }
-
-  // appends dropShadow to the filter object which can be chained with other filter effects
   addDarkenFilter(el, i, attrs) {
     const w = this.w
     const { intensity } = attrs
@@ -114,12 +105,10 @@ class Filters {
         break
       }
       default:
-        // do nothing
+
         break
     }
   }
-
-  // appends dropShadow to the filter object which can be chained with other filter effects
   addShadow(add, i, attrs) {
     const { blur, top, left, color, opacity } = attrs
 
@@ -131,9 +120,6 @@ class Filters {
       .merge(add.source)
     return add.blend(add.source, shadowBlur)
   }
-
-  // directly adds dropShadow to the element and returns the same element.
-  // the only way it is different from the addShadow() function is that addShadow is chainable to other filters, while this function discards all filters and add dropShadow
   dropShadow(el, attrs, i = 0) {
     let { top, left, blur, color, opacity, noUserSpaceOnUse } = attrs
     const w = this.w
@@ -141,7 +127,7 @@ class Filters {
     el.unfilter(true)
 
     if (Utils.isIE() && w.config.chart.type === 'radialBar') {
-      // in radialbar charts, dropshadow is clipping actual drawing in IE
+
       return el
     }
 
@@ -150,7 +136,7 @@ class Filters {
     el.filter((add) => {
       let shadowBlur = null
       if (Utils.isSafari() || Utils.isFirefox() || Utils.isIE()) {
-        // safari/firefox/IE have some alternative way to use this filter
+
         shadowBlur = add
           .flood(color, opacity)
           .composite(add.sourceAlpha, 'in')

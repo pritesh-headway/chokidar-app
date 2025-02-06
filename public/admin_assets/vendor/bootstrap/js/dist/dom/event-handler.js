@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('../util/index.js')) :
-  typeof define === 'function' && define.amd ? define(['../util/index'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.EventHandler = factory(global.Index));
-})(this, (function (index_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['../util/index'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.EventHandler = factory(global.Index));
+})(this, (function (index_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -23,7 +24,7 @@
   const namespaceRegex = /[^.]*(?=\..*)\.|.*/;
   const stripNameRegex = /\..*/;
   const stripUidRegex = /::\d+$/;
-  const eventRegistry = {}; // Events storage
+  const eventRegistry = {};
   let uidEvent = 1;
   const customEvents = {
     mouseenter: 'mouseover',
@@ -81,7 +82,7 @@
   }
   function normalizeParameters(originalTypeEvent, handler, delegationFunction) {
     const isDelegated = typeof handler === 'string';
-    // todo: tooltip passes `false` instead of selector, so we need to check
+
     const callable = isDelegated ? delegationFunction : handler || delegationFunction;
     let typeEvent = getTypeEvent(originalTypeEvent);
     if (!nativeEvents.has(typeEvent)) {
@@ -94,9 +95,6 @@
       return;
     }
     let [isDelegated, callable, typeEvent] = normalizeParameters(originalTypeEvent, handler, delegationFunction);
-
-    // in case of mouseenter or mouseleave wrap the handler within a function that checks for its DOM position
-    // this prevents the handler from being dispatched the same way as mouseover or mouseout does
     if (originalTypeEvent in customEvents) {
       const wrapFunction = fn => {
         return function (event) {
@@ -140,7 +138,7 @@
     }
   }
   function getTypeEvent(event) {
-    // allow to get the native events from namespaced events ('click.bs.button' --> 'click')
+
     event = event.replace(stripNameRegex, '');
     return customEvents[event] || event;
   }
@@ -161,7 +159,7 @@
       const storeElementEvent = events[typeEvent] || {};
       const isNamespace = originalTypeEvent.startsWith('.');
       if (typeof callable !== 'undefined') {
-        // Simplest case: handler is passed, remove that listener ONLY.
+
         if (!Object.keys(storeElementEvent).length) {
           return;
         }

@@ -25,11 +25,11 @@ export default class XAnnotations {
 
     if (anno.x2 === null || typeof anno.x2 === 'undefined') {
       let line = this.annoCtx.graphics.drawLine(
-        x1 + anno.offsetX, // x1
-        0 + anno.offsetY, // y1
-        x1 + anno.offsetX, // x2
-        w.globals.gridHeight + anno.offsetY, // y2
-        anno.borderColor, // lineColor
+        x1 + anno.offsetX,
+        0 + anno.offsetY,
+        x1 + anno.offsetX,
+        w.globals.gridHeight + anno.offsetY,
+        anno.borderColor,
         strokeDashArray, //dashArray
         anno.borderWidth
       )
@@ -47,16 +47,16 @@ export default class XAnnotations {
       }
 
       let rect = this.annoCtx.graphics.drawRect(
-        x1 + anno.offsetX, // x1
-        0 + anno.offsetY, // y1
-        x2 - x1, // x2
-        w.globals.gridHeight + anno.offsetY, // y2
-        0, // radius
-        anno.fillColor, // color
-        anno.opacity, // opacity,
-        1, // strokeWidth
-        anno.borderColor, // strokeColor
-        strokeDashArray // stokeDashArray
+        x1 + anno.offsetX,
+        0 + anno.offsetY,
+        x2 - x1,
+        w.globals.gridHeight + anno.offsetY,
+        0,
+        anno.fillColor,
+        anno.opacity,
+        1,
+        anno.borderColor,
+        strokeDashArray
       )
       rect.node.classList.add('apexcharts-annotation-rect')
       rect.attr('clip-path', `url(#gridRectMask${w.globals.cuid})`)
@@ -74,9 +74,9 @@ export default class XAnnotations {
       anno.label.position === 'top'
         ? 4
         : anno.label.position === 'center'
-        ? w.globals.gridHeight / 2 +
+          ? w.globals.gridHeight / 2 +
           (anno.label.orientation === 'vertical' ? textRects.width / 2 : 0)
-        : w.globals.gridHeight
+          : w.globals.gridHeight
 
     let elText = this.annoCtx.graphics.drawText({
       x: x1 + anno.label.offsetX,
@@ -94,9 +94,8 @@ export default class XAnnotations {
       fontFamily: anno.label.style.fontFamily,
       fontWeight: anno.label.style.fontWeight,
       foreColor: anno.label.style.color,
-      cssClass: `apexcharts-xaxis-annotation-label ${
-        anno.label.style.cssClass
-      } ${anno.id ? anno.id : ''}`
+      cssClass: `apexcharts-xaxis-annotation-label ${anno.label.style.cssClass
+        } ${anno.id ? anno.id : ''}`
     })
 
     elText.attr({
@@ -104,8 +103,6 @@ export default class XAnnotations {
     })
 
     parent.appendChild(elText.node)
-
-    // after placing the annotations on svg, set any vertically placed annotations
     this.annoCtx.helpers.setOrientations(anno, index)
   }
   drawXAxisAnnotations() {

@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('../util/index.js')) :
-  typeof define === 'function' && define.amd ? define(['../util/index'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.SelectorEngine = factory(global.Index));
-})(this, (function (index_js) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['../util/index'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.SelectorEngine = factory(global.Index));
+})(this, (function (index_js) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -19,16 +20,9 @@
     let selector = element.getAttribute('data-bs-target');
     if (!selector || selector === '#') {
       let hrefAttribute = element.getAttribute('href');
-
-      // The only valid content that could double as a selector are IDs or classes,
-      // so everything starting with `#` or `.`. If a "real" URL is used as the selector,
-      // `document.querySelector` will rightfully complain it is invalid.
-      // See https://github.com/twbs/bootstrap/issues/32273
       if (!hrefAttribute || !hrefAttribute.includes('#') && !hrefAttribute.startsWith('.')) {
         return null;
       }
-
-      // Just in case some CMS puts out a full URL with the anchor appended
       if (hrefAttribute.includes('#') && !hrefAttribute.startsWith('#')) {
         hrefAttribute = `#${hrefAttribute.split('#')[1]}`;
       }
@@ -65,7 +59,7 @@
       }
       return [];
     },
-    // TODO: this is now unused; remove later along with prev()
+
     next(element, selector) {
       let next = element.nextElementSibling;
       while (next) {

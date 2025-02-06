@@ -73,17 +73,17 @@
 			return input.replace(/\s+$/, '');
 		},
 		tabsToSpaces: function (input, spaces) {
-			spaces = spaces|0 || 4;
+			spaces = spaces | 0 || 4;
 			return input.replace(/\t/g, new Array(++spaces).join(' '));
 		},
 		spacesToTabs: function (input, spaces) {
-			spaces = spaces|0 || 4;
+			spaces = spaces | 0 || 4;
 			return input.replace(RegExp(' {' + spaces + '}', 'g'), '\t');
 		},
 		removeTrailing: function (input) {
 			return input.replace(/\s*?$/gm, '');
 		},
-		// Support for deprecated plugin remove-initial-line-feed
+
 		removeInitialLineFeed: function (input) {
 			return input.replace(/^(?:\r?\n|\r)/, '');
 		},
@@ -106,7 +106,7 @@
 			return input.replace(/^[^\S\n\r]*(?=\S)/gm, new Array(++tabs).join('\t') + '$&');
 		},
 		breakLines: function (input, characters) {
-			characters = (characters === true) ? 80 : characters|0 || 80;
+			characters = (characters === true) ? 80 : characters | 0 || 80;
 
 			var lines = input.split('\n');
 			for (var i = 0; i < lines.length; ++i) {
@@ -130,8 +130,6 @@
 			return lines.join('\n');
 		}
 	};
-
-	// Support node modules
 	if (typeof module !== 'undefined' && module.exports) {
 		module.exports = NormalizeWhitespace;
 	}
@@ -150,32 +148,22 @@
 
 	Prism.hooks.add('before-sanity-check', function (env) {
 		var Normalizer = Prism.plugins.NormalizeWhitespace;
-
-		// Check settings
 		if (env.settings && env.settings['whitespace-normalization'] === false) {
 			return;
 		}
-
-		// Check classes
 		if (!Prism.util.isActive(env.element, 'whitespace-normalization', true)) {
 			return;
 		}
-
-		// Simple mode if there is no env.element
 		if ((!env.element || !env.element.parentNode) && env.code) {
 			env.code = Normalizer.normalize(env.code, env.settings);
 			return;
 		}
-
-		// Normal mode
 		var pre = env.element.parentNode;
 		if (!env.code || !pre || pre.nodeName.toLowerCase() !== 'pre') {
 			return;
 		}
 
 		if (env.settings == null) { env.settings = {}; }
-
-		// Read settings from 'data-' attributes
 		for (var key in settingsConfig) {
 			if (Object.hasOwnProperty.call(settingsConfig, key)) {
 				var settingType = settingsConfig[key];
@@ -186,7 +174,7 @@
 							env.settings[key] = value;
 						}
 					} catch (_error) {
-						// ignore error
+
 					}
 				}
 			}
@@ -196,8 +184,6 @@
 		var before = '';
 		var after = '';
 		var codeFound = false;
-
-		// Move surrounding whitespace from the <pre> tag into the <code> tag
 		for (var i = 0; i < children.length; ++i) {
 			var node = children[i];
 
@@ -219,7 +205,7 @@
 			env.code = before + env.code + after;
 			env.code = Normalizer.normalize(env.code, env.settings);
 		} else {
-			// Preserve markup for keep-markup plugin
+
 			var html = before + env.element.innerHTML + after;
 			env.element.innerHTML = Normalizer.normalize(html, env.settings);
 			env.code = env.element.textContent;

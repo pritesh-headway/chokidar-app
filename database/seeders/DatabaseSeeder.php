@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Vehicle;
 use Illuminate\Database\Seeder;
 use App\Models\FamilyMemberDetail;
-use App\Models\User; // Ensure this points to your Users model
+use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -13,54 +13,45 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Create a specific user with predefined attributes
+
         User::factory()->create([
-            'block_number' => strtoupper(chr(rand(65, 90))) . '-' . rand(100, 999), // Example: A-123
+            'block_number' => strtoupper(chr(rand(65, 90))) . '-' . rand(100, 999),
             'first_name' => 'Test',
             'last_name' => 'User',
             'role' => 'admin',
-            'mobile' => 1234567890, // Ensure this is a unique mobile number
+            'mobile' => 1234567890,
             'block' => 'Block A',
             'profile_photo' => null,
             'status' => 'active',
         ]);
-        // Seed Users table
+
         User::factory(10)->create()->each(function ($user) {
-            // For each user, create family members and vehicles
+
             FamilyMemberDetail::factory(3)->create([
-                'user_id' => $user->id // Associate each family member with the user
+                'user_id' => $user->id
             ]);
 
             Vehicle::factory(2)->create([
-                'user_id' => $user->id // Associate each vehicle with the user
+                'user_id' => $user->id
             ]);
         });
-
-        // Call the UsersSeeder to create additional users
         $this->call(UsersSeeder::class);
         $this->call(NoticeSeeder::class);
         $this->call([
-            DesignationSeeder::class,  // Add this line
+            DesignationSeeder::class,
         ]);
-
-
-        // Create roles
         Role::create(['name' => 'super-admin']);
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'owner']);
         Role::create(['name' => 'tenant']);
-
-        // Create permissions
         Permission::create(['name' => 'create post']);
         Permission::create(['name' => 'edit post']);
         Permission::create(['name' => 'delete post']);
         Permission::create(['name' => 'view post']);
-
-        // Assign permissions to roles
         $superAdminRole = Role::findByName('super-admin');
         $adminRole = Role::findByName('admin');
 
-        $superAdminRole->givePermissionTo(Permission::all()); // super-admin gets all permissions
-        $adminRole->givePermissionTo('create post', 'edit post'); // admin gets limited permissions
+        $superAdminRole->givePermissionTo(Permission::all());
+        $adminRole->givePermissionTo('create post', 'edit post');
     }
 }

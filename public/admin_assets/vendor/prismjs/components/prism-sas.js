@@ -305,19 +305,19 @@
 		'altformat': altformat,
 		'numeric-constant': numericConstant,
 		'datetime': {
-			// '1jan2013'd, '9:25:19pm't, '18jan2003:9:27:05am'dt
+
 			pattern: RegExp(stringPattern + '(?:dt?|t)'),
 			alias: 'number'
 		},
 		'string': string,
 		'step': step,
 		'keyword': keywords,
-		// In SAS Studio syntax highlighting, these operators are styled like keywords
+
 		'operator-keyword': {
 			pattern: /\b(?:eq|ge|gt|in|le|lt|ne|not)\b/i,
 			alias: 'operator'
 		},
-		// Decimal (1.2e23), hexadecimal (0c1x)
+
 		'number': number,
 		'operator': /\*\*?|\|\|?|!!?|¦¦?|<[>=]?|>[<=]?|[-+\/=&]|[~¬^]=?/,
 		'punctuation': punctuation

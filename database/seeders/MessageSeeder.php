@@ -1,5 +1,4 @@
 <?php
-// database/seeders/MessageSeeder.php
 
 namespace Database\Seeders;
 
@@ -10,7 +9,6 @@ class MessageSeeder extends Seeder
 {
     public function run()
     {
-        Message::factory(20)->create();  // Create 20 sample messages
-        // Message::truncate();
+        Message::factory(20)->create();
     }
 }

@@ -5,9 +5,10 @@
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('./dom/data.js'), require('./util/index.js'), require('./dom/event-handler.js'), require('./util/config.js')) :
-  typeof define === 'function' && define.amd ? define(['./dom/data', './util/index', './dom/event-handler', './util/config'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.BaseComponent = factory(global.Data, global.Index, global.EventHandler, global.Config));
-})(this, (function (Data, index_js, EventHandler, Config) { 'use strict';
+    typeof define === 'function' && define.amd ? define(['./dom/data', './util/index', './dom/event-handler', './util/config'], factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.BaseComponent = factory(global.Data, global.Index, global.EventHandler, global.Config));
+})(this, (function (Data, index_js, EventHandler, Config) {
+  'use strict';
 
   /**
    * --------------------------------------------------------------------------
@@ -37,8 +38,6 @@
       this._config = this._getConfig(config);
       Data.set(this._element, this.constructor.DATA_KEY, this);
     }
-
-    // Public
     dispose() {
       Data.remove(this._element, this.constructor.DATA_KEY);
       EventHandler.off(this._element, this.constructor.EVENT_KEY);
@@ -55,8 +54,6 @@
       this._typeCheckConfig(config);
       return config;
     }
-
-    // Static
     static getInstance(element) {
       return Data.get(index_js.getElement(element), this.DATA_KEY);
     }

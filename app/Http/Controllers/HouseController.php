@@ -10,7 +10,7 @@ class HouseController extends Controller
 
     public function index()
     {
-        // dd(auth()->user());
+
         $houses = House::where('society_id', auth()->user()->society_id)->get();
         return response()->json([
             'status' => true,
@@ -19,10 +19,7 @@ class HouseController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        // Not needed for API
-    }
+    public function create() {}
 
     public function store(Request $request)
     {
@@ -47,8 +44,6 @@ class HouseController extends Controller
     public function show(Request $request)
     {
         $query = House::query();
-
-
         $query->where('society_id', auth()->user()->society_id);
         if ($request->has('id')) {
             $query->where('id', $request->id);
@@ -57,8 +52,6 @@ class HouseController extends Controller
         if ($request->has('block')) {
             $query->where('block', $request->block);
         }
-        // dd($query->where('block', $request->block));
-
         if ($request->has('user_id')) {
             $query->where('user_id', $request->user_id);
         }
@@ -71,9 +64,6 @@ class HouseController extends Controller
         if ($houses->isEmpty()) {
             return response()->json(['message' => 'Houses not found'], 404);
         }
-
-
-
         return response()->json([
             'status' => true,
             'message' => 'Houses retrieved successfully',
@@ -81,10 +71,7 @@ class HouseController extends Controller
         ]);
     }
 
-    public function edit(House $house)
-    {
-        // Not needed for API
-    }
+    public function edit(House $house) {}
 
     public function update(Request $request)
     {

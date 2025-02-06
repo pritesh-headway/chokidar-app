@@ -3,7 +3,7 @@
 		pattern: /(\b\d+)(?:%|[a-z]+)/,
 		lookbehind: true
 	};
-	// 123 -123 .123 -.123 12.3 -12.3
+
 	var number = {
 		pattern: /(^|[^\w.-])-?(?:\d+(?:\.\d+)?|\.\d+)/,
 		lookbehind: true
@@ -22,8 +22,8 @@
 			pattern: /("|')(?:(?!\1)[^\\\r\n]|\\(?:\r\n|[\s\S]))*\1/,
 			greedy: true
 		},
-		'interpolation': null, // See below
-		'func': null, // See below
+		'interpolation': null,
+		'func': null,
 		'important': /\B!(?:important|optional)\b/i,
 		'keyword': {
 			pattern: /(^|\s+)(?:(?:else|for|if|return|unless)(?=\s|$)|@[\w-]+)/,
@@ -46,8 +46,6 @@
 		'unit': unit,
 		'boolean': /\b(?:false|true)\b/,
 		'operator': [
-			// We want non-word chars around "-" because it is
-			// accepted in property names.
 			/~|[+!\/%<>?=]=?|[-:]=|\*[*=]?|\.{2,3}|&&|\|\||\B-\B|\b(?:and|in|is(?: a| defined| not|nt)?|not|or)\b/
 		],
 		'number': number,
@@ -99,9 +97,6 @@
 				rest: inside
 			}
 		},
-
-		// A property/value pair cannot end with a comma or a brace
-		// It cannot have indented content unless it ended with a semicolon
 		'property-declaration': {
 			pattern: /((?:^|\{)([ \t]*))(?:[\w-]|\{[^}\r\n]+\})+(?:\s*:\s*|[ \t]+)(?!\s)[^{\r\n]*(?:;|[^{\r\n,]$(?!(?:\r?\n|\r)(?:\{|\2[ \t])))/m,
 			lookbehind: true,
@@ -115,11 +110,6 @@
 				rest: inside
 			}
 		},
-
-
-		// A selector can contain parentheses only as part of a pseudo-element
-		// It can span multiple lines.
-		// It must end with a comma or an accolade or have indented content.
 		'selector': {
 			pattern: /(^[ \t]*)(?:(?=\S)(?:[^{}\r\n:()]|::?[\w-]+(?:\([^)\r\n]*\)|(?![\w-]))|\{[^}\r\n]+\})+)(?:(?:\r?\n|\r)(?:\1(?:(?=\S)(?:[^{}\r\n:()]|::?[\w-]+(?:\([^)\r\n]*\)|(?![\w-]))|\{[^}\r\n]+\})+)))*(?:,$|\{|(?=(?:\r?\n|\r)(?:\{|\1[ \t])))/m,
 			lookbehind: true,
