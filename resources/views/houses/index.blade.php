@@ -12,7 +12,7 @@
                         <th>Block</th>
                         <th>Floor</th>
                         <th>Society ID</th>
-                        <th>User ID</th>
+                        {{-- <th>User ID</th> --}}
                         <th>Status</th>
                         <th>Created At</th>
                         <th>Updated At</th>
@@ -26,7 +26,7 @@
                             <td>{{ $house->block }}</td>
                             <td>{{ $house->floor }}</td>
                             <td>{{ $house->society_id }}</td>
-                            <td>{{ $house->user_id }}</td>
+                            {{-- <td>{{ $house->user_id }}</td> --}}
                             <td>{{ $house->status }}</td>
                             <td>{{ $house->created_at->format('Y-m-d') }}</td>
                             <td>{{ $house->updated_at->format('Y-m-d') }}</td>

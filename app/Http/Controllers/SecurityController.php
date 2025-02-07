@@ -98,16 +98,93 @@ class SecurityController extends Controller
             'data' => $securityData,
         ], 200);
     }
+    // public function update(Request $request)
+    // {
+
+    //     $validator = Validator::make($request->all(), [
+    //         'id' => 'required|integer|exists:securities,id',
+    //         'first_name' => 'nullable|string|max:50',
+    //         'last_name' => 'nullable|string|max:50',
+    //         'mobile' => 'nullable|string|max:20',
+    //         'gate_no' => 'nullable|integer',
+    //         'address' => 'nullable|string|max:255',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Validation errors',
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+    //     $security = Security::findOrFail($request->id);
+    //     $user = User::findOrFail($security->user_id);
+    //     $gateDetail = GateDetail::where('security_id', $security->id)->first();
+    //     if ($request->filled('mobile') && $request->mobile !== $user->mobile) {
+    //         $mobileExists = User::where('mobile', $request->mobile)->where('id', '!=', $user->id)->exists();
+    //         if ($mobileExists) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'Validation errors',
+    //                 'errors' => ['mobile' => ['This mobile number is already registered.']],
+    //             ], 422);
+    //         }
+    //     }
+    //     DB::beginTransaction();
+    //     try {
+
+    //         $updateData = [];
+    //         if ($request->filled('first_name') || $request->filled('last_name')) {
+    //             $guard_name = trim(($request->first_name ?? $user->first_name) . ' ' . ($request->last_name ?? $user->last_name));
+    //             $updateData['guard_name'] = $guard_name;
+    //         }
+    //         if ($request->filled('gate_no')) {
+    //             $updateData['gate_no'] = $request->gate_no;
+    //         }
+    //         if ($request->filled('address')) {
+    //             $updateData['address'] = $request->address;
+    //         }
+    //         if ($request->filled('mobile')) {
+    //             $updateData['mobile'] = $request->mobile;
+    //         }
+    //         $security->update($updateData);
+    //         $user->update($request->only(['first_name', 'last_name', 'mobile']));
+    //         if ($gateDetail) {
+    //             $gateDetail->update([
+    //                 'gate_no' => $request->gate_no ?? $gateDetail->gate_no,
+
+    //             ]);
+    //         }
+
+    //         DB::commit();
+    //         $data = $security;
+    //         $data->gate_mobile = $gateDetail->gate_mobile;
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Security guard updated successfully',
+    //             'data' => $data,
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Update failed',
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+
     public function update(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:securities,id',
-            'first_name' => 'nullable|string|max:50',
-            'last_name' => 'nullable|string|max:50',
-            'mobile' => 'nullable|string|max:20',
-            'gate_no' => 'nullable|integer',
-            'address' => 'nullable|string|max:255',
+            'first_name' => 'sometimes|string|max:50',
+            'last_name' => 'sometimes|string|max:50',
+            'mobile' => 'sometimes|string|max:20',
+            'gate_no' => 'sometimes|integer',
+            'address' => 'sometimes|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -117,9 +194,12 @@ class SecurityController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+
         $security = Security::findOrFail($request->id);
         $user = User::findOrFail($security->user_id);
         $gateDetail = GateDetail::where('security_id', $security->id)->first();
+
+        // Check for mobile uniqueness if provided
         if ($request->filled('mobile') && $request->mobile !== $user->mobile) {
             $mobileExists = User::where('mobile', $request->mobile)->where('id', '!=', $user->id)->exists();
             if ($mobileExists) {
@@ -130,10 +210,11 @@ class SecurityController extends Controller
                 ], 422);
             }
         }
+
         DB::beginTransaction();
         try {
-
             $updateData = [];
+
             if ($request->filled('first_name') || $request->filled('last_name')) {
                 $guard_name = trim(($request->first_name ?? $user->first_name) . ' ' . ($request->last_name ?? $user->last_name));
                 $updateData['guard_name'] = $guard_name;
@@ -147,18 +228,38 @@ class SecurityController extends Controller
             if ($request->filled('mobile')) {
                 $updateData['mobile'] = $request->mobile;
             }
-            $security->update($updateData);
-            $user->update($request->only(['first_name', 'last_name', 'mobile']));
-            if ($gateDetail) {
-                $gateDetail->update([
-                    'gate_no' => $request->gate_no ?? $gateDetail->gate_no,
 
-                ]);
+            // Update only the fields that are provided
+            if (!empty($updateData)) {
+                $security->update($updateData);
+            }
+
+            // Update user fields if provided
+            $userUpdates = [];
+            if ($request->filled('first_name')) {
+                $userUpdates['first_name'] = $request->first_name;
+            }
+            if ($request->filled('last_name')) {
+                $userUpdates['last_name'] = $request->last_name;
+            }
+            if ($request->filled('mobile')) {
+                $userUpdates['mobile'] = $request->mobile;
+            }
+            if (!empty($userUpdates)) {
+                $user->update($userUpdates);
+            }
+
+            // Update gate detail only if `gate_no` is provided
+            if ($gateDetail && $request->filled('gate_no')) {
+                $gateDetail->update(['gate_no' => $request->gate_no]);
             }
 
             DB::commit();
+
             $data = $security;
-            $data->gate_mobile = $gateDetail->gate_mobile;
+            if ($gateDetail) {
+                $data->gate_mobile = $gateDetail->gate_mobile;
+            }
 
             return response()->json([
                 'status' => true,
@@ -174,6 +275,8 @@ class SecurityController extends Controller
             ], 500);
         }
     }
+
+
     public function destroy(Request $request)
     {
 

@@ -23,10 +23,10 @@
                 <input type="text" id="society_id" name="society_id" class="form-control"
                     value="{{ $house->society_id }}">
             </div>
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label for="user_id">User ID</label>
                 <input type="text" id="user_id" name="user_id" class="form-control" value="{{ $house->user_id }}">
-            </div>
+            </div> --}}
             <div class="form-group">
                 <label for="status">Status</label>
                 <input type="text" id="status" name="status" class="form-control" value="{{ $house->status }}">

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
@@ -48,7 +49,7 @@ class UsersController extends Controller
             $usersQuery->where('society_id', $society_id);
         }
         if ($id === 'all') {
-            $users = $usersQuery->get()->groupBy('block');
+            $users = $usersQuery->get()->groupBy('house.block');
 
             $users = $users->sortKeys();
 
@@ -62,10 +63,15 @@ class UsersController extends Controller
                 ];
 
                 foreach ($usersInBlock as $index => $user) {
+                    $block = $user->house ? $user->house->block : null;
+                    $house_no = $user->house ? $user->house->house_no : null;
+                    $blockNumber = $block && $house_no ? $block . '-' . $house_no : null;
                     $blockData['rows'][] = [
                         'no' => $index + 1,
                         'id' => $user->id,
-                        'blockNumber' => $user->block_number,
+                        'block' => $block,
+                        'house_no' => $house_no,
+                        'blockNumber' => $blockNumber,
                         'image' => asset('storage/' . $user->profile_photo),
                         'ownerName' => $user->first_name . ' ' . $user->last_name,
                         'role_id' => $user->role_id,
@@ -90,12 +96,18 @@ class UsersController extends Controller
         }
         $user = $usersQuery->find($id);
         if ($user) {
+            $block = $user->house ? $user->house->block : null;
+            $house_no = $user->house ? $user->house->house_no : null;
+            $blockNumber = $block && $house_no ? $block . '-' . $house_no : null;
             return response()->json([
                 'status' => true,
                 'message' => 'User fetched successfully',
                 'data' => [
                     'society_id' => $user->society_id ?? null,
-                    'user' => $user
+                    'user' => $user,
+                    'block' => $block,
+                    'house_no' => $house_no,
+                    'blockNumber' => $blockNumber
                 ]
             ]);
         }
@@ -106,7 +118,7 @@ class UsersController extends Controller
             'data' => []
         ], 404);
     }
-    //Handle user creation
+
     public function inactiveUsers(Request $request)
     {
         $id = $request->input('id');
@@ -142,7 +154,7 @@ class UsersController extends Controller
             $usersQuery->where('society_id', $society_id);
         }
         if ($id === 'all') {
-            $users = $usersQuery->get()->groupBy('block')->sortKeys();
+            $users = $usersQuery->get()->groupBy('house.block')->sortKeys();
 
             $data = [];
 
@@ -154,10 +166,15 @@ class UsersController extends Controller
                 ];
 
                 foreach ($usersInBlock as $index => $user) {
+                    $block = $user->house ? $user->house->block : null;
+                    $house_no = $user->house ? $user->house->house_no : null;
+                    $blockNumber = $block && $house_no ? $block . '-' . $house_no : null;
                     $blockData['rows'][] = [
                         'no' => $index + 1,
                         'id' => $user->id,
-                        'blockNumber' => $user->block_number,
+                        'block' => $block,
+                        'house_no' => $house_no,
+                        'blockNumber' => $blockNumber,
                         'image' => $user->profile_photo ? asset('storage/' . $user->profile_photo) : 'default_image_url',
                         'ownerName' => $user->first_name . ' ' . $user->last_name,
                         'role_id' => $user->role_id,
@@ -182,12 +199,18 @@ class UsersController extends Controller
         }
         $user = $usersQuery->find($id);
         if ($user) {
+            $block = $user->house ? $user->house->block : null;
+            $house_no = $user->house ? $user->house->house_no : null;
+            $blockNumber = $block && $house_no ? $block . '-' . $house_no : null;
             return response()->json([
                 'status' => true,
                 'message' => 'User fetched successfully',
                 'data' => [
                     'society_id' => $user->society_id ?? null,
-                    'user' => $user
+                    'user' => $user,
+                    'block' => $block,
+                    'house_no' => $house_no,
+                    'blockNumber' => $blockNumber
                 ]
             ]);
         }
@@ -198,9 +221,10 @@ class UsersController extends Controller
             'data' => []
         ], 404);
     }
+
     public function store(Request $request)
     {
-
+        // dd($request->all());
         $loggedInUser = auth()->user();
         if (!in_array($loggedInUser->role_id, [1, 2])) {
             return response()->json([
@@ -208,17 +232,26 @@ class UsersController extends Controller
                 'message' => 'Only super-admin or admin can create users'
             ], 403);
         }
-        $validatedData = $request->validate([
+        // dd($request);
+        // $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'mobile' => 'required|digits:10',
+            'mobile' => 'required',
             'profile_photo' => 'required|image',
             'email' => 'nullable|email',
-            'block_number' => 'required|string|max:50',
+            'house_id' => 'required|exists:houses,id',
             'status' => 'required|in:active,inactive',
             'role_id' => 'required|in:3,4',
         ]);
-        $validatedData['block'] = strtoupper(substr($validatedData['block_number'], 0, 1));
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        $validatedData = $validator->validated();
         $validatedData['society_id'] = $loggedInUser->society_id;
         $validatedData['profile_photo'] = $this->storeFileInPublicFolder($request->file('profile_photo'), 'profile_photos');
         if ($request->filled('password')) {
@@ -241,6 +274,7 @@ class UsersController extends Controller
             ], 500);
         }
     }
+
     protected function storeFileInPublicFolder($file, $folder)
     {
         $filename = time() . '_' . $file->getClientOriginalName();
@@ -249,6 +283,7 @@ class UsersController extends Controller
         $file->move(public_path("storage/{$folder}"), $filename);
         return "{$folder}/{$filename}";
     }
+
     public function update(Request $request)
     {
         $id = $request->input('id');
@@ -274,12 +309,11 @@ class UsersController extends Controller
             return response()->json(['status' => false, 'message' => 'You can only update users in your own society'], 403);
         }
         $validatedData = $request->validate([
-            'block_number' => 'sometimes|required|string|max:50',
             'first_name' => 'sometimes|required|string|max:50',
             'last_name' => 'sometimes|required|string|max:50',
             'role_id' => 'sometimes|required|exists:roles,id',
             'mobile' => 'sometimes|required|string|size:10',
-            'block' => 'sometimes|required|string|max:50',
+            'house_id' => 'sometimes|required|exists:houses,id',
             'profile_photo' => 'nullable|image|max:2048',
             'status' => 'sometimes|required|in:active,inactive',
             'email' => 'sometimes|nullable|email',
@@ -306,6 +340,7 @@ class UsersController extends Controller
             'data' => $user,
         ], 200);
     }
+
     public function destroy(Request $request)
     {
         $id = $request->input('id');
@@ -350,6 +385,7 @@ class UsersController extends Controller
             'data' => []
         ], 200);
     }
+
     public function familyMemberCount($userId)
     {
         $count = \App\Models\FamilyMemberDetail::where('user_id', $userId)->count();

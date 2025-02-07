@@ -34,6 +34,13 @@ class HouseController extends Controller
 
         $house = House::create($request->all());
 
+        if ($house->user_id) {
+            $user = $house->user;
+            $user->house_no = $house->house_no;
+            $user->block = $house->block;
+            $user->save();
+        }
+
         return response()->json([
             'status' => true,
             'message' => 'House created successfully',
@@ -96,12 +103,20 @@ class HouseController extends Controller
             'status'
         ]));
 
+        if ($house->user_id) {
+            $user = $house->user;
+            $user->house_no = $house->house_no;
+            $user->block = $house->block;
+            $user->save();
+        }
+
         return response()->json([
             'status' => true,
             'message' => 'House updated successfully',
             'data' => $house
         ]);
     }
+
     public function destroy(Request $request)
     {
         $request->validate([
@@ -110,6 +125,13 @@ class HouseController extends Controller
 
         $house = House::findOrFail($request->id);
         $house->delete();
+
+        if ($house->user_id) {
+            $user = $house->user;
+            $user->house_no = null;
+            $user->block = null;
+            $user->save();
+        }
 
         return response()->json(['status' => true, 'message' => 'House deleted successfully'], 200);
     }

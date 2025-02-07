@@ -12,14 +12,24 @@ class MaintenanceFactory extends Factory
 
     public function definition()
     {
-        $user = User::where('society_id', 2)->inRandomOrder()->first();
+        $user = User::whereNotNull('house_id') // Ensure user has a house
+            ->where('society_id', 2)
+            ->inRandomOrder()
+            ->first();
+
+        if (!$user || !$user->house_id) {
+            // If no valid user-house combination is found, return dummy data or skip
+            return [];
+        }
+
+        $house = $user->house;
 
         return [
-            'block_number' => $user->block_number,
-            'owner_name' => $user->first_name . ' ' . $user->last_name,
+            'block_number' => $house ? $house->block . '-' . $house->house_no : 'Unknown',
+            'owner_name' => $user ? $user->first_name . ' ' . $user->last_name : 'Unknown',
             'maintenance_status' => $this->faker->randomElement(['PENDING', 'COMPLETED']),
-            'block' => strtoupper(substr($user->block_number, 0, 1)),
-            'photo' => $user->profile_photo,
+            'block' => $house ? strtoupper(substr($house->block, 0, 1)) : 'X',
+            'photo' => $user->profile_photo ?? 'default.jpg',
             'user_id' => $user->id,
             'amount' => $this->faker->numberBetween(1000, 10000),
             'date' => $this->faker->date(),

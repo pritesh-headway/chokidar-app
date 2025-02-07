@@ -12,7 +12,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = auth()->user();
-
+        // dd((auth()->check() && auth()->user()->hasRole($role)));
         $userRoles = $user->roles->pluck('name')->toArray();
 
         foreach ($roles as $role) {

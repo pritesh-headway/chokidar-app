@@ -22,17 +22,15 @@ class User extends Authenticatable implements JWTSubject, FilamentUser
         'last_name' => 'Admin',
         'mobile' => '8347400096',
         'status' => 'active',
-
     ];
     protected $table = 'users';
 
     protected $fillable = [
-        'block_number',
         'first_name',
         'last_name',
         'role_id',
         'mobile',
-        'block',
+        'house_id',
         'profile_photo',
         'status',
         'email',
@@ -43,18 +41,17 @@ class User extends Authenticatable implements JWTSubject, FilamentUser
     ];
 
     protected $casts = [
-
         'mobile' => 'string',
-
         'status' => 'string',
     ];
+
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
+
     public function setRole($role)
     {
-
         if (is_string($role)) {
             $role = Role::where('name', $role)->first();
         }
@@ -65,15 +62,12 @@ class User extends Authenticatable implements JWTSubject, FilamentUser
             throw new \Exception("Role not found or invalid.");
         }
     }
+
     public function hasRole($role)
     {
         return $this->roles()->where('role', $role)->exists();
     }
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -88,24 +82,22 @@ class User extends Authenticatable implements JWTSubject, FilamentUser
     {
         return $this->hasMany(Vehicle::class);
     }
+
     public function visitors()
     {
         return $this->hasMany(Visitor::class);
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
     public function getJWTCustomClaims()
     {
         return [];
     }
+
     public function serviceRequests()
     {
         return $this->hasMany(ServiceRequest::class, 'member_id');
     }
+
     public function sentConversations()
     {
         return $this->hasMany(Conversation::class, 'sender_id');
@@ -130,32 +122,34 @@ class User extends Authenticatable implements JWTSubject, FilamentUser
     {
         return "hello";
     }
+
     public function society()
     {
         return $this->belongsTo(Society::class);
     }
 
-    public function user()
+    public function house()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(House::class, 'house_id');
     }
 
-    /**
-     * Check if the user has access to Filament (Super Admin, Admin, etc.)
-     */
+    public function getBlockAttribute()
+    {
+        return $this->house ? $this->house->block : null;
+    }
+
+    public function getHouseNoAttribute()
+    {
+        return $this->house ? $this->house->house_no : null;
+    }
+
     public function canAccessFilament(): bool
     {
-
         return in_array($this->role_id, [1, 2]);
     }
 
-    /**
-     * Implement the method from FilamentUser interface.
-     * This checks if the user can access the Filament panel.
-     */
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-
         return $this->canAccessFilament();
     }
 }

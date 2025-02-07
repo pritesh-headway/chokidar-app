@@ -15,14 +15,44 @@ class House extends Model
         'floor',
         'society_id',
         'user_id',
-        'status'
+        'status',
     ];
+
     public function society()
     {
         return $this->belongsTo(Society::class);
     }
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class, 'house_id');
+    }
+
+    protected static function booted()
+    {
+        static::saved(function ($house) {
+            if ($house->user_id && $house->user) {
+                $house->syncUser();
+            }
+        });
+
+        static::deleted(function ($house) {
+            if ($house->user_id && $house->user) {
+                $house->syncUser(true);
+            }
+        });
+    }
+
+    /**
+     * Synchronize associated user.
+     *
+     * @param bool $reset If true, resets the house details on the user.
+     */
+    public function syncUser(bool $reset = false): void
+    {
+        $user = $this->user;
+        $user->house_no = $reset ? null : $this->house_no;
+        $user->block = $reset ? null : $this->block;
+        $user->save();
     }
 }

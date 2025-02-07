@@ -11,7 +11,7 @@
                 <p><strong>Block:</strong> {{ $house->block }}</p>
                 <p><strong>Floor:</strong> {{ $house->floor }}</p>
                 <p><strong>Society ID:</strong> {{ $house->society_id }}</p>
-                <p><strong>User ID:</strong> {{ $house->user_id }}</p>
+                {{-- <p><strong>User ID:</strong> {{ $house->user_id }}</p> --}}
                 <p><strong>Status:</strong> {{ $house->status }}</p>
                 <p><strong>Created At:</strong> {{ $house->created_at->format('Y-m-d') }}</p>
                 <p><strong>Updated At:</strong> {{ $house->updated_at->format('Y-m-d') }}</p>

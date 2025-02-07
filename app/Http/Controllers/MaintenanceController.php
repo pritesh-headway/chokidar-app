@@ -6,164 +6,155 @@ use App\Models\Maintenance;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-use function PHPSTORM_META\map;
-
 class MaintenanceController extends Controller
 {
-    /* */
+
+    // public function index(Request $request)
+    // {
+    //     $userId = $request->input('user_id');
+
+    //     $maintenanceQuery = Maintenance::with(['user:id,society_id,house_id,profile_photo,first_name,last_name', 'user.house:id,block,house_no']);
+
+    //     if ($userId) {
+    //         $maintenanceQuery->where('user_id', $userId);
+    //     }
+
+    //     $maintenanceRecords = $maintenanceQuery->orderBy('date', 'desc')->get();
+
+    //     if ($maintenanceRecords->isEmpty()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'No maintenance records found.',
+    //             'data' => []
+    //         ], 200);
+    //     }
+
+    //     $groupedRecords = $maintenanceRecords->groupBy('user.house_id');
+
+    //     $response = $groupedRecords->map(function ($records, $houseId) {
+    //         $user = $records->first()->user;
+    //         $house = $user->house;
+    //         $block = $house ? $house->block : null;
+    //         $house_no = $house ? $house->house_no : null;
+    //         $block_number = $block && $house_no ? $block . '-' . $house_no : null;
+
+    //         return [
+    //             'title' => $block,
+    //             'rows' => $records->groupBy('user_id')->map(function ($userRecords, $userId) use ($block_number) {
+    //                 $user = $userRecords->first()->user;
+
+    //                 return [
+    //                     'no' => $userId,
+    //                     'user_id' => $userId,
+    //                     'blockNumber' => $block_number,
+    //                     'image' => $user->profile_photo ? config('app.url') . '/public/storage/' . $user->profile_photo : null,
+    //                     'ownerName' => $user->first_name . ' ' . $user->last_name,
+    //                     'maintenance_status' => strtoupper($userRecords->first()->maintenance_status),
+    //                     'society_id' => $user->society_id,
+    //                     'maintenance' => $userRecords->map(function ($record, $index) {
+    //                         return [
+    //                             'no' => $index + 1,
+    //                             'id' => $record->id,
+    //                             'amount' => (int) $record->amount,
+    //                             'date' => \Carbon\Carbon::parse($record->date)->format('Y-m-d'),
+    //                             'maintenance_status' => ucfirst(strtolower($record->maintenance_status)),
+    //                         ];
+    //                     })->values()->toArray()
+    //                 ];
+    //             })->values()->toArray()
+    //         ];
+    //     })->values()->toArray();
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Maintenance records fetched successfully',
+    //         'data' => $response
+    //     ], 200);
+    // }
+
+
     public function index(Request $request)
     {
+        $userId = $request->input('user_id');
 
-        $loggedInUser = auth()->user();
-        $loggedInSocietyId = $loggedInUser->society_id;
-        $isAdmin = $loggedInUser->role_id === 2;
-        if (!$isAdmin) {
-            $userMaintenance = Maintenance::with('user:id,first_name,last_name,society_id,block_number,mobile')
-                ->where('user_id', $loggedInUser->id)
-                ->orderBy('id', 'desc')
-                ->get();
-            if ($userMaintenance->isEmpty()) {
-                return response()->json([
-                    'status' => true,
-                    'message' => 'No maintenance records found.',
-                    'data' => [
-                        'maintenance_status' => 'No Maintenance'
-                    ],
-                ], 200);
-            }
-            $allApproved = $userMaintenance->every(function ($maintenance) {
-                return $maintenance->maintenance_status === 'Approved';
-            });
+        // Fetch maintenance records with user and house details
+        $maintenanceQuery = Maintenance::with([
+            'user:id,society_id,house_id,profile_photo,first_name,last_name',
+            'user.house:id,block,house_no'
+        ]);
 
-            $maintenanceStatus = $allApproved ? 'All Maintenance Approved' : 'Some Maintenance Pending';
+        // Filter by user_id if provided
+        if ($userId) {
+            $maintenanceQuery->where('user_id', $userId);
+        }
 
+        // Fetch records
+        $maintenanceRecords = $maintenanceQuery->orderBy('date', 'desc')->get();
+
+        if ($maintenanceRecords->isEmpty()) {
             return response()->json([
-                'status' => true,
-                'message' => 'Maintenance records fetched successfully',
-                'data' => [
-                    'maintenance_status' => $maintenanceStatus,
-                    'maintenance_records' => $userMaintenance->map(function ($maintenanceRecord) {
-                        return [
-                            'no' => $maintenanceRecord->id,
-                            'id' => $maintenanceRecord->id,
-                            'amount' => $maintenanceRecord->amount,
-                            'date' => $maintenanceRecord->date,
-                            'maintenance_status' => $maintenanceRecord->maintenance_status,
-                        ];
-                    }),
-                ],
+                'status' => false,
+                'message' => 'No maintenance records found.',
+                'data' => []
             ], 200);
         }
-        $activeUsers = User::where('society_id', $loggedInSocietyId)
-            ->whereIn('role_id', [3, 4])
-            ->where('status', 'active')
-            ->select('id', 'first_name', 'last_name', 'block_number', 'mobile', 'profile_photo')
-            ->get();
-        $maintenanceRecords = Maintenance::with('user:id,first_name,last_name,society_id,block_number,mobile,profile_photo')
-            ->whereHas('user', function ($query) use ($loggedInSocietyId) {
-                $query->where('society_id', $loggedInSocietyId);
-            })
-            ->orderBy('id', 'desc')
-            ->get();
-        $groupedData = $activeUsers->groupBy('block_number')->map(function ($users, $block) use ($maintenanceRecords) {
 
-            $blockMaintenance = $maintenanceRecords->where('block_number', $block);
+        // Group records by house_id
+        $groupedRecords = $maintenanceRecords->groupBy('user.house_id');
 
-            $rows = $users->map(function ($user) use ($blockMaintenance) {
+        // Format response
+        $response = $groupedRecords->map(function ($records, $houseId) {
+            $user = $records->first()->user;
+            $house = $user->house;
+            $block = $house ? $house->block : null;
+            $house_no = $house ? $house->house_no : null;
+            $block_number = $block && $house_no ? $block . '-' . $house_no : null;
 
-                $userMaintenance = $blockMaintenance->where('user_id', $user->id);
-                if ($userMaintenance->isEmpty()) {
+            return [
+                'title' => $block,
+                'rows' => $records->groupBy('user_id')->map(function ($userRecords, $userId) use ($block_number) {
+                    $user = $userRecords->first()->user;
+
+                    // Check if any maintenance record is "PENDING"
+                    $hasPending = $userRecords->contains('maintenance_status', 'PENDING');
+
                     return [
-                        'user_id' => $user->id,
-                        'blockNumber' => $user->block_number,
-                        'image' => $user->profile_photo ? url('storage/' . $user->profile_photo) : null,
+                        'no' => $userId,
+                        'user_id' => $userId,
+                        'blockNumber' => $block_number,
+                        'image' => $user->profile_photo ? config('app.url') . '/public/storage/' . $user->profile_photo : null,
                         'ownerName' => $user->first_name . ' ' . $user->last_name,
-                        'maintenance_status' => 'No Maintenance',
+                        'maintenance_status' => $hasPending ? 'PENDING' : 'COMPLETED',
                         'society_id' => $user->society_id,
-                        'maintenance' => [],
+                        'maintenance' => $userRecords->map(function ($record, $index) {
+                            return [
+                                'no' => $index + 1,
+                                'id' => $record->id,
+                                'amount' => (int) $record->amount,
+                                'date' => \Carbon\Carbon::parse($record->date)->format('Y-m-d'),
+                                'maintenance_status' => ucfirst(strtolower($record->maintenance_status)),
+                            ];
+                        })->values()->toArray()
                     ];
-                }
-                $allApproved = $userMaintenance->every(function ($maintenance) {
-                    return $maintenance->maintenance_status === 'Approved';
-                });
-
-                $maintenanceStatus = $allApproved ? 'All Maintenance Approved' : 'Some Maintenance Pending';
-                $maintenance = $userMaintenance->map(function ($maintenanceRecord) {
-                    return [
-                        'no' => $maintenanceRecord->id,
-                        'id' => $maintenanceRecord->id,
-                        'amount' => $maintenanceRecord->amount,
-                        'date' => $maintenanceRecord->date,
-                        'maintenance_status' => $maintenanceRecord->maintenance_status,
-                    ];
-                });
-
-                return [
-                    'user_id' => $user->id,
-                    'blockNumber' => $user->block_number,
-                    'image' => $user->profile_photo ? url('storage/' . $user->profile_photo) : null,
-                    'ownerName' => $user->first_name . ' ' . $user->last_name,
-                    'maintenance_status' => $maintenanceStatus,
-                    'society_id' => $user->society_id,
-                    'maintenance' => $maintenance,
-                ];
-            });
-
-            return [
-                'title' => substr($block, 0, 1),
-                'rows' => $rows->values(),
+                })->values()->toArray()
             ];
-        });
-        $finalGroupedData = $groupedData->values()->groupBy('title')->map(function ($items) {
-            return [
-                'title' => $items->first()['title'],
-                'rows' => $items->flatMap(function ($item) {
-                    return $item['rows'];
-                })->values(),
-            ];
-        });
-        $finalGroupedData = $finalGroupedData->sortBy(function ($item) {
-            return $item['title'];
-        })->values();
+        })->values()->toArray();
+
         return response()->json([
             'status' => true,
             'message' => 'Maintenance records fetched successfully',
-            'data' => $finalGroupedData->values(),
+            'data' => $response
         ], 200);
     }
-    /**
-     * Helper method to format maintenance records
-     */
-    private function formatMaintenanceRecords($records)
-    {
 
-        $groupedRecords = $records->groupBy(function ($record) {
-            return strtoupper(substr($record->block_number, 0, 1));
-        });
-        return $groupedRecords->map(function ($records, $blockLetter) {
-            return [
-                'title' => "Block-" . $blockLetter,
-                'rows' => $records->values()->map(function ($record, $index) {
-                    $date = \Carbon\Carbon::parse($record->date);
-                    return [
-                        'no' => $index + 1,
-                        'id' => $record->id,
-                        'user_id' => $record->user_id,
-                        'blockNumber' => $record->block_number,
-                        'image' => config('app.url') . '/public/storage/' . $record->photo,
-                        'ownerName' => $record->owner_name,
-                        'maintenance_status' => $record->maintenance_status,
-                        'society_id' => $record->user->society_id,
-                    ];
-                })->toArray(),
-            ];
-        })->sortBy('title')->values()->toArray();
-    }
+
     public function show(Request $request)
     {
-
+        // Get the 'id' and 'user_id' parameters from the request body
         $id = $request->input('id');
         $userId = $request->input('user_id');
+
+        // Check if either 'id' or 'user_id' is provided
         if (!$id && !$userId) {
             return response()->json([
                 'status' => false,
@@ -171,14 +162,25 @@ class MaintenanceController extends Controller
                 'data' => []
             ], 200);
         }
-        $maintenanceQuery = Maintenance::with('user:id,society_id');
+
+        // Fetch maintenance records with user and house details
+        $maintenanceQuery = Maintenance::with([
+            'user:id,first_name,last_name,society_id,house_id', // Fetch user with house_id
+            'user.house:id,block,house_no' // Fetch house details using house_id
+        ]);
+
+        // Apply filters
         if ($userId) {
             $maintenanceQuery->where('user_id', $userId);
         }
         if ($id) {
             $maintenanceQuery->where('id', $id);
         }
+
+        // Fetch maintenance records
         $maintenanceRecords = $maintenanceQuery->orderBy('date', 'desc')->get();
+
+        // Check if records exist
         if ($maintenanceRecords->isEmpty()) {
             return response()->json([
                 'status' => false,
@@ -186,42 +188,49 @@ class MaintenanceController extends Controller
                 'data' => []
             ], 200);
         }
-        $groupedRecords = $maintenanceRecords->groupBy('block_number');
-        $response = $groupedRecords->map(function ($records, $blockNumber) {
-            return $records->values()->map(function ($record, $index) {
-                $date = \Carbon\Carbon::parse($record->date);
-                return [
-                    'no' => $index + 1,
-                    'id' => $record->id,
-                    'user_id' => $record->user_id,
-                    'blockNumber' => $record->block_number,
-                    'image' => config('app.url') . '/public/storage/' . $record->photo,
-                    'ownerName' => $record->owner_name,
-                    'amount' => (string)$record->amount,
-                    'maintenance_status' => $record->maintenance_status,
-                    'date' => \Carbon\Carbon::parse($date)->format('d-m-Y'),
-                    'description' => $record->description,
-                    'status' => ucfirst(strtolower($record->maintenance_status)),
-                    'society_id' => $record->user->society_id,
-                ];
-            });
+
+        // Format response
+        $response = $maintenanceRecords->map(function ($record, $index) {
+            $user = $record->user;
+            $house = $user ? $user->house : null;
+
+            return [
+                'no' => $index + 1,
+                'id' => $record->id,
+                'user_id' => $record->user_id,
+                'blockNumber' => $house ? ($house->block . '-' . $house->house_no) : null,
+                'image' => $record->photo ? config('app.url') . '/public/storage/' . $record->photo : null,
+                'ownerName' => $user ? ($user->first_name . ' ' . $user->last_name) : null,
+                'amount' => (string)$record->amount,
+                'maintenance_status' => $record->maintenance_status,
+                'date' => $record->date ? \Carbon\Carbon::parse($record->date)->format('d-m-Y') : null,
+                'description' => $record->description,
+                'status' => $record->status,
+                'society_id' => $user->society_id ?? null,
+            ];
         });
+
+        // Return response
         return response()->json([
             'status' => true,
             'message' => 'Maintenance records fetched successfully',
-            'data' => $response->flatten(1)->toArray()
+            'data' => $response->toArray()
         ], 200);
     }
+
+
+
     public function store(Request $request)
     {
-
         $missingArguments = [];
         $requiredFields = ['user_id', 'amount', 'date', 'description'];
+
         foreach ($requiredFields as $field) {
             if (!$request->has($field)) {
                 $missingArguments[] = $field;
             }
         }
+
         if (!empty($missingArguments)) {
             return response()->json([
                 'status' => false,
@@ -229,40 +238,75 @@ class MaintenanceController extends Controller
                 'missing_arguments' => $missingArguments
             ], 200);
         }
+
         $validated = $request->validate([
-            'block_number' => 'nullable|string|max:50',
-            'maintenance_status' => 'nullable|in:PENDING,COMPLETED',
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|integer',
             'date' => 'required|date',
             'description' => 'required|string',
-            'status' => 'nullable|in:active,deactive',
-            'photo' => 'nullable|string|max:2048',
         ]);
-        $user = User::find($validated['user_id']);
+
+        $user = User::with('house')->find($validated['user_id']);
         if (!$user) {
             return response()->json(['status' => false, 'message' => 'User not found'], 200);
         }
-        $maintenanceStatus = $validated['maintenance_status'] ?? 'PENDING';
+
+        $house = $user->house;
+        if (!$house) {
+            return response()->json(['status' => false, 'message' => 'House not found for the user'], 200);
+        }
+
+        $block = $house->block;
+        $house_no = $house->house_no;
+        $block_number = $block . '-' . $house_no;
+        $owner_name = $user->first_name . ' ' . $user->last_name;
+
         $maintenance = new Maintenance();
         $maintenance->user_id = $validated['user_id'];
-        $maintenance->block_number = $user->block_number;
-        $maintenance->owner_name = $user->first_name . ' ' . $user->last_name;
-        $maintenance->block = substr($user->block_number, 0, 1);
+        $maintenance->block = $block;
+        $maintenance->block_number = $block_number;
+        $maintenance->owner_name = $owner_name;
         $maintenance->amount = $validated['amount'];
         $maintenance->date = $validated['date'];
         $maintenance->description = $validated['description'];
-        $maintenance->maintenance_status = $maintenanceStatus;
-        $maintenance->status = $validated['status'] ?? 'active';
-        $maintenance->photo = $validated['photo'] ?? "profile_photos/avatar.png";
+        $maintenance->maintenance_status = 'PENDING';
+        $maintenance->status = 'active';
+        $maintenance->photo = "profile_photos/avatar.png";
         $maintenance->save();
-        $maintenance->society_id = auth()->user()->society_id;
+
+        // Format response similar to `index()` and `show()`
+        $response = [
+            'title' => $block_number,
+            'rows' => [
+                [
+                    'no' => $user->id,
+                    'user_id' => $user->id,
+                    'blockNumber' => $block_number,
+                    'image' => $user->profile_photo ? config('app.url') . '/public/storage/' . $user->profile_photo : null,
+                    'ownerName' => $owner_name,
+                    'maintenance_status' => strtoupper($maintenance->maintenance_status),
+                    'society_id' => $user->society_id,
+                    'maintenance' => [
+                        [
+                            'no' => 1,
+                            'id' => $maintenance->id,
+                            'amount' => (int) $maintenance->amount,
+                            'date' => \Carbon\Carbon::parse($maintenance->date)->format('Y-m-d'),
+                            'maintenance_status' => ucfirst(strtolower($maintenance->maintenance_status)),
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
         return response()->json([
             'status' => true,
             'message' => 'Maintenance record created successfully',
-            'data' => $maintenance
+            'data' => $response
         ], 201);
     }
+
+
     public function update(Request $request)
     {
         $id = $request->input('id');
@@ -283,31 +327,42 @@ class MaintenanceController extends Controller
             ], 200);
         }
 
+        // Validate only allowed fields
         $validatedData = $request->validate([
-            'block_number' => 'nullable|string|max:50',
-            'maintenance_status' => 'nullable|in:PENDING,COMPLETED',
-            'block' => 'nullable|string|max:50',
-            'photo' => 'nullable|string|max:256',
-            'user_id' => 'nullable|exists:users,id',
             'amount' => 'nullable|integer',
-            'date' => 'nullable|date',
             'description' => 'nullable|string',
-            'status' => 'nullable|in:active,deactive',
+            'maintenance_status' => 'nullable|in:PENDING,COMPLETED',
         ]);
-        if (isset($validatedData['user_id'])) {
-            $user = User::findOrFail($validatedData['user_id']);
-            $validatedData['owner_name'] = $user->first_name . ' ' . $user->last_name;
+
+        // Update only the provided fields
+        if (isset($validatedData['amount'])) {
+            $maintenance->amount = $validatedData['amount'];
+        }
+        if (isset($validatedData['description'])) {
+            $maintenance->description = $validatedData['description'];
+        }
+        if (isset($validatedData['maintenance_status'])) {
+            $maintenance->maintenance_status = strtoupper($validatedData['maintenance_status']);
         }
 
-        $maintenance->update($validatedData);
-        $maintenance->society_id = auth()->user()->society_id;
+        $maintenance->save();
+
+        // Format response to match `index()` and `show()`
+        $response = [
+            'id' => $maintenance->id,
+            'amount' => (int) $maintenance->amount,
+            'description' => $maintenance->description,
+            'maintenance_status' => strtoupper($maintenance->maintenance_status),
+            'updated_at' => $maintenance->updated_at->format('Y-m-d H:i:s')
+        ];
 
         return response()->json([
             'status' => true,
             'message' => 'Maintenance record updated successfully',
-            'data' => $maintenance
+            'data' => $response
         ], 200);
     }
+
     public function destroy(Request $request)
     {
         $id = $request->input('id');
@@ -339,7 +394,6 @@ class MaintenanceController extends Controller
 
     protected function storeFileInPublicFolder($file, $folder)
     {
-
         $filename = time() . '_' . $file->getClientOriginalName();
         $filename = str_replace(' ', '_', $filename);
 
