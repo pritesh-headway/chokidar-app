@@ -29,7 +29,10 @@
             </div> --}}
             <div class="form-group">
                 <label for="status">Status</label>
-                <input type="text" id="status" name="status" class="form-control" value="{{ $house->status }}">
+                <select id="status" name="status" class="form-control">
+                    <option value="active" {{ $house->status == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ $house->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">Update House</button>
         </form>

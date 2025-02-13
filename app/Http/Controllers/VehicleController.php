@@ -129,6 +129,10 @@ class VehicleController extends Controller
             $query->where('id', $request->id);
         } elseif ($request->has('user_id') && $request->user_id !== 'all') {
             $query->where('user_id', $request->user_id);
+        } elseif ($request->has('status')) {
+            $query->where('status', $request->status);
+        } else {
+            $query->where('status', 'active');
         }
         $vehicles = $query->get();
         $grouped = $vehicles->groupBy(function ($vehicle) {
@@ -148,6 +152,7 @@ class VehicleController extends Controller
                         'type' => $vehicle->vehicle_type,
                         'brand' => $vehicle->vehicle_brand,
                         'model' => $vehicle->vehicle_model,
+                        'status' => $vehicle->status,
                     ];
                 })->toArray(),
             ];

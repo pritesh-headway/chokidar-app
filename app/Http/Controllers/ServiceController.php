@@ -72,15 +72,17 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         $services = Service::all();
-        $services = $services->map(function ($service, $index) {
+        $data = $services->map(function ($service, $index) {
             $service->no = $index + 1;
-            $service->service_image = env('APP_URL') . '/public/storage/' . $service->service_image;
+            // $service->service_image = env('APP_URL') . '/public/storage/' . $service->service_image;
+            $service->service_image = asset('storage/' . $service->service_image);
+            // dd($service->service_image);
             return $service;
         });
         return response()->json([
             'status' => true,
             'message' => 'Services retrieved successfully',
-            'data' => $services,
+            'data' => $data,
         ], 200);
     }
     public function show(Request $request)

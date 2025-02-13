@@ -46,30 +46,58 @@
 </div>
 
 <!-- Bootstrap core JavaScript-->
-<script src="{{ url('/js/jquery.min.js')}}"></script>
-<script src="{{ url('/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{ url('/js/jquery.min.js') }}"></script>
+<script src="{{ url('/js/bootstrap.bundle.min.js') }}"></script>
 
 <!-- Core plugin JavaScript-->
-<script src="{{ url('/js/jquery.easing.min.js')}}"></script>
+<script src="{{ url('/js/jquery.easing.min.js') }}"></script>
 
 <!-- Custom scripts for all pages-->
-<script src="{{ url('/js/sb-admin-2.min.js')}}"></script>
+<script src="{{ url('/js/sb-admin-2.min.js') }}"></script>
 
 <!-- Page level plugins -->
-<script src="{{ url('/js/Chart.min.js')}}"></script>
+<script src="{{ url('/js/Chart.min.js') }}"></script>
 
 <!-- Page level custom scripts -->
 <script src="{{ url('/js/demo/chart-area-demo.js') }}"></script>
 <script src="{{ url('/js/demo/chart-pie-demo.js') }}"></script>
-<script src="{{ url('/js/demo/chart-bar-demo.js')}}"></script>
+<script src="{{ url('/js/demo/chart-bar-demo.js') }}"></script>
 <script>
     function goBack() {
         window.history.back()
     }
+
     function resetForm() {
         document.getElementById("myForm").reset();
     }
 </script>
+
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+<!-- jQuery (required for Toastr) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Display Toastr Notification -->
+<script>
+    @if (session('success'))
+        $(document).ready(function() {
+            toastr.success("{{ session('success') }}");
+        });
+    @endif
+    @if (session('error'))
+        $(document).ready(function() {
+            toastr.error("{{ session('error') }}");
+        });
+    @endif
+</script>
+
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
+
 </body>
 
 </html>

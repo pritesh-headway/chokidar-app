@@ -2,12 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SocietySubscriptionController;
 use App\Http\Controllers\SocietyController;
 use App\Http\Controllers\backend\ContactUsController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\SuperAdminController;
 use App\Http\Controllers\Backend\AllSocietyController;
 use App\Http\Controllers\backend\HouseController;
+use App\Http\Controllers\backend\SubscriptionPlanController;
+use App\Http\Controllers\backend\PaymentController;
+use App\Http\Middleware\SuperAdminMiddleware;
 use App\Http\Middleware\WebMiddleware;
 
 Route::get("/", function () {
@@ -20,10 +24,10 @@ Route::get('/societyregister', function () {
 })->name('societyregister');
 
 Route::post('/login', [SuperAdminController::class, 'login'])->name('auth.login');
-Route::middleware([WebMiddleware::class])->group(function () {
+Route::middleware([SuperAdminMiddleware::class])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
-Route::middleware([WebMiddleware::class])->group(function () {
+Route::middleware([SuperAdminMiddleware::class])->group(function () {
     Route::get('/admin/societies', [AllSocietyController::class, 'index'])->name('societies.index');
     Route::get('/admin/societies/{id}', [AllSocietyController::class, 'show'])->name('societies.show');
     Route::get('/admin/societies/{id}/edit', [AllSocietyController::class, 'edit'])->name('societies.edit');
@@ -48,5 +52,13 @@ Route::middleware([WebMiddleware::class])->group(function () {
         'update' => 'houses.update',
         'destroy' => 'houses.destroy',
     ]);
-    // Route::get('/houses/{society_id?}', [HouseController::class, 'index'])->name('houses.index');
+    Route::resource('subscription_plans', App\Http\Controllers\backend\SubscriptionPlanController::class);
+
+    Route::post('/society-subscription/store', [SocietySubscriptionController::class, 'store']);
+    Route::post('/society-subscription/update', [SocietySubscriptionController::class, 'update']);
+    Route::post('/society-subscription/delete', [SocietySubscriptionController::class, 'destroy']);
+    Route::post('/society-subscription/show', [SocietySubscriptionController::class, 'show']);
+    Route::post('/society-subscription/list', [SocietySubscriptionController::class, 'list']);
+
+    Route::resource('payments', PaymentController::class);
 });

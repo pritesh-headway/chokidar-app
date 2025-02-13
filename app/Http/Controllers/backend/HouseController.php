@@ -93,7 +93,23 @@ class HouseController extends Controller
      */
     public function update(Request $request, House $house)
     {
-        //
+        $request->validate([
+            'house_no' => 'required|string|max:255',
+            'block' => 'required|string|max:255',
+            'floor' => 'required|string|max:255',
+            'society_id' => 'required|integer',
+            'status' => 'required|string|max:255',
+        ]);
+
+        $house->update([
+            'house_no' => $request->house_no,
+            'block' => $request->block,
+            'floor' => $request->floor,
+            'society_id' => $request->society_id,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('houses.index')->with('success', 'House updated successfully');
     }
 
     /**

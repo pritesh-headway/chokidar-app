@@ -73,60 +73,126 @@ class MaintenanceController extends Controller
     // }
 
 
-    public function index(Request $request)
-    {
-        $userId = $request->input('user_id');
+    // public function index(Request $request)
+    // {
+    //     $userId = $request->input('user_id');
 
-        // Fetch maintenance records with user and house details
-        $maintenanceQuery = Maintenance::with([
+    //     // Fetch maintenance records with user and house details
+    //     $maintenanceQuery = Maintenance::with([
+    //         'user:id,society_id,house_id,profile_photo,first_name,last_name',
+    //         'user.house:id,block,house_no'
+    //     ]);
+
+    //     // Filter by user_id if provided
+    //     if ($userId) {
+    //         $maintenanceQuery->where('user_id', $userId);
+    //     }
+
+    //     // Fetch records
+    //     $maintenanceRecords = $maintenanceQuery->orderBy('date', 'desc')->get();
+
+    //     if ($maintenanceRecords->isEmpty()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'No maintenance records found.',
+    //             'data' => []
+    //         ], 200);
+    //     }
+
+    //     // Group records by house_id
+    //     $groupedRecords = $maintenanceRecords->groupBy('user.house_id');
+
+    //     // Format response
+    //     $response = $groupedRecords->map(function ($records, $houseId) {
+    //         $user = $records->first()->user;
+    //         $house = $user->house;
+    //         $block = $house ? $house->block : null;
+    //         $house_no = $house ? $house->house_no : null;
+    //         $block_number = $block && $house_no ? $block . '-' . $house_no : null;
+
+    //         return [
+    //             'title' => $block,
+    //             'rows' => $records->groupBy('user_id')->map(function ($userRecords, $userId) use ($block_number) {
+    //                 $user = $userRecords->first()->user;
+
+    //                 // Check if any maintenance record is "PENDING"
+    //                 $hasPending = $userRecords->contains('maintenance_status', 'PENDING');
+
+    //                 return [
+    //                     'no' => $userId,
+    //                     'user_id' => $userId,
+    //                     'blockNumber' => $block_number,
+    //                     'image' => $user->profile_photo ? config('app.url') . '/public/storage/' . $user->profile_photo : null,
+    //                     'ownerName' => $user->first_name . ' ' . $user->last_name,
+    //                     'maintenance_status' => $hasPending ? 'PENDING' : 'COMPLETED',
+    //                     'society_id' => $user->society_id,
+    //                     'maintenance' => $userRecords->map(function ($record, $index) {
+    //                         return [
+    //                             'no' => $index + 1,
+    //                             'id' => $record->id,
+    //                             'amount' => (int) $record->amount,
+    //                             'date' => \Carbon\Carbon::parse($record->date)->format('Y-m-d'),
+    //                             'maintenance_status' => ucfirst(strtolower($record->maintenance_status)),
+    //                         ];
+    //                     })->values()->toArray()
+    //                 ];
+    //             })->values()->toArray()
+    //         ];
+    //     })->values()->toArray();
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Maintenance records fetched successfully',
+    //         'data' => $response
+    //     ], 200);
+    // }
+
+    public function index()
+    {
+        // Get the authenticated user's society_id
+        $societyId = auth()->user()->society_id;
+
+        // Fetch all users in the society, including their house details
+        $users = User::with(['house:id,block,house_no'])
+            ->where('society_id', $societyId)
+            ->whereIn('role_id', [3, 4]) // Filter by roles 3 and 4
+            ->where('house_id', '!=', null) // Exclude Super Admin
+            ->get();
+
+        // Fetch maintenance records for users in the same society
+        $maintenanceRecords = Maintenance::with([
             'user:id,society_id,house_id,profile_photo,first_name,last_name',
             'user.house:id,block,house_no'
-        ]);
+        ])->whereHas('user', function ($query) use ($societyId) {
+            $query->where('society_id', $societyId);
+        })->orderBy('date', 'desc')->get();
 
-        // Filter by user_id if provided
-        if ($userId) {
-            $maintenanceQuery->where('user_id', $userId);
-        }
+        // Group maintenance records by user_id
+        $maintenanceByUser = $maintenanceRecords->groupBy('user_id');
 
-        // Fetch records
-        $maintenanceRecords = $maintenanceQuery->orderBy('date', 'desc')->get();
-
-        if ($maintenanceRecords->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'No maintenance records found.',
-                'data' => []
-            ], 200);
-        }
-
-        // Group records by house_id
-        $groupedRecords = $maintenanceRecords->groupBy('user.house_id');
-
-        // Format response
-        $response = $groupedRecords->map(function ($records, $houseId) {
-            $user = $records->first()->user;
-            $house = $user->house;
-            $block = $house ? $house->block : null;
-            $house_no = $house ? $house->house_no : null;
-            $block_number = $block && $house_no ? $block . '-' . $house_no : null;
-
+        // Prepare response grouped by block
+        $groupedRecords = $users->groupBy('house.block')->sortKeys()->map(function ($usersInBlock, $block) use ($maintenanceByUser) {
             return [
                 'title' => $block,
-                'rows' => $records->groupBy('user_id')->map(function ($userRecords, $userId) use ($block_number) {
-                    $user = $userRecords->first()->user;
+                'rows' => $usersInBlock->map(function ($user) use ($maintenanceByUser) {
+                    $house = $user->house;
+                    $blockNumber = $house ? $house->block . '-' . $house->house_no : null;
+
+                    // Get maintenance records for the user, if any
+                    $userMaintenanceRecords = $maintenanceByUser->get($user->id, collect());
 
                     // Check if any maintenance record is "PENDING"
-                    $hasPending = $userRecords->contains('maintenance_status', 'PENDING');
+                    $hasPending = $userMaintenanceRecords->contains('maintenance_status', 'PENDING');
 
                     return [
-                        'no' => $userId,
-                        'user_id' => $userId,
-                        'blockNumber' => $block_number,
+                        'no' => $user->id,
+                        'user_id' => $user->id,
+                        'blockNumber' => $blockNumber,
                         'image' => $user->profile_photo ? config('app.url') . '/public/storage/' . $user->profile_photo : null,
                         'ownerName' => $user->first_name . ' ' . $user->last_name,
-                        'maintenance_status' => $hasPending ? 'PENDING' : 'COMPLETED',
+                        'maintenance_status' => $hasPending ? 'PENDING' : ($userMaintenanceRecords->isNotEmpty() ? 'COMPLETED' : 'NO RECORD'),
                         'society_id' => $user->society_id,
-                        'maintenance' => $userRecords->map(function ($record, $index) {
+                        'maintenance' => $userMaintenanceRecords->map(function ($record, $index) {
                             return [
                                 'no' => $index + 1,
                                 'id' => $record->id,
@@ -143,7 +209,7 @@ class MaintenanceController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Maintenance records fetched successfully',
-            'data' => $response
+            'data' => $groupedRecords
         ], 200);
     }
 

@@ -343,6 +343,7 @@ class UsersController extends Controller
 
     public function destroy(Request $request)
     {
+
         $id = $request->input('id');
 
         if (!$id) {
@@ -376,12 +377,16 @@ class UsersController extends Controller
                 'data' => []
             ], 403);
         }
-        DB::table('visitors')->where('user_id', $user->id)->delete();
-        $user->delete();
+        // DB::table('visitors')->where('user_id', $user->id)->delete();
+        // $user->delete();
+        // $user->status = 'inactive';
+        $user->update([
+            'status' => 'inactive'
+        ]);
 
         return response()->json([
             'status' => true,
-            'message' => 'User soft-deleted successfully',
+            'message' => 'User deactivated successfully',
             'data' => []
         ], 200);
     }

@@ -216,3 +216,147 @@ houses / views and user detaisl in society view section
 
 wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains website.org --no-parent  wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains website.org --no-parent wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains website.org --no-parent  https://uiparadox.co.uk/public/templates/astro-aura/
 wget --mirror --convert-links --adjust-extension --page-requisites  --no-parent https://uiparadox.co.uk/public/templates/astro-aura/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
+                <!-- card -->
+                <div class="card ">
+                    <!-- card body -->
+                    <div class="card-body">
+                        <!-- heading -->
+                        <div class="d-flex justify-content-between align-items-center
+                mb-3">
+                            <div>
+                                <h4 class="mb-0">Calculate Data</h4>
+                            </div>
+                            <div class="icon-shape icon-md bg-light-primary text-primary
+                  rounded-2">
+                                <i class="bi bi-briefcase fs-4"></i>
+                            </div>
+                        </div>
+                        <!-- project number -->
+                        <div>
+                            <h1 class="fw-bold">0</h1>
+                            <p class="mb-0">
+                                <span class="text-dark me-2"><button class="btn btn-info" data-bs-toggle="modal"
+                                        data-bs-target="#calculateModal">Details</button></span>
+                                <span class="text-dark me-8"></span>
+
+                                {{-- <span class="text-dark me-2"><button class="btn btn-primary">Details</button></span>
+                            --}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
+                <!-- card -->
+                <div class="card ">
+                    <!-- card body -->
+                    <div class="card-body">
+                        <!-- heading -->
+                        <div class="d-flex justify-content-between align-items-center
+                mb-3">
+                            <div>
+                                <h4 class="mb-0">View Data</h4>
+                            </div>
+                            <div class="icon-shape icon-md bg-light-primary text-primary
+                  rounded-2">
+                                <i class="bi bi-list-task fs-4"></i>
+                            </div>
+                        </div>
+                        <!-- project number -->
+                        <div>
+                            <h1 class="fw-bold">0</h1>
+                            <p class="mb-0">
+                                {{-- <span class="text-dark me-2"><button class="btn btn-info">Details</button></span> --}}
+                                <span class="text-dark me-8"></span>
+
+                                <span class="text-dark me-2"><button class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#viewModal">Details</button></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
+                <!-- card -->
+                <div class="card ">
+                    <!-- card body -->
+                    <div class="card-body">
+                        <!-- heading -->
+                        <div class="d-flex justify-content-between align-items-center
+                mb-3">
+                            <div>
+                                <h4 class="mb-0">Add Data</h4>
+                            </div>
+                            <div class="icon-shape icon-md bg-light-primary text-primary
+                  rounded-2">
+                                <i class="bi bi-people fs-4"></i>
+                            </div>
+                        </div>
+                        <!-- project number -->
+                        <div>
+                            <h1 class="fw-bold">0</h1>
+                            <p class="mb-0">
+
+                                <span class="text-dark me-8"></span>
+
+                                <span class="text-dark me-2"><button class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#addFormModal">Add</button></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-12 col-12 mt-6">
+                <!-- card -->
+                <div class="card ">
+                    <!-- card body -->
+                    <div class="card-body">
+                        <!-- heading -->
+                        <div class="d-flex justify-content-between align-items-center
+                mb-3">
+                            <div>
+                                <h4 class="mb-0">Settings</h4>
+                            </div>
+                            <div class="icon-shape icon-md bg-light-primary text-primary
+                  rounded-2">
+                                <i class="bi bi-bullseye fs-4"></i>
+                            </div>
+                        </div>
+                        <!-- project number -->
+                        <div>
+                            <h1 class="fw-bold">0</h1>
+                            <p class="mb-0">
+                                <span class="text-dark me-12"></span>
+
+                                <span class="text-dark me-2"><a href="#"><button class="btn btn-primary">Go To Setting
+                                            Screens</button>
+                                    </a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+npm install --save-dev laravel-echo pusher-js && npm run build

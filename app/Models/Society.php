@@ -29,4 +29,9 @@ class Society extends Model
     {
         return $this->hasMany(House::class);
     }
+
+    public function subscription()
+    {
+        return $this->hasOne(SocietySubscription::class);
+    }
 }

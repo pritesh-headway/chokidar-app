@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Designation;
-use App\Models\RoleMember;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\House;
+use App\Models\RoleMember;
+use App\Models\Designation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class RoleMemberController extends Controller
 {
@@ -20,7 +21,7 @@ class RoleMemberController extends Controller
             'user_id' => 'required|exists:users,id',
             'profile_image' => 'nullable|string',
             'mobile' => 'nullable|string|max:15',
-            'block_number' => 'nullable|string|max:50',
+            // 'block_number' => 'nullable|string|max:50',
             'first_name' => 'nullable|string|max:50',
             'last_name' => 'nullable|string|max:50',
             'status' => 'nullable|in:active,deactive',
@@ -42,13 +43,14 @@ class RoleMemberController extends Controller
             ], 403);
         }
         $status = $request->status ?? 'active';
+        $house = House::find($user->house_id);
         $roleMember = RoleMember::create([
             'role_id' => $request->role_id,
             'role_name' => $role->role_name,
             'user_id' => $request->user_id,
             'profile_image' => $user->profile_image,
             'mobile' => $user->mobile,
-            'block_number' => $user->block_number,
+            'block_number' => $house->block . '-' . $house->house_no,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'status' => $status,
@@ -56,7 +58,7 @@ class RoleMemberController extends Controller
         $formattedData = [
             'no' => 1,
             'id' => $roleMember->id,
-            'blockNumber' => $roleMember->block_number,
+            'blockNumber' => $house->block . '-' . $house->house_no,
             'image' => $roleMember->profile_image
                 ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image
                 : config('app.url') . '/public/storage/profile_photos/avatar.png',
@@ -79,17 +81,20 @@ class RoleMemberController extends Controller
             $query->where('society_id', $societyId);
         })->get();
         $roleMembers = $roleMembers->map(function ($roleMember, $index) {
-
+            $user = User::find($roleMember->user_id);
+            $house = House::find($user->house_id);
+            // dd($house);
             $formattedData = [
                 'no' => $index + 1,
                 'id' => $roleMember->id,
-                'blockNumber' => $roleMember->block_number,
+                'blockNumber' => $house->block . '-' . $house->house_no,
                 'image' => $roleMember->profile_image
                     ? config('app.url') . '/public/storage/' . $roleMember->profile_image
                     : config('app.url') . '/public/storage/profile_photos/avatar.png',
                 'ownerName' => $roleMember->first_name . ' ' . $roleMember->last_name,
                 'role' => $roleMember->role_name,
                 'mobile' => $roleMember->mobile,
+                'house_id' => $roleMember->house_id,
             ];
             return (object) $formattedData;
         });
@@ -117,16 +122,19 @@ class RoleMemberController extends Controller
             ], 200);
         }
         $formatMember = function ($roleMember, $index) {
+            $user = User::find($roleMember->user_id);
+            $house = House::find($user->house_id);
             return [
                 'no' => $index + 1,
                 'id' => $roleMember->id,
-                'blockNumber' => $roleMember->block_number,
+                'blockNumber' => $house->block . '-' . $house->house_no,
                 'image' => $roleMember->profile_image
                     ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image
                     : config('app.url') . '/public/storage/profile_photos/avatar.png',
                 'ownerName' => $roleMember->first_name . ' ' . $roleMember->last_name,
                 'role' => $roleMember->role_name,
                 'mobile' => $roleMember->mobile,
+                'house_id' => $roleMember->house_id,
             ];
         };
         if ($request->has('id')) {
@@ -239,7 +247,7 @@ class RoleMemberController extends Controller
             $roleMember->user_id = $request->user_id;
             $user = User::find($request->user_id);
             $roleMember->mobile = $user->mobile;
-            $roleMember->block_number = $user->block_number;
+            // $roleMember->block_number = $user->block_number;
             $roleMember->first_name = $user->first_name;
             $roleMember->last_name = $user->last_name;
             $roleMember->profile_image = $user->profile_photo;
@@ -248,10 +256,12 @@ class RoleMemberController extends Controller
             $roleMember->status = $request->status;
         }
         $roleMember->save();
+        $user = User::find($roleMember->user_id);
+        $house = House::find($user->house_id);
         $formattedData = [
             'no' => 1,
             'id' => $roleMember->id,
-            'blockNumber' => $roleMember->block_number,
+            'blockNumber' => $house->block . '-' . $house->house_no,
             'image' => $roleMember->profile_image
                 ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image
                 : config('app.url') . '/public/storage/profile_photos/avatar.png',
@@ -284,10 +294,12 @@ class RoleMemberController extends Controller
             ], 200);
         }
         $formattedData = function ($roleMember) {
+            $user = User::find($roleMember->user_id);
+            $house = House::find($user->house_id);
             return [
                 'no' => 1,
                 'id' => $roleMember->id,
-                'blockNumber' => $roleMember->block_number,
+                'blockNumber' => $house->block . '-' . $house->house_no,
                 'image' => $roleMember->profile_image
                     ? env('APP_URL') . '/public/storage/' . $roleMember->profile_image
                     :  config('app.url') . '/public/storage/profile_photos/avatar.png',

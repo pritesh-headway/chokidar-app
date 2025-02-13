@@ -19,6 +19,7 @@ class ContactUsController extends Controller
         $contact = ContactUs::findOrFail($id);
         return view('contactus.show', compact('contact'));
     }
+
     public function create()
     {
         return view('contactus.create');
@@ -27,9 +28,13 @@ class ContactUsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'society_name' => 'required',
+            'country' => 'required',
+            'city' => 'required',
+            'full_name' => 'required',
             'email' => 'required|email',
-            'message' => 'required',
+            'phone_number' => 'required',
+            'comments' => 'required',
         ]);
 
         ContactUs::create($request->all());
@@ -47,9 +52,13 @@ class ContactUsController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
+            'society_name' => 'required',
+            'country' => 'required',
+            'city' => 'required',
+            'full_name' => 'required',
             'email' => 'required|email',
-            'message' => 'required',
+            'phone_number' => 'required',
+            'comments' => 'required',
         ]);
 
         $contact = ContactUs::findOrFail($id);

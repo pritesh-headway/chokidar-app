@@ -16,6 +16,20 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
+    <hr class="sidebar-divider my-0">
+
+    <li class="nav-item {{ request()->is('societies/index') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('payments.index') }}">
+            <i class="fas fa-fw fa-calculator"></i>
+            <span>Payment transcations</span></a>
+    </li>
+    <hr class="sidebar-divider my-0">
+
+    <li class="nav-item {{ request()->is('societies/index') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('subscription_plans.index') }}">
+            <i class="fas fa-fw fa-calculator"></i>
+            <span>Subscription plans</span></a>
+    </li>
 
     <hr class="sidebar-divider my-0">
 

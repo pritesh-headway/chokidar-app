@@ -16,6 +16,7 @@ class SecurityController extends Controller
 
     public function store(Request $request)
     {
+        dd("use register security method not this.");
 
         $validatedData = $request->validate([
             'guard_name' => 'required|string|max:50',
@@ -347,6 +348,7 @@ class SecurityController extends Controller
     }
     public function registerSecurity(Request $request)
     {
+        dd("hello");
 
         $messages = [
             'first_name.required' => 'First name is required.',

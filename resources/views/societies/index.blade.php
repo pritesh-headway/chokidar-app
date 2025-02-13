@@ -1,71 +1,52 @@
-{{-- @extends('layouts.app') --}}
 @extends('layouts.page', ['data' => 2])
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            {{-- <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-                <div class="position-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('dashboard') }}">
-                                Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('societies.index') }}">
-                                Societies
-                            </a>
-                        </li>
-                        <!-- Add more sidebar links as needed -->
-                    </ul>
-                </div>
-            </nav> --}}
-
+    <div class="container mx-auto">
+        <div class="flex flex-wrap">
             <!-- Main content -->
-            <main class="col-md-9 ms-sm-auto col-lg-12 px-md-4">
-                <div
-                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">All Societies</h1>
-                    <a href="{{ route('societyregister') }}" class="btn btn-primary mb-3">Register
-                        Society</a>
+            <main class="w-full px-4">
+                <div class="flex justify-between items-center py-3 border-b">
+                    <h1 class="text-2xl font-semibold">All Societies</h1>
+
+                    <a href="{{ route('societyregister') }}" class="btn btn-primary">Register Society</a>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>City</th>
-                                <th>State</th>
-                                <th>Postal Code</th>
-                                <th>Contact Number</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="border px-4 py-2">ID</th>
+                                <th class="border px-4 py-2">Name</th>
+                                <th class="border px-4 py-2">Address</th>
+                                <th class="border px-4 py-2">City</th>
+                                <th class="border px-4 py-2">State</th>
+                                <th class="border px-4 py-2">Postal Code</th>
+                                <th class="border px-4 py-2">Contact Number</th>
+                                <th class="border px-4 py-2">Type</th>
+                                <th class="border px-4 py-2">Plan</th>
+                                <th class="border px-4 py-2">Status</th>
+                                <th class="border px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($societies as $society)
-                                <tr>
-                                    <td>{{ $society->id }}</td>
-                                    <td>{{ $society->society_name }}</td>
-                                    <td>{{ $society->address }}</td>
-                                    <td>{{ $society->city }}</td>
-                                    <td>{{ $society->state }}</td>
-                                    <td>{{ $society->postal_code }}</td>
-                                    <td>{{ $society->contact_number }}</td>
-                                    <td>{{ $society->type }}</td>
-                                    <td>{{ $society->status }}</td>
-                                    <td>
+                                <tr class="hover:bg-gray-100">
+                                    <td class="border px-4 py-2">{{ $society->id }}</td>
+                                    <td class="border px-4 py-2">{{ $society->society_name }}</td>
+                                    <td class="border px-4 py-2">{{ $society->address }}</td>
+                                    <td class="border px-4 py-2">{{ $society->city }}</td>
+                                    <td class="border px-4 py-2">{{ $society->state }}</td>
+                                    <td class="border px-4 py-2">{{ $society->postal_code }}</td>
+                                    <td class="border px-4 py-2">{{ $society->contact_number }}</td>
+                                    <td class="border px-4 py-2">{{ $society->type }}</td>
+                                    <td class="border px-4 py-2">{{ $society->plan }}</td>
+                                    <td class="border px-4 py-2">{{ $society->status }}</td>
+                                    <td class="border px-4 py-2 flex space-x-2">
                                         <a href="{{ route('societies.show', $society->id) }}"
                                             class="btn btn-info btn-sm">View</a>
                                         <a href="{{ route('societies.edit', $society->id) }}"
                                             class="btn btn-warning btn-sm">Edit</a>
                                         <form action="{{ route('societies.destroy', $society->id) }}" method="POST"
-                                            style="display:inline;">
+                                            class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>

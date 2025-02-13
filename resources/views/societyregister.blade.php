@@ -32,7 +32,7 @@
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container mt-5 ">
         <div class="fixed-top text-right p-3">
             <i id="toggle-dark-mode" class="fas fa-moon" style="cursor: pointer; font-size: 1.5rem;"></i>
         </div>

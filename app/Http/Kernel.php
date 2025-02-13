@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'auth.api' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
         'auth.web' => \Illuminate\Auth\Middleware\Authenticate::class,
         'web' => \App\Http\Middleware\WebMiddleware::class,
+        'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
     ];
 }

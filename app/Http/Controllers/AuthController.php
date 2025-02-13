@@ -6,18 +6,19 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\SocietySubscription;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-
-use Illuminate\Routing\Controller;
 
 class AuthController extends Controller
 {
@@ -82,6 +83,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
@@ -102,6 +104,15 @@ class AuthController extends Controller
                 'role' => $user->role,
                 'id' => $user->id,
             ];
+            // dd($user->role_id == 1);
+            if ($user->role_id == 2) {
+                $status = SocietySubscription::where('society_id', $user->society_id)->first();
+                // dd($status->status);
+                if ($status->status == 'expired') {
+                    $userDetails['toast'] = 'Your subscription has been expired.please contact admin';
+                    // dd($userDetails);
+                }
+            }
 
             return response()->json([
                 'status' => true,

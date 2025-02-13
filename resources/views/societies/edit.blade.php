@@ -10,8 +10,8 @@
 
             <div class="form-group">
                 <label for="name">Society Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ $society->society_name }}"
-                    required>
+                <input type="text" class="form-control" id="name" name="society_name"
+                    value="{{ $society->society_name }}" required>
             </div>
 
             <div class="form-group">
@@ -40,7 +40,7 @@
 
             <div class="form-group">
                 <label for="contact">Contact</label>
-                <input type="text" class="form-control" id="contact" name="contact"
+                <input type="text" class="form-control" id="contact" name="contact_number"
                     value="{{ $society->contact_number }}" required>
             </div>
 
